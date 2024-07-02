@@ -1,3 +1,4 @@
+import { createElement } from "./createElement.js";
 import { extend } from "./utility.js";
 
 if (!Array.isArray(window.devtoolsFormatters)) {

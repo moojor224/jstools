@@ -1,4 +1,4 @@
-import _node_overrides from "./_node_overrides";
+import _node_overrides from "./_node_overrides.js";
 _node_overrides();
 
 if (!Array.isArray(window.devtoolsFormatters)) {
