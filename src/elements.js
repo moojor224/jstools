@@ -1,6 +1,17 @@
 import { flattenChildNodes } from "./arrays.js";
 import { bulkElements } from "./bulkElements.js";
 import { createElement } from "./createElement.js";
+import _node_overrides from "./_node_overrides.js";
+_node_overrides();
+
+/**
+ * Adds polyfills for missing browser features.
+ */
+if (!Element.prototype.computedStyleMap && globalThis.getComputedStyle != undefined) {
+    Element.prototype.computedStyleMap = function () {
+        return window.getComputedStyle(this);
+    }
+}
 
 /**
  * adds a warning message to the specified elements
