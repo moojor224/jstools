@@ -1,5 +1,5 @@
 {
-    "name": "web-jstools",
+    "name": "@moojor224/jstools",
     "version": "1.0.0",
     "description": "a bunch of utility functions for use in browser contexts",
     "main": "src/index.js",
@@ -10,7 +10,7 @@
     "license": "ISC",
     "repository": {
         "type": "git",
-        "url": "https://github.com/moojor224/web-jstools"
+        "url": "https://github.com/moojor224/jstools"
     },
     "type": "module"
 }
