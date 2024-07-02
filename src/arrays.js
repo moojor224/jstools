@@ -51,3 +51,23 @@ export function reshape(arr, length, width) {
     }
     return result;
 }
+
+/**
+ * interleaves arrays
+ * @param {Boolean} fill whther to fill arrays with null to match longest array's length
+ * @param  {...any} arrays arrays to interleave
+ * @returns {any[]} interleaved arrays
+ */
+export function interleaveArrays(fill, ...arrays) {
+    if (fill) {
+        let max = Math.max(...arrays.map(e => e.length)); // get max length of all arrays
+        arrays = arrays.map(arr => [...arr, ...new Array(max - arr.length).fill(null)]); // fill all arrays with null so that they're all the same length
+    }
+    let result = [];
+    while (arrays.filter(e => e.length > 0).length > 0) { // while at least one array still has at least one item in it
+        arrays.forEach(arr => { // loop through each array
+            if (arr.length > 0) result.push(arr.shift()); // remove first element from array and add it to result array
+        });
+    }
+    return result;
+}

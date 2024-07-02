@@ -1,6 +1,7 @@
 import { createElement } from "./createElement.js";
 import { tryImport } from "./tryImport.js";
 const { Prism } = await tryImport("./prism.js");
+const { js_beautify } = await tryImport("./beautify.js");
 
 /**
  * @param {any | undefined} val 
@@ -487,3 +488,75 @@ export function isAsync(func) {
     const AsyncFunction = (async () => { }).constructor;
     return func instanceof AsyncFunction;
 }
+
+export const BULK_OPERATIONS = (function () {
+    if (globalThis.jstools_defined) return;
+    class Numbers {
+        constructor(...values) {
+            this.values = values;
+        }
+    }
+    let ops = [
+        ["divide", (a, b) => a / b],
+        ["multiply", (a, b) => a * b],
+        ["add", (a, b) => a + b],
+        ["subtract", (a, b) => a - b],
+        ["pow", (a, b) => a ** b],
+        ["mod", (a, b) => a % b],
+    ];
+    for (let [name, func] of ops) {
+        Numbers.prototype[name] = function (val) {
+            return new Numbers(...this.values.map(e => func(e, val)));
+        };
+    }
+    class Booleans {
+        constructor(...values) {
+            this.values = values;
+        }
+        flip() {
+            return new Booleans(...this.bools.map(e => !e));
+        }
+    }
+    function makeNewClass(clss) {
+        let newClass = class { constructor(...values) { this.values = values; } }
+        let methods = Object.getOwnPropertyNames(clss.prototype).sort();
+        methods.forEach(m => {
+            newClass.prototype[m] = function (...args) {
+                return new newClass(...this.values.map(e => e[m].apply(e, args)));
+            }
+        });
+        return newClass;
+    }
+    function getTypes(...args) {
+        let types = args.map(e => typeof e);
+        let unique = [...new Set(types)];
+        if (unique.length == 1) {
+            return unique[0];
+        }
+        return "mixed";
+    }
+    const Strings = makeNewClass(String);
+    const Functions = makeNewClass(Function);
+    const Objects = makeNewClass(Object);
+    function autodetectClass(type) {
+        switch (type) {
+            case "number": return Numbers;
+            case "string": return Strings;
+            case "boolean": return Booleans;
+            case "object": return Objects;
+            case "function": return Functions;
+            default: return null;
+        }
+    }
+    return {
+        Numbers,
+        Strings,
+        Booleans,
+        Objects,
+        Functions,
+        autodetect: function (...args) {
+            let type = getTypes(...args);
+            return autodetectClass(type);
+        }
+    };
+})();

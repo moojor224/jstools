@@ -5,9 +5,6 @@ override();
 * one-time definition methods
 */
 (function () {
-    if (globalThis.jstools_defined) {
-        return;
-    }
     // loop through all HTML...Element prototypes and add the add function
     // Object.getOwnPropertyNames(window).filter(e => e.startsWith("HTML") && e.endsWith("Element")).forEach(e => {
     //     if (window[e].prototype.add !== add) {
@@ -90,7 +87,7 @@ if (!Array.isArray(window.devtoolsFormatters)) {
 }
 
 export { jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
-export { flattenChildNodes, flattenChildren } from "./src/arrays.js";
+export { flattenChildNodes, flattenChildren, interleaveArrays, rectangle, reshape } from "./src/arrays.js";
 export { captureConsole } from "./src/captureConsole.js";
 export { CSSColors, Color, getColor, getContrastColor, gradient, listAllColorsOnPage, rgbMix } from "./src/colors.js";
 export { createElement } from "./src/createElement.js";
@@ -100,6 +97,5 @@ export { clamp, map, roundf } from "./src/math.js";
 export { Option, Section, Settings } from "./src/settings.js";
 export { advancedDynamicSort, dynamicSort } from "./src/sorting.js";
 export { tabColor } from "./src/tabColor.js";
-export { copyObject, extend, getValueOrDefault, isAsync, lockValue, logAndReturn, logFormatted, makeTemplate, stringify, timeConversions, toHTMLEntities } from "./src/utility.js";
+export { BULK_OPERATIONS, copyObject, extend, getValueOrDefault, isAsync, lockValue, logAndReturn, logFormatted, makeTemplate, stringify, timeConversions, toHTMLEntities } from "./src/utility.js";
 export { waitForKeyElements } from "./src/waitForKeyElements.js";
-
