@@ -1,13 +1,5 @@
 // import { clear } from "./jstools.js";
 
-const isSelectorValid = (selector) => {
-    try {
-        document.createDocumentFragment().querySelector(selector)
-    } catch {
-        return false;
-    }
-    return true;
-}
 /**
  * combines a list of selectors or elements into a single object that functions mostly like a single element
  * @param  {...any} selectors list of selectors or elements
