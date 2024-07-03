@@ -1,6 +1,5 @@
 import override from "./_node_overrides.js";
 override();
-console.log(window.open);
 
 export class jst_CSSRule {
     /**
