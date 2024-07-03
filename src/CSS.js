@@ -68,6 +68,7 @@ export class jst_CSSRule {
      * @param {typeof this._style} styles
      */
     constructor(selector, styles) {
+        if (!checkValidSelector(selector)) throw new Error("Invalid selector: " + selector);
         let givenstyles = Object.entries(styles);
         let valid = givenstyles.every(e => validStyles.includes(e[0]) || e[0].startsWith("--"));
         if (!valid) {
