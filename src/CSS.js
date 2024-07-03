@@ -210,6 +210,7 @@ export class jst_CSSStyleSheet {
     /** 
      * injects the stylesheet into the document
      * @param {Boolean} update whether to update the stylesheet if a rule is changed
+     * @returns {String} the compiled stylesheet
      */
     inject(update = false) {
         if (this.injected) return;
@@ -218,5 +219,6 @@ export class jst_CSSStyleSheet {
         let style = createElement("style", { innerHTML: compiled });
         this.styleElement = style;
         document.head.append(style);
+        return compiled;
     }
 }
