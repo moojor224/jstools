@@ -86,16 +86,16 @@ if (!Array.isArray(window.devtoolsFormatters)) {
     window.devtoolsFormatters = [];
 }
 
-export { jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
 export { flattenChildNodes, flattenChildren, interleaveArrays, rectangle, reshape } from "./src/arrays.js";
 export { captureConsole } from "./src/captureConsole.js";
 export { CSSColors, Color, getColor, getContrastColor, gradient, listAllColorsOnPage, rgbMix } from "./src/colors.js";
 export { createElement } from "./src/createElement.js";
+export { jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
 export { consoleButton } from "./src/devtoolsFormatters.js";
 export { CUSTOM_ELEMENTS, clear, clearError, clearWarn, disable, enable, error, hide, show, warn } from "./src/elements.js";
 export { clamp, map, roundf } from "./src/math.js";
 export { Option, Section, Settings } from "./src/settings.js";
 export { advancedDynamicSort, dynamicSort } from "./src/sorting.js";
 export { tabColor } from "./src/tabColor.js";
-export { BULK_OPERATIONS, copyObject, extend, getValueOrDefault, isAsync, lockValue, logAndReturn, logFormatted, makeTemplate, stringify, timeConversions, toHTMLEntities } from "./src/utility.js";
+export { BULK_OPERATIONS, copyObject, createEnum, extend, getValueOrDefault, isAsync, lockValue, logAndReturn, logFormatted, makeTemplate, stringify, timeConversions, toHTMLEntities } from "./src/utility.js";
 export { waitForKeyElements } from "./src/waitForKeyElements.js";
