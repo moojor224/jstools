@@ -70,11 +70,9 @@ export class jst_CSSRule {
     constructor(selector, styles) {
         if (!checkValidSelector(selector)) throw new Error("Invalid selector: " + selector);
         let givenstyles = Object.entries(styles);
-        let valid = givenstyles.every(e => validStyles.includes(e[0]) || e[0].startsWith("--"));
-        if (!valid) {
-            throw new Error("Invalid style properties: " + givenstyles.filter(e => !validStyles.includes(e[0])).map(e => e[0]).join(", "));
-        }
-        Object.entries(styles).forEach(e => {
+        let valid = givenstyles.filter(e => !(validStyles.includes(e[0]) || e[0].startsWith("--"))).map(e => e[0]).join(", ");
+        if (valid.length > 0) throw new Error("Invalid style properties: " + valid);
+        givenstyles.forEach(e => {
             let newName = e[0].replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
             if (newName != e[0]) {
                 if (!validStyles.includes(newName)) return;
