@@ -3,44 +3,45 @@ import { extend, makeTemplate } from "./utility.js";
 import { createElement } from "./createElement.js";
 override();
 
-export class jst_CSSRule {
-    /**
-     * a list of all valid css properties
-     * @type {String[]}
-     */
-    static validStyles = (function getProperties() {
-        let result = ["overflow", "border", "border-width", "padding", "border-right", "border-left", "border-top", "border-bottom"];
-        try {
-            let frame = document.createElement("iframe");
-            document.body.append(frame);
-            let win = frame.contentWindow;
-            if (!win) throw new Error("no window");
-            let div = win.document.createElement("div");
-            win.document.body.append(div);
-            let computed = win.getComputedStyle(div);
-            let styles = Object.keys(computed).filter(e => !isNaN(parseInt(e)));
-            styles = styles.map(e => computed[e]);
-            styles = Array.from(new Set([styles, result].flat().flatMap(e => [e, e.replaceAll(/-[a-z]/g, m => m.toUpperCase()[1]), e.replaceAll(/[A-Z]/g, m => "-" + m.toLowerCase())])));
-            result = styles.sort();
-            frame.remove();
-        } catch (err) {
-            console.log("error getting valid CSS styles", err);
-            return ["err"];
-        }
-        return result;
-    })();
-    static checkValidSelector(selector) {
-        selector = selector.trim();
-        if (typeof selector != "string") return false;
-        if (selector.length == 0) return false;
-        try {
-            let sheet = new CSSStyleSheet();
-            sheet.insertRule(selector + "{}");
-            return true;
-        } catch (e) {
-            return false;
-        }
+/** @type {String[]} */
+const validStyles = (function getProperties() {
+    let result = [
+        "overflow", "border", "border-width", "padding", "border-right", "border-left", "border-top", "border-bottom", "border-radius",
+        "grid-row", "grid-column",
+    ];
+    try {
+        let frame = document.createElement("iframe");
+        document.body.append(frame);
+        let win = frame.contentWindow;
+        if (!win) throw new Error("no window");
+        let div = win.document.createElement("div");
+        win.document.body.append(div);
+        let computed = win.getComputedStyle(div);
+        let styles = Object.keys(computed).filter(e => !isNaN(parseInt(e)));
+        styles = styles.map(e => computed[e]);
+        styles = Array.from(new Set([styles, result].flat().flatMap(e => [e, e.replaceAll(/-[a-z]/g, m => m.toUpperCase()[1]), e.replaceAll(/[A-Z]/g, m => "-" + m.toLowerCase())])));
+        result = styles.sort();
+        frame.remove();
+    } catch (err) {
+        console.log("error getting valid CSS styles", err);
+        return ["err"];
     }
+    return result;
+})();
+// console.log("validStyles", validStyles.join("\n"));
+const checkValidSelector = function (selector) {
+    selector = selector.trim();
+    if (typeof selector != "string") return false;
+    if (selector.length == 0) return false;
+    try {
+        let sheet = new CSSStyleSheet();
+        sheet.insertRule(selector + "{}");
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+export class jst_CSSRule {
     /** @type {jst_CSSStyleSheet} */
     stylesheet = null;
 
