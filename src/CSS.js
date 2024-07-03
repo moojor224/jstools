@@ -52,34 +52,31 @@ export class jst_CSSRule {
             return target[prop];
         },
         set: (target, prop, value) => {
-            let newName = prop.replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
-            if (!jst_CSSRule.validStyles.includes(newName) && !jst_CSSRule.validStyles.includes("err")) return;
-            target[newName] = value;
-            this.attachedElements.forEach(([el]) => {
-                el.style[newName] = value;
-            });
-            if (this.stylesheet instanceof jst_CSSStyleSheet) {
-                if (this.stylesheet.injected) {
-                    this.stylesheet.styleElement.innerHTML = this.stylesheet.compile(true);
-                }
+            let newName = prop;
+            if (!prop.startsWith("--")) {
+                newName = prop.replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
+                if (!validStyles.includes(newName) && !validStyles.includes("err")) throw new Error("Invalid style property: " + prop);
             }
+            target[newName] = value;
+            this.update();
             return true;
         }
     });
+    selector = "";
     /**
      * @param {String} selector
      * @param {typeof this._style} styles
      */
     constructor(selector, styles) {
         let givenstyles = Object.entries(styles);
-        let valid = givenstyles.every(e => jst_CSSRule.validStyles.includes(e[0]));
+        let valid = givenstyles.every(e => validStyles.includes(e[0]) || e[0].startsWith("--"));
         if (!valid) {
-            throw new Error("Invalid style properties: " + givenstyles.filter(e => !jst_CSSRule.validStyles.includes(e[0])).map(e => e[0]).join(", "));
+            throw new Error("Invalid style properties: " + givenstyles.filter(e => !validStyles.includes(e[0])).map(e => e[0]).join(", "));
         }
         Object.entries(styles).forEach(e => {
             let newName = e[0].replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
             if (newName != e[0]) {
-                if (!jst_CSSRule.validStyles.includes(newName)) return;
+                if (!validStyles.includes(newName)) return;
                 styles[newName] = e[1];
                 delete styles[e[0]];
             }
@@ -90,16 +87,26 @@ export class jst_CSSRule {
 
     /** @param {boolean} minify */
     compile(minify) {
-        let join = "\n    ";
-        let props = makeTemplate`${0}: ${1};`;
-        let whole = makeTemplate`${"selector"} {\n    ${"properties"}\n}`;
-        if (minify) {
-            join = ";";
-            props = makeTemplate`${0}:${1}`;
-            whole = makeTemplate`${"selector"}{${"properties"}}`;
+        let selectorChain = [this.selector];
+        let target = this;
+        while (target.stylesheet instanceof jst_CSSRule) {
+            selectorChain.unshift(target.selector);
+            target = target.stylesheet;
         }
-        let properties = Object.entries(this._style).map(e => props(...e)).join(join);
-        return whole({ selector: this.selector, properties: properties });
+        selectorChain = selectorChain.join(" ").replaceAll(/ (?=[+&>~:])/g, " ").replaceAll("&", "");
+        if (minify) {
+            return `${selectorChain}{${Object.entries(this._style).map(([rule, value]) => `${rule}:${value}`).join(";")}}${this.#sub_rules.map(e => e.compile(minify)).join("")}`;
+        } else {
+            return `${selectorChain} {\n    ${Object.entries(this._style).map(([rule, value]) => `${rule}: ${value};`).join("\n    ")}\n}\n${this.#sub_rules.map(e => e.compile(minify)).join("\n")}`;
+        }
+    }
+
+    update() {
+        console.log("updating CSSRule", this);
+        this.attachedElements.forEach(([el]) => {
+            extend(el.style, this._style);
+        });
+        this.stylesheet.update();
     }
 
     /** @type {HTMLElement[]} */
@@ -135,9 +142,16 @@ export class jst_CSSRule {
         if (revert) detachedEl[0].style = detachedEl[1]; // if revert is true, revert the element to its original style
     }
 
+    /** @type {jst_CSSRule[]} */
+    #sub_rules = [];
     addRules(...rules) {
-        rules = rules.filter(e => e instanceof jst_CSSRule);
-
+        rules.forEach(rule => {
+            if (rule instanceof jst_CSSRule) {
+                this.#sub_rules.push(rule);
+                rule.stylesheet = this;
+            }
+        });
+        return this;
     }
 }
 
@@ -162,6 +176,13 @@ export class jst_CSSStyleSheet {
                 rule.stylesheet = this;
             }
         });
+    }
+
+    update() {
+        console.log("updating stylesheet", this);
+        if (this.injected) {
+            this.styleElement.innerHTML = this.compile(true);
+        }
     }
 
     /**
