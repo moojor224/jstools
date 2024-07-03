@@ -1,4 +1,6 @@
 import override from "./_node_overrides.js";
+import { extend, makeTemplate } from "./utility.js";
+import { createElement } from "./createElement.js";
 override();
 
 export class jst_CSSRule {
