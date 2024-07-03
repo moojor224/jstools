@@ -1,4 +1,4 @@
-// import { clear } from "./jstools.js";
+import { clear } from "./elements.js";
 
 /**
  * combines a list of selectors or elements into a single object that functions mostly like a single element
@@ -53,7 +53,7 @@ export function bulkElements(...selectors) {
             elements.forEach(e => e.innerHTML = value);
         },
         clear: function () {
-            elements.forEach(e => e.innerHTML = "");
+            elements.forEach(e => clear(e));
         }
     };
 }
