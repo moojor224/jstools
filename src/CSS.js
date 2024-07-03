@@ -90,10 +90,10 @@ export class jst_CSSRule {
         let selectorChain = [this.selector];
         let target = this;
         while (target.stylesheet instanceof jst_CSSRule) {
-            selectorChain.unshift(target.selector);
+            selectorChain.unshift(target.stylesheet.selector);
             target = target.stylesheet;
         }
-        selectorChain = selectorChain.join(" ").replaceAll(/ (?=[+&>~:])/g, " ").replaceAll("&", "");
+        selectorChain = selectorChain.join(" ").replaceAll(/ (&|&?(?=[>]))/g, ""); // remove unnecessary spaces and combine selectors that should be combined
         if (minify) {
             return `${selectorChain}{${Object.entries(this._style).map(([rule, value]) => `${rule}:${value}`).join(";")}}${this.#sub_rules.map(e => e.compile(minify)).join("")}`;
         } else {
