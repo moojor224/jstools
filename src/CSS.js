@@ -129,7 +129,7 @@ export class jst_CSSRule {
         }
         let rules = Object.entries(this._style).map(e => part(...e)).join(";");
         if (rules.length == 0) whole = makeTemplate`${2}`; // if there are no rules, return only the compiled child rules
-        return whole(selector, rules, this._sub_rules.map(e => e.compile(minify)).join(""));
+        return whole(selector, rules, this.sub_rules.map(e => e.compile(minify)).join(""));
     }
 
     update() {
@@ -174,27 +174,34 @@ export class jst_CSSRule {
     }
 
     /** @type {jst_CSSRule[]} */
-    _sub_rules = [];
+    sub_rules = [];
     addRules(...rules) {
         rules.forEach(rule => {
             if (rule instanceof jst_CSSRule) {
-                this._sub_rules.push(rule);
+                this.sub_rules.push(rule);
                 rule.stylesheet = this;
             }
         });
         return this;
     }
+
+    /**
+     * looks for a rule in the stylesheet by its selector
+     * @param {string} selector the selector to search for
+     * @returns {jst_CSSRule}
+     */
+    findRule(selector) { } // placeholder
 }
 
 export class jst_CSSStyleSheet {
     /** @type {jst_CSSRule[]} */
-    rules = [];
+    sub_rules = [];
     /**
      * creates a new stylesheet
      * @param {jst_CSSRule[]} rules array of rules
      */
     constructor(rules = []) {
-        this.rules = rules.filter(e => e instanceof jst_CSSRule);
+        this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
     }
 
     addRules(...rules) {
@@ -202,7 +209,7 @@ export class jst_CSSStyleSheet {
             if (!(rule instanceof jst_CSSRule)) {
                 return;
             }
-            this.rules.push(rule);
+            this.sub_rules.push(rule);
             if (this.injected) {
                 rule.stylesheet = this;
             }
@@ -226,7 +233,7 @@ export class jst_CSSStyleSheet {
         if (minify) {
             join = "";
         }
-        let compiled = this.rules.map(e => {
+        let compiled = this.sub_rules.map(e => {
             if (this.injected) {
                 e.stylesheet = this;
             }
@@ -253,4 +260,28 @@ export class jst_CSSStyleSheet {
         document.head.append(style);
         return compiled;
     }
+
+    /**
+     * looks for a rule in the stylesheet by its selector
+     * @param {string} selector the selector to search for
+     * @returns {jst_CSSRule}
+     */
+    findRule(selector) { } // placeholder
 }
+
+function findRule(selector) {
+    function flatRule(rule) {
+        let result = [rule];
+        rule.sub_rules.forEach(e => result.push(...flatRule(e)));
+        return result;
+    }
+    /** @type {jst_CSSRule[]} */
+    let rules = this.sub_rules.flatMap(e => flatRule(e));
+    let found = rules.find(rule => {
+        let computed = rule.computedSelector;
+        return computed == selector || computed.split(",").map(e => e.trim()).includes(selector);
+    });
+    return found;
+}
+jst_CSSRule.prototype.findRule = findRule;
+jst_CSSStyleSheet.prototype.findRule = findRule;
