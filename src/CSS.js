@@ -6,7 +6,9 @@ override();
 /** @type {String[]} */
 const validStyles = (function getProperties() {
     let result = [
-        "overflow", "border", "border-width", "padding", "border-right", "border-left", "border-top", "border-bottom", "border-radius",
+        "overflow",
+        "border", "border-width", "border-right", "border-left", "border-top", "border-bottom", "border-radius", "border-color", "border-style",
+        "padding",
         "grid-row", "grid-column",
     ];
     try {
@@ -135,7 +137,7 @@ export class jst_CSSRule {
         this.attachedElements.forEach(([el]) => {
             extend(el.style, this._style);
         });
-        this.stylesheet.update();
+        if (this.stylesheet) this.stylesheet.update();
     }
 
     /** @type {HTMLElement[]} */
@@ -185,7 +187,7 @@ export class jst_CSSRule {
 }
 
 export class jst_CSSStyleSheet {
-    /** @type {jst_CSSRule} */
+    /** @type {jst_CSSRule[]} */
     rules = [];
     /**
      * creates a new stylesheet
