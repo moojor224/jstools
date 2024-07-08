@@ -67,14 +67,18 @@ export class jst_CSSRule {
      * @param {String} selector
      * @param {typeof this._style} styles
      */
-    constructor(selector, styles) {
+    constructor(selector, styles = {}) {
         if (!checkValidSelector(selector)) throw new Error("Invalid selector: " + selector);
         let givenstyles = Object.entries(styles);
-        let valid = givenstyles.filter(e => !(validStyles.includes(e[0]) || e[0].startsWith("--"))).map(e => e[0]).join(", ");
-        if (valid.length > 0) throw new Error("Invalid style properties: " + valid);
+        let invalid = givenstyles.filter(e => !(validStyles.includes(e[0]) || e[0].startsWith("--") || (validStyles.length == 1 && validStyles[0] == "err"))).map(e => e[0]).join(", ");
+        if (invalid.length > 0) throw new Error("Invalid style properties: " + invalid);
         givenstyles.forEach(e => {
-            let newName = e[0].replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
-            if (newName != e[0]) {
+            let changed = false;
+            let newName = e[0].replaceAll(/[A-Z]/g, e => {
+                changed = true;
+                return `-${e.toLowerCase()}`;
+            }); // convert name to valid css notation
+            if (changed) {
                 if (!validStyles.includes(newName)) return;
                 styles[newName] = e[1];
                 delete styles[e[0]];
