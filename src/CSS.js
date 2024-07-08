@@ -84,20 +84,46 @@ export class jst_CSSRule {
         this.selector = selector;
     }
 
-    /** @param {boolean} minify */
-    compile(minify) {
+    /**
+     * returns the final selector of this style rule by combining all parent selectors
+     * @returns {String}
+     */
+    get computedSelector() {
         let selectorChain = [this.selector];
         let target = this;
         while (target.stylesheet instanceof jst_CSSRule) {
-            selectorChain.unshift(target.stylesheet.selector);
             target = target.stylesheet;
+            selectorChain.unshift(target.selector);
         }
-        selectorChain = selectorChain.join(" ").replaceAll(/ (&|&?(?=[>]))/g, ""); // remove unnecessary spaces and combine selectors that should be combined
+        selectorChain = selectorChain.reduceRight(function (previousValue, currentValue) {
+            let result = [];
+            currentValue.split(",").forEach(e => {
+                previousValue.split(",").forEach(f => {
+                    result.push(e.trim() + " " + f.trim());
+                });
+            });
+            return result.join(",\n").trim();
+        }, "");
+        selectorChain = selectorChain.replaceAll(/ (&|&?(?=[>]))/g, ""); // remove unnecessary spaces and combine selectors that should be combined
+        return selectorChain;
+    }
+
+    /** @param {boolean} minify */
+    compile(minify = false) {
+        let selector = this.computedSelector;
+        let part, whole, join;
         if (minify) {
-            return `${selectorChain}{${Object.entries(this._style).map(([rule, value]) => `${rule}:${value}`).join(";")}}${this.#sub_rules.map(e => e.compile(minify)).join("")}`;
+            part = makeTemplate`${0}:${1}`;
+            whole = makeTemplate`${0}{${1}}${2}`;
+            join = "";
         } else {
-            return `${selectorChain} {\n    ${Object.entries(this._style).map(([rule, value]) => `${rule}: ${value};`).join("\n    ")}\n}\n${this.#sub_rules.map(e => e.compile(minify)).join("\n")}`;
+            part = makeTemplate`${0}: ${1};`;
+            whole = makeTemplate`${0} {\n    ${1}\n}\n${2}`;
+            join = "\n";
         }
+        let rules = Object.entries(this._style).map(e => part(...e)).join(";");
+        if (rules.length == 0) whole = makeTemplate`${2}`; // if there are no rules, return only the compiled child rules
+        return whole(selector, rules, this._sub_rules.map(e => e.compile(minify)).join(""));
     }
 
     update() {
@@ -142,11 +168,11 @@ export class jst_CSSRule {
     }
 
     /** @type {jst_CSSRule[]} */
-    #sub_rules = [];
+    _sub_rules = [];
     addRules(...rules) {
         rules.forEach(rule => {
             if (rule instanceof jst_CSSRule) {
-                this.#sub_rules.push(rule);
+                this._sub_rules.push(rule);
                 rule.stylesheet = this;
             }
         });
