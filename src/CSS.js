@@ -43,6 +43,7 @@ const checkValidSelector = function (selector) {
         return false;
     }
 }
+
 export class jst_CSSRule {
     /** @type {jst_CSSStyleSheet} */
     stylesheet = null;
@@ -121,13 +122,13 @@ export class jst_CSSRule {
         if (minify) {
             part = makeTemplate`${0}:${1}`;
             whole = makeTemplate`${0}{${1}}${2}`;
-            join = "";
+            join = ";";
         } else {
             part = makeTemplate`${0}: ${1};`;
             whole = makeTemplate`${0} {\n    ${1}\n}\n${2}`;
-            join = "\n";
+            join = "\n    ";
         }
-        let rules = Object.entries(this._style).map(e => part(...e)).join(";");
+        let rules = Object.entries(this._style).map(e => part(...e)).join(join);
         if (rules.length == 0) whole = makeTemplate`${2}`; // if there are no rules, return only the compiled child rules
         return whole(selector, rules, this.sub_rules.map(e => e.compile(minify)).join(""));
     }
@@ -228,11 +229,9 @@ export class jst_CSSStyleSheet {
      * @param {Boolean} minify whether to minify the result or not
      * @returns {String}
      */
-    compile(minify) {
+    compile(minify = false) {
         let join = "\n";
-        if (minify) {
-            join = "";
-        }
+        if (minify) join = "";
         let compiled = this.sub_rules.map(e => {
             if (this.injected) {
                 e.stylesheet = this;
