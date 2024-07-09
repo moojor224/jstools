@@ -320,3 +320,61 @@ function findRule(selector) {
 }
 jst_CSSRule.prototype.findRule = findRule;
 jst_CSSStyleSheet.prototype.findRule = findRule;
+
+if (!Array.isArray(window.devtoolsFormatters)) window.devtoolsFormatters = [];
+
+
+window.devtoolsFormatters.push({
+    header: function (obj) {
+        if (obj instanceof jst_CSSStyleSheet) {
+            return ["div", { style: "font-weight:bold" }, "jst_CSSStyleSheet"];
+        }
+    },
+    hasBody: function (obj) {
+        return obj instanceof jst_CSSStyleSheet;
+    },
+    body: function (obj) {
+        if (obj instanceof jst_CSSStyleSheet) {
+            return ["div", { style: "" }, obj.compile()];
+        }
+    }
+},
+    {
+        label: "rule formatter",
+        hasBody: function (obj) {
+            return obj instanceof jst_CSSRule;
+        },
+        header: function (obj) {
+            if (obj instanceof jst_CSSRule) {
+                return ["div", { style: "font-weight:bold" }, `jst_CSSRule: "${obj.selector}"`];
+            }
+        },
+        body: function (obj) {
+            if (obj instanceof jst_CSSRule) {
+                return ["div", { style: "font-weight:normal" },
+                    ["div", {}, `Selector: ${obj.selector}`],
+                    ["div", {}, `Computed Selector: ${obj.computedSelector}`],
+                    ["div", {}, "compiled:",
+                        ["object", {
+                            object: {
+                                __collapsed: true,
+                                __label: "normal",
+                                __data: obj.compile(false)
+                            }
+                        }],
+                        ["object", {
+                            object: {
+                                __collapsed: true,
+                                __label: "minified",
+                                __data: obj.compile(true)
+                            }
+                        }],
+                    ],
+                    obj.sub_rules.length > 0 ? ["div", {},
+                        "Sub Rules:",
+                        ...obj.sub_rules.map(e => ["div", {}, ["object", { object: e }]])
+                    ] : ""
+                ];
+            }
+        }
+    });
