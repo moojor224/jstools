@@ -45,15 +45,12 @@ let collapsed_formatter = {
         if (typeof obj.__collapsed != "boolean") {
             return null;
         }
-        let label = "";
-        if (obj.__label) {
-            label = ": " + obj.__label;
-        }
-        return ["div", { style: "color: red;" }, "Collapsed object" + label];
+        return ["div", { style: `color:${obj.__color || "inherit"}` }, obj.__label];
     },
     body: function (obj) {
         if (obj.__collapsed) {
-            return ["div", ["object", { object: obj.data }]];
+            if (typeof obj.__data == "string") return ["div", {}, obj.__data];
+            return ["div", ["object", { object: obj.__data }]];
         }
         return ["div", "No data"];
     }
@@ -62,12 +59,11 @@ if (!window.devtoolsFormatters.includes(collapsed_formatter)) {
     window.devtoolsFormatters.push(collapsed_formatter);
 }
 (function () { // custom formatters
-    if (typeof $ == "undefined" || typeof $?.jstree?.core?.prototype == "undefined" || globalThis.____________jstree_formatted) {
-        return;
-    }
-    globalThis.____________jstree_formatted = true;
     if (!Array.isArray(globalThis.devtoolsFormatters)) {
-        window.devtoolsFormatters = [];
+        globalThis.devtoolsFormatters = [];
+    }
+    if (typeof $ == "undefined" || typeof $?.jstree?.core?.prototype == "undefined" || globalThis.devtoolsFormatters.find(e => e.label == "jstree")) {
+        return;
     }
     function isJstree(obj) {
         try {
@@ -98,6 +94,7 @@ if (!window.devtoolsFormatters.includes(collapsed_formatter)) {
         }
     }
     window.devtoolsFormatters.push({ // jstree formatter
+        label: "jstree",
         header: function (obj) {
             if (isJstree(obj)) {
                 return ["div", "jstree"];
@@ -127,6 +124,7 @@ if (!window.devtoolsFormatters.includes(collapsed_formatter)) {
         }
     });
     window.devtoolsFormatters.push({ // node formatter
+        label: "node",
         header: function (obj) {
             if (obj instanceof node) {
                 return ['div', obj.text];
