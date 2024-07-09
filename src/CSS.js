@@ -192,6 +192,24 @@ export class jst_CSSRule {
      * @returns {jst_CSSRule}
      */
     findRule(selector) { } // placeholder
+
+    checkCoverage(logResults = false) {
+        let elements;
+        let selector = this.computedSelector;
+        try {
+            elements = Array.from(document.querySelectorAll(selector.replaceAll(/:?:(after|before|hover|link|visited|active|focus(-within)?)/g, "")));
+        } catch (err) {
+            elements = Array.from(document.querySelectorAll(selector));
+        }
+        let results = { count: elements.length, elements, rule: this };
+        if (logResults) {
+            console.groupCollapsed("Checking coverage for rule:", this);
+            console.log("Found", elements.length, `elements with selector: "${this.computedSelector}"`);
+            if (elements.length > 0) console.log("Elements", elements);
+            console.groupEnd();
+        }
+        return results;
+    }
 }
 
 export class jst_CSSStyleSheet {
@@ -266,14 +284,32 @@ export class jst_CSSStyleSheet {
      * @returns {jst_CSSRule}
      */
     findRule(selector) { } // placeholder
+
+    checkCoverage(logResults = false) {
+        if (logResults) {
+            console.groupCollapsed("Checking coverage for stylesheet", this);
+        }
+        let coverageResults = this.sub_rules.flatMap(e => flatRule(e)).map(e => e.checkCoverage(logResults));
+        let covered = 0, total = coverageResults.length, unused = [];
+        coverageResults.forEach(e => {
+            if (e.count > 0) covered++;
+            else unused.push(e.rule);
+        });
+        if (logResults) {
+            console.log(`Coverage: ${covered}/${total} rules covered`);
+            if (unused.length > 0) console.log("Unused rules", unused);
+            console.groupEnd();
+        }
+    }
+}
+
+function flatRule(rule) {
+    let result = [rule];
+    rule.sub_rules.forEach(e => result.push(...flatRule(e)));
+    return result;
 }
 
 function findRule(selector) {
-    function flatRule(rule) {
-        let result = [rule];
-        rule.sub_rules.forEach(e => result.push(...flatRule(e)));
-        return result;
-    }
     /** @type {jst_CSSRule[]} */
     let rules = this.sub_rules.flatMap(e => flatRule(e));
     let found = rules.find(rule => {
