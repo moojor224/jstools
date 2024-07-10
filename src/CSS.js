@@ -126,7 +126,7 @@ export class jst_CSSRule {
             join = ";";
         } else {
             part = makeTemplate`${0}: ${1};`;
-            whole = makeTemplate`${0} {\n    ${1}\n}\n${2}`;
+            whole = makeTemplate`${0} {\n    ${1}\n}\n\n${2}`;
             join = "\n    ";
         }
         let rules = Object.entries(this._style).map(e => part(...e)).join(join);
@@ -326,10 +326,12 @@ if (!Array.isArray(window.devtoolsFormatters)) window.devtoolsFormatters = [];
 
 
 window.devtoolsFormatters.push({
+    label: "jst_CSSStyleSheet",
     header: function (obj) {
         if (obj instanceof jst_CSSStyleSheet) {
             return ["div", { style: "font-weight:bold" }, "jst_CSSStyleSheet"];
         }
+        return null;
     },
     hasBody: function (obj) {
         return obj instanceof jst_CSSStyleSheet;
@@ -338,9 +340,10 @@ window.devtoolsFormatters.push({
         if (obj instanceof jst_CSSStyleSheet) {
             return ["div", { style: "" }, obj.compile()];
         }
+        return null;
     }
 }, {
-    label: "rule formatter",
+    label: "jst_CSSRule",
     hasBody: function (obj) {
         return obj instanceof jst_CSSRule;
     },
@@ -348,6 +351,7 @@ window.devtoolsFormatters.push({
         if (obj instanceof jst_CSSRule) {
             return ["div", { style: "font-weight:bold" }, `jst_CSSRule: "${obj.selector}"`];
         }
+        return null;
     },
     body: function (obj) {
         if (obj instanceof jst_CSSRule) {
@@ -376,6 +380,7 @@ window.devtoolsFormatters.push({
                 ] : ""
             ];
         }
+        return null;
     }
 });
 
