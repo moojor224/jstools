@@ -85,7 +85,8 @@ export function getContrastColor(rgb) {
  */
 export function listAllColorsOnPage() {
     function hexToRgb(color) {
-        if (color.match(/#?([a-zA-Z0-9]{8}|[a-zA-Z0-9]{6}|[a-zA-Z0-9]{3,4})/g)?.at(0) === color) {
+        let match = color.match(/#?([a-zA-Z0-9]{8}|[a-zA-Z0-9]{6}|[a-zA-Z0-9]{3,4})/g);
+        if (match && match.at(0) === color) {
             color = color.replace("#", "");
             let split, a;
             switch (color.length) {

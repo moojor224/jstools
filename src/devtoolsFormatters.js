@@ -62,7 +62,12 @@ if (!window.devtoolsFormatters.includes(collapsed_formatter)) {
     if (!Array.isArray(globalThis.devtoolsFormatters)) {
         globalThis.devtoolsFormatters = [];
     }
-    if (typeof $ == "undefined" || typeof $?.jstree?.core?.prototype == "undefined" || globalThis.devtoolsFormatters.find(e => e.label == "jstree")) {
+    try {
+        typeof $.jstree.core.prototype == "undefined";
+    } catch (err) {
+        return
+    }
+    if (globalThis.devtoolsFormatters.find(e => e.label == "jstree")) {
         return;
     }
     function isJstree(obj) {
@@ -110,7 +115,10 @@ if (!window.devtoolsFormatters.includes(collapsed_formatter)) {
                 function get_nodes(tree) {
                     function recurse(n) {
                         let node = tree.get_node(n);
-                        node.children = node.children?.map(e => recurse(e));
+                        if (!Array.isArray(node.children)) {
+                            return node;
+                        }
+                        node.children = node.children.map(e => recurse(e));
                         return node;
                     }
                     return recurse("#");
@@ -132,7 +140,8 @@ if (!window.devtoolsFormatters.includes(collapsed_formatter)) {
             return null;
         },
         hasBody: function (obj) {
-            return obj instanceof node && obj.children?.length > 0;
+            if (!obj.children) return false;
+            return obj instanceof node && obj.children.length > 0;
         },
         body: function (obj) {
             if (obj instanceof node) {

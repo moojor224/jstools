@@ -4,7 +4,11 @@
  * @returns {object[]} array of all children
  */
 export function flattenChildren(arr) {
-    return [arr, ...(arr.children?.flatMap((e) => flattenChildren(e)) || [])];
+    let children = [];
+    if (arr.children) {
+        children = arr.children;
+    }
+    return [arr, (children.flatMap((e) => flattenChildren(e)) || [])].flatMap(e => e);
 }
 
 /**
