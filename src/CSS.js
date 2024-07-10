@@ -378,3 +378,11 @@ window.devtoolsFormatters.push({
         }
     }
 });
+
+if (!("cssText" in CSSStyleSheet.prototype)) {
+    Object.defineProperty(CSSStyleSheet.prototype, "cssText", {
+        get: function () {
+            return Array.from(this.cssRules).map(rule => rule.cssText || "").join("\n");
+        }
+    });
+}
