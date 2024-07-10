@@ -11,6 +11,9 @@ const validStyles = (function getProperties() {
         "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
         "grid-row", "grid-column",
         "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
+        "gap", "column-gap", "row-gap",
+        "counter-reset", "counter-increment", "counter-set",
+        "animation", "animation-name", "animation-duration", "animation-timing-function", "animation-delay", "animation-iteration-count", "animation-direction", "animation-fill-mode", "animation-play-state",
     ];
     try {
         let frame = document.createElement("iframe");
