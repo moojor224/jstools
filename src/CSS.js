@@ -8,8 +8,9 @@ const validStyles = (function getProperties() {
     let result = [
         "overflow",
         "border", "border-width", "border-right", "border-left", "border-top", "border-bottom", "border-radius", "border-color", "border-style",
-        "padding",
+        "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
         "grid-row", "grid-column",
+        "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
     ];
     try {
         let frame = document.createElement("iframe");
@@ -338,43 +339,42 @@ window.devtoolsFormatters.push({
             return ["div", { style: "" }, obj.compile()];
         }
     }
-},
-    {
-        label: "rule formatter",
-        hasBody: function (obj) {
-            return obj instanceof jst_CSSRule;
-        },
-        header: function (obj) {
-            if (obj instanceof jst_CSSRule) {
-                return ["div", { style: "font-weight:bold" }, `jst_CSSRule: "${obj.selector}"`];
-            }
-        },
-        body: function (obj) {
-            if (obj instanceof jst_CSSRule) {
-                return ["div", { style: "font-weight:normal" },
-                    ["div", {}, `Selector: ${obj.selector}`],
-                    ["div", {}, `Computed Selector: ${obj.computedSelector}`],
-                    ["div", {}, "compiled:",
-                        ["object", {
-                            object: {
-                                __collapsed: true,
-                                __label: "normal",
-                                __data: obj.compile(false)
-                            }
-                        }],
-                        ["object", {
-                            object: {
-                                __collapsed: true,
-                                __label: "minified",
-                                __data: obj.compile(true)
-                            }
-                        }],
-                    ],
-                    obj.sub_rules.length > 0 ? ["div", {},
-                        "Sub Rules:",
-                        ...obj.sub_rules.map(e => ["div", {}, ["object", { object: e }]])
-                    ] : ""
-                ];
-            }
+}, {
+    label: "rule formatter",
+    hasBody: function (obj) {
+        return obj instanceof jst_CSSRule;
+    },
+    header: function (obj) {
+        if (obj instanceof jst_CSSRule) {
+            return ["div", { style: "font-weight:bold" }, `jst_CSSRule: "${obj.selector}"`];
         }
-    });
+    },
+    body: function (obj) {
+        if (obj instanceof jst_CSSRule) {
+            return ["div", { style: "font-weight:normal" },
+                ["div", {}, `Selector: ${obj.selector}`],
+                ["div", {}, `Computed Selector: ${obj.computedSelector}`],
+                ["div", {}, "compiled:",
+                    ["object", {
+                        object: {
+                            __collapsed: true,
+                            __label: "normal",
+                            __data: obj.compile(false)
+                        }
+                    }],
+                    ["object", {
+                        object: {
+                            __collapsed: true,
+                            __label: "minified",
+                            __data: obj.compile(true)
+                        }
+                    }],
+                ],
+                obj.sub_rules.length > 0 ? ["div", {},
+                    "Sub Rules:",
+                    ...obj.sub_rules.map(e => ["div", {}, ["object", { object: e }]])
+                ] : ""
+            ];
+        }
+    }
+});
