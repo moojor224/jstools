@@ -10,6 +10,7 @@ export function consoleButton(obj, func, args = [], label = "button", width = 50
 }
 
 let buttonFormatter = { // button formatter
+    label: "button",
     header: function (obj) {
         if (obj.__button) {
             return ["div", { // the button itself
@@ -24,7 +25,7 @@ let buttonFormatter = { // button formatter
     },
     body: function (obj) {
         if (obj.__button) { // call function when button is "clicked" (expanded)
-            try { obj.obj[obj.func](...obj.args); } catch (e) { }
+            try { obj.func(...obj.args); } catch (e) { }
             return ["div", {}];
         }
         return null;
