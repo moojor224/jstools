@@ -36,3 +36,13 @@ export function map(x, inmin, inmax, outmin, outmax, cmp = false) {
 export function clamp(val, min, max) {
     return Math.max(Math.min(val, Math.max(min, max)), Math.min(min, max));
 }
+
+/**
+ * generate a random number within a range
+ * @param {number} min min value of range
+ * @param {number} max max value of range
+ * @returns {number}
+ */
+export function rand(min, max){
+    return Math.random() * (max - min) + min;
+}
