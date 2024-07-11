@@ -1,5 +1,5 @@
 import override from "./_node_overrides.js";
-import { extend, makeTemplate } from "./utility.js";
+import { copyObject, extend, makeTemplate } from "./utility.js";
 import { createElement } from "./createElement.js";
 override();
 
@@ -139,6 +139,9 @@ export class jst_CSSRule {
         return whole(selector, rules, this.sub_rules.map(e => e.compile(minify)).join(""));
     }
 
+    /**
+     * force-updates the style of any attached elements and any parent styles
+     */
     update() {
         console.log("updating CSSRule", this);
         this.attachedElements.forEach(([el]) => {
@@ -182,6 +185,11 @@ export class jst_CSSRule {
 
     /** @type {jst_CSSRule[]} */
     sub_rules = [];
+    /**
+     * adds child rules to the current rule
+     * @param  {...jst_CSSRule} rules the ruels to add
+     * @returns {jst_CSSRule}
+     */
     addRules(...rules) {
         rules.forEach(rule => {
             if (rule instanceof jst_CSSRule) {
@@ -199,6 +207,11 @@ export class jst_CSSRule {
      */
     findRule(selector) { } // placeholder
 
+    /**
+     * checks the document to see if the rule is being used
+     * @param {boolean} logResults whether to console.log the results after running
+     * @returns {{ count: number, elements: HTMLElement[], rule: jst_CSSRule }}
+     */
     checkCoverage(logResults = false) {
         let elements;
         let selector = this.computedSelector;
@@ -229,6 +242,10 @@ export class jst_CSSStyleSheet {
         this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
     }
 
+    /**
+     * add rules to the stylesheet
+     * @param  {...jst_CSSRule} rules the rules to add
+     */
     addRules(...rules) {
         rules.forEach(rule => {
             if (!(rule instanceof jst_CSSRule)) {
@@ -241,6 +258,7 @@ export class jst_CSSStyleSheet {
         });
     }
 
+    /** force-updates the stylesheet if it has been injected */
     update() {
         console.log("updating stylesheet", this);
         if (this.injected) {
@@ -291,6 +309,10 @@ export class jst_CSSStyleSheet {
      */
     findRule(selector) { } // placeholder
 
+    /**
+     * checks the webpage to see which css rules in the sheet are currently being used
+     * @param {boolean} logResults whether to console.log the results after running
+     */
     checkCoverage(logResults = false) {
         if (logResults) {
             console.groupCollapsed("Checking coverage for stylesheet", this);
@@ -308,49 +330,67 @@ export class jst_CSSStyleSheet {
         }
     }
 
+    /** whether the current stylesheet is watching for coverage */
     _watchingCoverage = false;
-    watchCoverage() {
-        if (this._watchingCoverage) return; // if already watching, return
+    /**
+     * tracks which rules in the stylesheet are used at any point during the coverage watch\
+     * get the results by calling watchCoverage(false)
+     */
+    watchCoverage(end = true) {
+        if (end && this._watchingCoverage) return; // if already watching, return
+        if (!end) {
+            this._watchingCoverage = false;
+            let results = { covered: this._covered, uncovered: this._rules.filter(e => !this._covered.includes(e)) };
+            console.log("results", results);
+            delete this._rules;
+            delete this._covered;
+            let stats = {
+                covered: results.covered.length,
+                uncovered: results.uncovered.length,
+                percentCovered: results.covered.length * 100 / (results.covered.length + results.uncovered.length),
+                percentUncovered: results.uncovered.length * 100 / (results.covered.length + results.uncovered.length),
+            };
+            results.stats = stats;
+            return results;
+        }
         this._watchingCoverage = true;
         /** @type {jst_CSSRule[]} */
-        let rules = this.sub_rules.flatMap(e => flatRule(e));
-        let covered = [];
+        this._rules = this.sub_rules.flatMap(e => flatRule(e));
+        this._covered = [];
         let sheet = this;
         let interval = window.setInterval(function () {
             if (!sheet._watchingCoverage) {
                 window.clearInterval(interval);
-                sheet.coverageResults = { covered, uncovered: rules };
-                console.log("Coverage watch stopped", sheet.coverageResults);
                 return;
             }
             let temp = [];
-            rules.forEach(rule => {
+            sheet._rules.forEach(rule => {
                 if (document.querySelector(rule.computedSelector.replaceAll(selectorExclusionRegex, ""))) {
                     temp.push(rule);
-                    covered.push(rule);
+                    sheet._covered.push(rule);
                 }
             });
             temp.forEach(rule => {
-                rules.splice(rules.indexOf(rule), 1);
+                sheet._rules.splice(sheet._rules.indexOf(rule), 1);
             });
         });
-        console.log(rules);
-    }
-
-    stopWatchCoverage() {
-        this._watchingCoverage = false;
-        let results = this.coverageResults;
-        delete this.coverageResults;
-        return results;
     }
 }
 
+/**
+ * @param {jst_CSSRule} rule
+ * @returns {jst_CSSRule[]}
+ */
 function flatRule(rule) {
     let result = [rule];
     rule.sub_rules.forEach(e => result.push(...flatRule(e)));
     return result;
 }
 
+/**
+ * @param {string} selector
+ * @returns {jst_CSSRule}
+ */
 function findRule(selector) {
     /** @type {jst_CSSRule[]} */
     let rules = this.sub_rules.flatMap(e => flatRule(e));
