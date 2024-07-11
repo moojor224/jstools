@@ -3,6 +3,8 @@ import { extend, makeTemplate } from "./utility.js";
 import { createElement } from "./createElement.js";
 override();
 
+const selectorExclusionRegex = /:?:(after|before|hover|link|visited|active|focus(-within)?)/g;
+
 /** @type {String[]} */
 const validStyles = (function getProperties() {
     let result = [
@@ -201,7 +203,7 @@ export class jst_CSSRule {
         let elements;
         let selector = this.computedSelector;
         try {
-            elements = Array.from(document.querySelectorAll(selector.replaceAll(/:?:(after|before|hover|link|visited|active|focus(-within)?)/g, "")));
+            elements = Array.from(document.querySelectorAll(selector.replaceAll(selectorExclusionRegex, "")));
         } catch (err) {
             elements = Array.from(document.querySelectorAll(selector));
         }
@@ -304,6 +306,42 @@ export class jst_CSSStyleSheet {
             if (unused.length > 0) console.log("Unused rules", unused);
             console.groupEnd();
         }
+    }
+
+    _watchingCoverage = false;
+    watchCoverage() {
+        if (this._watchingCoverage) return; // if already watching, return
+        this._watchingCoverage = true;
+        /** @type {jst_CSSRule[]} */
+        let rules = this.sub_rules.flatMap(e => flatRule(e));
+        let covered = [];
+        let sheet = this;
+        let interval = window.setInterval(function () {
+            if (!sheet._watchingCoverage) {
+                window.clearInterval(interval);
+                sheet.coverageResults = { covered, uncovered: rules };
+                console.log("Coverage watch stopped", sheet.coverageResults);
+                return;
+            }
+            let temp = [];
+            rules.forEach(rule => {
+                if (document.querySelector(rule.computedSelector.replaceAll(selectorExclusionRegex, ""))) {
+                    temp.push(rule);
+                    covered.push(rule);
+                }
+            });
+            temp.forEach(rule => {
+                rules.splice(rules.indexOf(rule), 1);
+            });
+        });
+        console.log(rules);
+    }
+
+    stopWatchCoverage() {
+        this._watchingCoverage = false;
+        let results = this.coverageResults;
+        delete this.coverageResults;
+        return results;
     }
 }
 
