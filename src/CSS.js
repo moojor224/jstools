@@ -82,11 +82,8 @@ export class jst_CSSRule {
         let invalid = givenstyles.filter(e => !(validStyles.includes(e[0]) || e[0].startsWith("--") || (validStyles.length == 1 && validStyles[0] == "err"))).map(e => e[0]).join(", ");
         if (invalid.length > 0) throw new Error("Invalid style properties: " + invalid);
         givenstyles.forEach(e => {
-            let changed = false;
-            let newName = e[0].replaceAll(/[A-Z]/g, e => {
-                changed = true;
-                return `-${e.toLowerCase()}`;
-            }); // convert name to valid css notation
+            let changed = e[0].match(/[A-Z]/);
+            let newName = e[0].replaceAll(/[A-Z]/g, "-$1").toLowerCase(); // convert name to valid css notation
             if (changed) {
                 if (!validStyles.includes(newName)) return;
                 styles[newName] = e[1];
