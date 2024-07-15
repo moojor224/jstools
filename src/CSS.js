@@ -53,7 +53,7 @@ export class jst_CSSRule {
         if (invalid.length > 0) throw new Error("Invalid style properties: " + invalid);
         givenstyles.forEach(e => {
             let changed = e[0].match(/[A-Z]/);
-            let newName = e[0].replaceAll(/[A-Z]/g, "-$1").toLowerCase(); // convert name to valid css notation
+            let newName = e[0].replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`); // convert name to valid css notation
             if (changed) {
                 if (!validStyles.includes(newName)) return;
                 styles[newName] = e[1];
