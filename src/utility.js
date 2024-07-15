@@ -580,3 +580,13 @@ export const BULK_OPERATIONS = (function () {
 export function createEnum(values) {
     return Object.freeze(Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Symbol(value)])));
 }
+
+/**
+ * creates a readonly constant from the provided values\
+ * type declarations make it so that your IDE will show the original values on hover
+ * @template E
+ * @type {<E extends BasicAny | NestedBasicAnyArray>(values: Narrow<E>) => E}
+ */
+export function constant(val) {
+    return Object.freeze(val);
+}
