@@ -1,41 +1,11 @@
 import override from "./_node_overrides.js";
 import { copyObject, extend, makeTemplate } from "./utility.js";
 import { createElement } from "./createElement.js";
+import {validStyles} from "./validStyles.js";
 override();
 
 const selectorExclusionRegex = /:?:(after|before|hover|link|visited|active|focus(-within)?)/g;
 
-/** @type {String[]} */
-const validStyles = (function getProperties() {
-    let result = [
-        "overflow",
-        "border", "border-width", "border-right", "border-left", "border-top", "border-bottom", "border-radius", "border-color", "border-style",
-        "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
-        "grid-row", "grid-column",
-        "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
-        "gap", "column-gap", "row-gap",
-        "counter-reset", "counter-increment", "counter-set",
-        "animation", "animation-name", "animation-duration", "animation-timing-function", "animation-delay", "animation-iteration-count", "animation-direction", "animation-fill-mode", "animation-play-state",
-    ];
-    try {
-        let frame = document.createElement("iframe");
-        document.body.append(frame);
-        let win = frame.contentWindow;
-        if (!win) throw new Error("no window");
-        let div = win.document.createElement("div");
-        win.document.body.append(div);
-        let computed = win.getComputedStyle(div);
-        let styles = Object.keys(computed).filter(e => !isNaN(parseInt(e)));
-        styles = styles.map(e => computed[e]);
-        styles = Array.from(new Set([styles, result].flat().flatMap(e => [e, e.replaceAll(/-[a-z]/g, m => m.toUpperCase()[1]), e.replaceAll(/[A-Z]/g, m => "-" + m.toLowerCase())])));
-        result = styles.sort();
-        frame.remove();
-    } catch (err) {
-        console.log("error getting valid CSS styles", err);
-        return ["err"];
-    }
-    return result;
-})();
 // console.log("validStyles", validStyles.join("\n"));
 const checkValidSelector = function (selector) {
     selector = selector.trim();
