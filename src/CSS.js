@@ -1,7 +1,7 @@
 import override from "./_node_overrides.js";
-import { copyObject, extend, makeTemplate } from "./utility.js";
 import { createElement } from "./createElement.js";
-import {validStyles} from "./validStyles.js";
+import { extend, makeTemplate } from "./utility.js";
+import { validStyles } from "./validStyles.js";
 override();
 
 const selectorExclusionRegex = /:?:(after|before|hover|link|visited|active|focus(-within)?)/g;
