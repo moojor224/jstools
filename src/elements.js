@@ -2,6 +2,7 @@ import { flattenChildNodes } from "./arrays.js";
 import { bulkElements } from "./bulkElements.js";
 import { createElement } from "./createElement.js";
 import _node_overrides from "./_node_overrides.js";
+import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS.js";
 _node_overrides();
 
 /**
@@ -158,7 +159,7 @@ export function enable(...selectors) {
 }
 
 /**
- * defines some custom elements
+ * defines some custom HTML elements
  */
 export const CUSTOM_ELEMENTS = (function () {
     function slider() { // input toggle slider
@@ -168,100 +169,76 @@ export const CUSTOM_ELEMENTS = (function () {
             constructor() {
                 super();
                 this.attachShadow({ mode: "open" });
-                const CSS = /*css*/`
-                    :host {
-                        --scale: 1;
-                        --duration: 0.25s;
-    
-                        --outerline-on: #0f0;
-                        --outerline-off: #f00;
-    
-                        --innerline-on: #0f0;
-                        --innerline-off: #f00;
-    
-                        --inner-shade-on: #0f0;
-                        --outer-shade-on: #fff;
-    
-                        --inner-shade-off: #f00;
-                        --outer-shade-off: #fff;
-    
-                        --show-text: 1;
-                        --off-text: "OFF";
-                        --on-text: "ON";
-    
-                        display: inline-block;
-                        user-select: none;
-                    }
-                    
-                    div.slider {
-                        margin: 0px;
-                        position: relative;
-                        width: calc(48px * var(--scale));
-                        height: calc(28px * var(--scale));
-                        display: block;
-                        border: calc(2px * var(--scale)) solid var(--outerline-off);
-                        box-sizing: border-box;
-                        border-radius: calc(14px * var(--scale));
-                        transition-duration: var(--duration);
-                        background-color: var(--outer-shade-off);
-                        transition-property: background-color, border-color;
-                        overflow: hidden;
-                    }
-                    
-                    .slider div.dot {
-                        position: absolute;
-                        /* box-sizing: border-box; */
-                        border-radius: calc(10px * var(--scale));
-                        width: calc(16px * var(--scale));
-                        height: calc(16px * var(--scale));
-                        top: calc(2px * var(--scale));
-                        left: calc(2px * var(--scale));
-                        border: calc(2px * var(--scale)) solid var(--innerline-off);
-                        background-color: var(--inner-shade-off);
-                        transition-property: left, right, background-color, border-color;
-                        transition-duration: var(--duration);
-                    }
-                    
-                    .slider[checked="true"] {
-                        border-color: var(--outerline-on);
-                        background-color: var(--outer-shade-on);
-                    }
-    
-                    .slider[checked="true"] div.dot {
-                        left: calc(22px * var(--scale));
-                        border-color: var(--innerline-on);
-                        background-color: var(--inner-shade-on);
-                    }
-    
-                    .slider div.off-text,
-                    .slider div.on-text{
-                        display: flex;
-                        height: 100%;
-                        align-items: center;
-                        position: absolute;
-                        font-size: calc(10px * var(--scale) * var(--show-text) / var(--show-text));
-                    }
-    
-                    .slider div.off-text span::before {
-                        display: block;
-                        content: var(--off-text);
-                    }
-    
-                    .slider div.on-text span::before {
-                        display: block;
-                        content: var(--on-text);
-                    }
-    
-                    .slider div.on-text {
-                        /* left: calc(2px * var(--scale)); */
-                        right: calc(4px * var(--scale) + 100%);
-                    }
-    
-                    .slider div.off-text {
-                        /* right: calc(2px * var(--scale)); */
-                        left: calc(4px * var(--scale) + 100%);
-                    }
-                `;
+                const CSS = new CSSStyleSheet(
+                    new CSSRule(":host", {
+                        "--scale": 1,
+                        "--duration": "0.25s",
+                        "--outerline-on": "#0f0",
+                        "--outerline-off": "#f00",
+                        "--innerline-on": "#0f0",
+                        "--innerline-off": "#f00",
+                        "--inner-shade-on": "#0f0",
+                        "--inner-shade-off": "#f00",
+                        "--outer-shade-on": "#fff",
+                        "--outer-shade-off": "#fff",
+                        "--show-text": 1,
+                        "--on-text": "'ON'",
+                        "--off-text": "'OFF'",
+                        display: "inline-block",
+                        userSelect: "none",
+                    }),
+                    new CSSRule(".slider", {
+                        margin: "0px",
+                        position: "relative",
+                        width: "calc(48px * var(--scale))",
+                        height: "calc(28px * var(--scale))",
+                        display: "block",
+                        border: "calc(2px * var(--scale)) solid var(--outerline-off)",
+                        boxSizing: "border-box",
+                        borderRadius: "calc(14px * var(--scale))",
+                        transitionDuration: "var(--duration)",
+                        backgroundColor: "var(--outer-shade-off)",
+                        transitionProperty: "background-color, border-color",
+                        overflow: "hidden",
+                    }).addRules(
+                        new CSSRule("div.dot", {
+                            position: "absolute",
+                            // boxSizing: "border-box",
+                            borderRadius: "calc(10px * var(--scale))",
+                            width: "calc(16px * var(--scale))",
+                            height: "calc(16px * var(--scale))",
+                            top: "calc(2px * var(--scale))",
+                            left: "calc(2px * var(--scale))",
+                            border: "calc(2px * var(--scale)) solid var(--innerline-off)",
+                            backgroundColor: "var(--inner-shade-off)",
+                            transitionProperty: "left, right, background-color, border-color",
+                            transitionDuration: "var(--duration)",
+                        }),
+                        new CSSRule("&[checked=\"true\"]", {
+                            borderColor: "var(--outerline-on)",
+                            backgroundColor: "var(--outer-shade-on)",
+                        }).addRules(
+                            new CSSRule("div.dot", {
+                                left: "calc(22px * var(--scale))",
+                                borderColor: "var(--innerline-on)",
+                                backgroundColor: "var(--inner-shade-on)",
+                            }),
+                        ),
+                        new CSSRule("div.off-text, div.on-text", {
+                            display: "flex",
+                            height: "100%",
+                            alignItems: "center",
+                            position: "absolute",
+                            fontSize: "calc(10px * var(--scale) * var(--show-text) / var(--show-text))",
+                        }).addRules(new CSSRule("span::before", { display: "block" })),
+                        new CSSRule("div.on-text", {
+                            right: "calc(4px * var(--scale) + 100%)"
+                        }).addRules(new CSSRule("span::before", { content: "var(--on-text)" })),
+                        new CSSRule("div.off-text", {
+                            left: "calc(4px * var(--scale) + 100%)"
+                        }).addRules(new CSSRule("span::before", { content: "var(--off-text)" }),),
+                    ),
+                ).compile(true);
                 this.shadowRoot.innerHTML = /*html*/`
                     <style>${CSS}</style>
                     <div class="slider" checked="${this.#checked}">
