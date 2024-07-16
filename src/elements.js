@@ -16,7 +16,7 @@ if (!Element.prototype.computedStyleMap && globalThis.getComputedStyle != undefi
 /**
  * adds a warning message to the specified elements
  * @param {String} str message to display
- * @param  {...any} selectors elements to add warning message to
+ * @param  {...(String | HTMLElement)} selectors elements to add warning message to
  */
 export function warn(str = "!", ...selectors) {
     clearWarn(...selectors); // clear any existing warnings
@@ -34,7 +34,7 @@ export function warn(str = "!", ...selectors) {
 
 /**
  * removes the warning message from the given elements
- * @param  {...any} selectors elements to remove the warning message from
+ * @param  {...(String | HTMLElement)} selectors elements to remove the warning message from
  */
 export function clearWarn(...selectors) {
     selectors.forEach(s => {
@@ -53,7 +53,7 @@ export function clearWarn(...selectors) {
 /**
  * adds an error message to the specified elements
  * @param {String} str message to display
- * @param  {...any} selectors elements to add error message to
+ * @param  {...(String | HTMLElement)} selectors elements to add error message to
  */
 export function error(str, ...selectors) {
     clearError(...selectors);
@@ -71,7 +71,7 @@ export function error(str, ...selectors) {
 
 /**
  * removes the error message from the given elements
- * @param  {...any} selectors elements to remove the error message from
+ * @param  {...(String | HTMLElement)} selectors elements to remove the error message from
  */
 export function clearError(...selectors) {
     selectors.forEach(s => {
@@ -89,7 +89,7 @@ export function clearError(...selectors) {
 
 /**
  * hides the given elements by adding the class "hidden"
- * @param  {...(String|Element)} selectors list of css selectors or elements
+ * @param  {...(String | Element)} selectors list of css selectors or elements
  */
 export function hide(...selectors) {
     bulkElements(...selectors).classList.add("hidden");
@@ -97,7 +97,7 @@ export function hide(...selectors) {
 
 /**
  * shows the given elements by removing the class "hidden"
- * @param  {...(String|Element)} selectors list of css selectors or elements
+ * @param  {...(String | Element)} selectors list of css selectors or elements
  */
 export function show(...selectors) {
     bulkElements(...selectors).classList.remove("hidden");
@@ -105,7 +105,7 @@ export function show(...selectors) {
 
 /**
  * clears the given elements
- * @param  {...(String|Element)} selectors list of css selectors or elements
+ * @param  {...(String | Element)} selectors list of css selectors or elements
  */
 export function clear(...selectors) {
     for (let s of selectors) {
@@ -127,7 +127,7 @@ export function clear(...selectors) {
 /**
  * disables the given elements
  * @param {String} message message to show
- * @param  {...(String|Element)} selectors list of css selectors or elements
+ * @param  {...(String | Element)} selectors list of css selectors or elements
  */
 export function disable(message, ...selectors) {
     for (let s of selectors) {
@@ -143,7 +143,7 @@ export function disable(message, ...selectors) {
 
 /**
  * reenables the given elements
- * @param  {...(String|Element)} selectors list of css selectors or elements
+ * @param  {...(String  | Element)} selectors list of css selectors or elements
  */
 export function enable(...selectors) {
     for (let s of selectors) {
