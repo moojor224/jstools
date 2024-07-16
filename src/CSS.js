@@ -205,7 +205,7 @@ export class jst_CSSStyleSheet {
      * creates a new stylesheet
      * @param {jst_CSSRule[]} rules array of rules
      */
-    constructor(rules = []) {
+    constructor(...rules) {
         this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
     }
 
