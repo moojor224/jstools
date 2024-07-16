@@ -35,4 +35,7 @@ export default function () { // overrides for nodejs
             }
         };
     }
+    if (typeof CSSStyleSheet === "undefined") {
+        globalThis.CSSStyleSheet = proxy();
+    }
 };
