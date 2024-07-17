@@ -1,5 +1,6 @@
 import override from "./_node_overrides.js";
 import { createElement } from "./createElement.js";
+import { consoleButton } from "./devtoolsFormatters.js";
 import { extend, makeTemplate } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 override();
@@ -62,6 +63,7 @@ export class jst_CSSRule {
         });
         extend(this._style, styles);
         this.selector = selector;
+        this.stack = new Error().stack.trim().split("\n").pop().trim().replace(/^@|^at /g, "").replace(/:\d+:\d+$/g, "");
     }
 
     /**
@@ -207,6 +209,7 @@ export class jst_CSSStyleSheet {
      */
     constructor(...rules) {
         this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
+        this.init_stack = new Error().stack.trim().split("\n").pop().trim().replace(/^@|^at /g, "").replace(/:\d+:\d+$/g, "");
     }
 
     /**
@@ -403,9 +406,11 @@ window.devtoolsFormatters.push({
     },
     body: function (obj) {
         if (obj instanceof jst_CSSRule) {
+            let stackURL = obj.stack;
             return ["div", { style: "font-weight:normal" },
                 ["div", {}, `Selector: ${obj.selector}`],
                 ["div", {}, `Computed Selector: ${obj.computedSelector}`],
+                ["div", {}, "Initialized at: ", ["object", { object: consoleButton({}, function () { window.open(stackURL) }, [], stackURL, 30, 20) }]],
                 ["div", {}, "compiled:",
                     ["object", {
                         object: {

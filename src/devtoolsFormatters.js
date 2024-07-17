@@ -14,7 +14,7 @@ let buttonFormatter = { // button formatter
     header: function (obj) {
         if (obj.__button) {
             return ["div", { // the button itself
-                style: `width:${obj.width}px;height:${obj.height}px;border:1px solid red;background-color:white;text-align:center;cursor:pointer;color:black;padding:5px;`
+                style: `min-width:${obj.width}px;min-height:${obj.height}px;border:1px solid red;background-color:white;text-align:center;cursor:pointer;color:black;padding:5px;`
             }, ["span", {}, obj.label]];
         }
         return null;
