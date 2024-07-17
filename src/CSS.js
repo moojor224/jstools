@@ -70,7 +70,7 @@ export class jst_CSSRule {
      * returns the final selector of this style rule by combining all parent selectors
      * @returns {String}
      */
-    get computedSelector() {
+    computedSelector(join = ",\n") {
         let selectorChain = [this.selector];
         let target = this;
         while (target.stylesheet instanceof jst_CSSRule) {
@@ -84,7 +84,7 @@ export class jst_CSSRule {
                     result.push(e.trim() + " " + f.trim());
                 });
             });
-            return result.join(",\n").trim();
+            return result.join(join).trim();
         }, "");
         selectorChain = selectorChain.replaceAll(/ (&|&?(?=[>]))/g, ""); // remove unnecessary spaces and combine selectors that should be combined
         return selectorChain;
@@ -92,7 +92,7 @@ export class jst_CSSRule {
 
     /** @param {boolean} minify */
     compile(minify = false) {
-        let selector = this.computedSelector;
+        let selector = this.computedSelector(minify ? "," : ",\n");
         let part, whole, join;
         if (minify) {
             part = makeTemplate`${0}:${1}`;
@@ -183,7 +183,7 @@ export class jst_CSSRule {
      */
     checkCoverage(logResults = false) {
         let elements;
-        let selector = this.computedSelector;
+        let selector = this.computedSelector();
         try {
             elements = Array.from(document.querySelectorAll(selector.replaceAll(selectorExclusionRegex, "")));
         } catch (err) {
@@ -192,7 +192,7 @@ export class jst_CSSRule {
         let results = { count: elements.length, elements, rule: this };
         if (logResults) {
             console.groupCollapsed("Checking coverage for rule:", this);
-            console.log("Found", elements.length, `elements with selector: "${this.computedSelector}"`);
+            console.log("Found", elements.length, `elements with selector: "${this.computedSelector()}"`);
             if (elements.length > 0) console.log("Elements", elements);
             console.groupEnd();
         }
@@ -335,7 +335,7 @@ export class jst_CSSStyleSheet {
             }
             let temp = [];
             sheet._rules.forEach(rule => {
-                if (document.querySelector(rule.computedSelector.replaceAll(selectorExclusionRegex, ""))) {
+                if (document.querySelector(rule.computedSelector().replaceAll(selectorExclusionRegex, ""))) {
                     temp.push(rule);
                     sheet._covered.push(rule);
                 }
@@ -365,7 +365,7 @@ function findRule(selector) {
     /** @type {jst_CSSRule[]} */
     let rules = this.sub_rules.flatMap(e => flatRule(e));
     let found = rules.find(rule => {
-        let computed = rule.computedSelector;
+        let computed = rule.computedSelector();
         return computed == selector || computed.split(",").map(e => e.trim()).includes(selector);
     });
     return found;
@@ -409,7 +409,7 @@ window.devtoolsFormatters.push({
             let stackURL = obj.stack;
             return ["div", { style: "font-weight:normal" },
                 ["div", {}, `Selector: ${obj.selector}`],
-                ["div", {}, `Computed Selector: ${obj.computedSelector}`],
+                ["div", {}, `Computed Selector: ${obj.computedSelector()}`],
                 ["div", {}, "Initialized at: ", ["object", { object: consoleButton({}, function () { window.open(stackURL) }, [], stackURL, 30, 20) }]],
                 ["div", {}, "compiled:",
                     ["object", {
