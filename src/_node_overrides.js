@@ -1,6 +1,10 @@
+/** @type {import("./types.d.ts")} */
 export default function () { // overrides for nodejs
+    /**
+     * @type {() => ProxyConstructor}
+     */
     function proxy() { // create a recursive dummy proxy object
-        let t = {};
+        let t = () => { };
         return new Proxy(t, {
             get: function (target, prop) {
                 if (typeof target[prop] == "undefined") return proxy();
@@ -11,6 +15,9 @@ export default function () { // overrides for nodejs
                 return true;
             },
             apply: function (target, thisArg, argumentsList) {
+                return proxy();
+            },
+            construct: function (target, argumentsList, newTarget) {
                 return proxy();
             }
         });
