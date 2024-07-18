@@ -1,7 +1,6 @@
 import { createElement } from "./createElement.js";
-import { tryImport } from "./tryImport.js";
-const { Prism } = await tryImport("./prism.js");
-const { js_beautify } = await tryImport("./beautify.js");
+import { Prism } from "./prism.js";
+import { js_beautify } from "./beautify.js";
 
 /**
  * @param {any | undefined} val 
