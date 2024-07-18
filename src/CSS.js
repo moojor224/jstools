@@ -2,7 +2,7 @@ import override from "./_node_overrides.js";
 import { createElement } from "./createElement.js";
 import { consoleButton } from "./devtoolsFormatters.js";
 import { Prism } from "./prism.js";
-import { extend, makeTemplate, prismToJSONML } from "./utility.js";
+import { extend, makeTemplate, prismToJSONML, wrapInQuotes } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 override();
 
@@ -402,22 +402,22 @@ window.devtoolsFormatters.push({
     },
     header: function (obj) {
         if (obj instanceof jst_CSSRule) {
-            return ["div", { style: "font-weight:bold" }, `jst_CSSRule: "${obj.selector}"`];
+            return ["div", { style: "font-weight:bold" }, "jst_CSSRule:" + wrapInQuotes(obj.selector)];
         }
         return null;
     },
     body: function (obj) {
         if (obj instanceof jst_CSSRule) {
             return ["div", { style: "font-weight:normal" },
-                ["div", {}, `Selector: ${obj.selector}`],
-                ["div", {}, `Computed Selector: ${obj.computedSelector()}`],
-                ["div", {}, "Initialized at: " + obj.stack],
-                ["div", {}, "compiled:",
+                ["div", {}, ["span", { style: "color:#75bfff" }, "Selector: "], ["span", { style: "color:#ff7de9" }, wrapInQuotes(obj.selector)]],
+                ["div", {}, ["span", { style: "color:#75bfff" }, "Computed Selector: "], ["span", { style: "color:#ff7de9" }, wrapInQuotes(obj.computedSelector())]],
+                ["div", {}, ["span", { style: "color:#75bfff" }, "Initialized at: "], ["span", { style: "color:#a8c7fa" }, obj.stack]],
+                ["div", {}, ["span", { style: "color:#75bfff" }, "compiled:"],
                     ["object", {
                         object: {
                             __collapsed: true,
                             __label: "normal",
-                            __data: prismToJSONML(Prism.highlight(obj.compile(false), Prism.languages.css, "css")),
+                            __data: ["div", { style: "border:1px solid red;padding:5px" }, prismToJSONML(Prism.highlight(obj.compile(false), Prism.languages.css, "css"))],
                             __raw: true,
                         }
                     }],
@@ -425,7 +425,7 @@ window.devtoolsFormatters.push({
                         object: {
                             __collapsed: true,
                             __label: "minified",
-                            __data: prismToJSONML(Prism.highlight(obj.compile(true), Prism.languages.css, "css")),
+                            __data: ["div", { style: "border:1px solid red;padding:5px" }, prismToJSONML(Prism.highlight(obj.compile(true), Prism.languages.css, "css"))],
                             __raw: true,
                         }
                     }],
