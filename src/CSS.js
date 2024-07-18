@@ -1,7 +1,8 @@
 import override from "./_node_overrides.js";
 import { createElement } from "./createElement.js";
 import { consoleButton } from "./devtoolsFormatters.js";
-import { extend, makeTemplate } from "./utility.js";
+import { Prism } from "./prism.js";
+import { extend, makeTemplate, prismToJSONML } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 override();
 
@@ -43,6 +44,7 @@ export class jst_CSSRule {
         }
     });
     selector = "";
+    stack = "";
     /**
      * @param {String} selector
      * @param {typeof this._style} styles
@@ -63,7 +65,7 @@ export class jst_CSSRule {
         });
         extend(this._style, styles);
         this.selector = selector;
-        this.stack = new Error().stack.trim().split("\n").pop().trim().replace(/^@|^at /g, "").replace(/:\d+:\d+$/g, "");
+        this.stack = new Error().stack.trim().split("\n").pop().trim().replace(/^@|^at /g, "");//.replace(/:\d+:\d+$/g, "");
     }
 
     /**
@@ -389,7 +391,7 @@ window.devtoolsFormatters.push({
     },
     body: function (obj) {
         if (obj instanceof jst_CSSStyleSheet) {
-            return ["div", { style: "" }, obj.compile()];
+            return ["div", { style: "" }, prismToJSONML(Prism.highlight(obj.compile(), Prism.languages.css, "css"))];
         }
         return null;
     }
@@ -406,30 +408,35 @@ window.devtoolsFormatters.push({
     },
     body: function (obj) {
         if (obj instanceof jst_CSSRule) {
-            let stackURL = obj.stack;
             return ["div", { style: "font-weight:normal" },
                 ["div", {}, `Selector: ${obj.selector}`],
                 ["div", {}, `Computed Selector: ${obj.computedSelector()}`],
-                ["div", {}, "Initialized at: ", ["object", { object: consoleButton({}, function () { window.open(stackURL) }, [], stackURL, 30, 20) }]],
+                ["div", {}, "Initialized at: " + obj.stack],
                 ["div", {}, "compiled:",
                     ["object", {
                         object: {
                             __collapsed: true,
                             __label: "normal",
-                            __data: obj.compile(false)
+                            __data: prismToJSONML(Prism.highlight(obj.compile(false), Prism.languages.css, "css")),
+                            __raw: true,
                         }
                     }],
                     ["object", {
                         object: {
                             __collapsed: true,
                             __label: "minified",
-                            __data: obj.compile(true)
+                            __data: prismToJSONML(Prism.highlight(obj.compile(true), Prism.languages.css, "css")),
+                            __raw: true,
                         }
                     }],
                 ],
                 obj.sub_rules.length > 0 ? ["div", {},
                     "Sub Rules:",
-                    ...obj.sub_rules.map(e => ["div", {}, ["object", { object: e }]])
+                    [
+                        "ol",
+                        { style: "margin:0" },
+                        ...obj.sub_rules.map(e => ["li", { style: "padding:0;margin:0" }, ["object", { object: e }]])
+                    ]
                 ] : ""
             ];
         }
