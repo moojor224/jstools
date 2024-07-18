@@ -115,6 +115,23 @@ export function toHTMLEntities(str) {
     return str.split("").map(e => `&#${e.charCodeAt(0)};`).join("");
 }
 
+const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colors
+    [["cdata", "comment", "doctype", "prolog"], "#6a9955"],
+    [["constant", "symbol", "tag"], "#4fc1ff"],
+    [["number"], "#b5cea8"],
+    [["attr-name", "builtin", "char", "inserted", "string"], "#ce9178"],
+    [["entity", "url", "variable"], "#f4b73d"],
+    [["atrule", "attr-value", "keyword", "boolean"], "#569cd6"],
+    [["important", "regex"], "#ee9900"],
+    [["deleted"], "#ff0000"],
+    [["function"], "#dcdcaa"],
+    [["parameter", "property"], "#9cdcfe"],
+    [["template-punctuation"], "#ce9178"],
+    [["interpolation-punctuation"], "#ffff00"],// "#ff8800"],
+    [["class-name"], "#4ec9b0"],
+    [["selector"], "#d7ba7d"],
+];
+
 /**
  * stringifies and syntax highlights almost any javascript object and logs it to the console
  * @param {HTMLElement|String} element element or HTML string to log
@@ -264,21 +281,6 @@ export function logFormatted(object, options = {}) {
         let element = createElement("div", { innerHTML: Prism.highlight(stringify(object), Prism.languages.javascript).replaceAll("%", "%%") }); // syntax-highlight stringified code and put the result into a div
 
         const regex = /(?<!%)(%%)*%[co]/g; // regex for matching [co] with odd number of 5 before it
-        const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colors
-            [["cdata", "comment", "doctype", "prolog"], "#6a9955"],
-            [["constant", "property", "symbol", "tag"], "#4fc1ff"],
-            [["number"], "#b5cea8"],
-            [["attr-name", "builtin", "char", "inserted", "selector", "string"], "#ce9178"],
-            [["entity", "url", "variable"], "#f4b73d"],
-            [["atrule", "attr-value", "keyword", "boolean"], "#569cd6"],
-            [["important", "regex"], "#ee9900"],
-            [["deleted"], "#ff0000"],
-            [["function"], "#dcdcaa"],
-            [["parameter"], "#9cdcfe"],
-            [["template-punctuation"], "#ce9178"],
-            [["interpolation-punctuation"], "#ffff00"],// "#ff8800"],
-            [["class-name"], "#4ec9b0"]
-        ];
 
         function calcStyle(element) { // get calculated color of a text node based off of the classes it has
             if (!element.style) return; // if element isa text node, return
@@ -588,4 +590,38 @@ export function createEnum(values) {
  */
 export function constant(val) {
     return Object.freeze(val);
+}
+
+export function prismToJSONML(prism) {
+    let el = document.createElement("div");
+    el.innerHTML = prism;
+    let jsonml = [];
+    function getStyle(node) {
+        node.classList.remove("token");
+        return "color:" + node.classList[0];
+        let style = "";
+        PRISM_CLASSES.forEach(pclass => {
+            // console.log(pclass[0], node.classList[0]);
+            if (pclass[0].includes(node.classList[0])) {
+                // console.log("includes");
+                style = `color:${pclass[1]}`;
+            }
+        });
+        return style;
+    }
+    function parse(node) {
+        if (node.nodeName == "#text") {
+            return node.textContent;
+        }
+        if (!node.childNodes) {
+            console.log(node);
+        }
+        let children = [...node.childNodes].map(parse);
+        return [node.nodeName.toLowerCase(), {
+            style: getStyle(node),
+        }, ...children];
+    }
+    let parsed = parse(el);
+    // console.log("converted", el.outerHTML, "to", JSON.stringify(parsed));
+    return parsed;
 }
