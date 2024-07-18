@@ -51,6 +51,9 @@ let collapsed_formatter = {
     body: function (obj) {
         if (obj.__collapsed) {
             if (typeof obj.__data == "string") return ["div", {}, obj.__data];
+            if (obj.__raw) {
+                return ["div", obj.__data];
+            }
             return ["div", ["object", { object: obj.__data }]];
         }
         return ["div", "No data"];
