@@ -625,3 +625,10 @@ export function prismToJSONML(prism) {
     // console.log("converted", el.outerHTML, "to", JSON.stringify(parsed));
     return parsed;
 }
+
+export function wrapInQuotes(str) {
+    if (!str.includes('"')) return `"${str}"`;
+    if (!str.includes("'")) return `'${str}'`;
+    if (!str.includes("`")) return `\`${str}\``;
+    return `"${str.replaceAll('"', '\\"')}"`;
+}
