@@ -36,7 +36,7 @@ export class jst_CSSRule {
             let newName = prop;
             if (!prop.startsWith("--")) {
                 newName = prop.replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
-                if (!validStyles.includes(newName) && !validStyles.includes("err")) throw new Error("Invalid style property: " + prop);
+                if (!validStyles.includes(newName)) throw new Error("Invalid style property: " + prop);
             }
             target[newName] = value;
             this.update();
@@ -52,7 +52,7 @@ export class jst_CSSRule {
     constructor(selector, styles = {}) {
         if (!checkValidSelector(selector)) throw new Error("Invalid selector: " + selector);
         let givenstyles = Object.entries(styles);
-        let invalid = givenstyles.filter(e => !(validStyles.includes(e[0]) || e[0].startsWith("--") || (validStyles.length == 1 && validStyles[0] == "err"))).map(e => e[0]).join(", ");
+        let invalid = givenstyles.filter(e => !(validStyles.includes(e[0]) || e[0].startsWith("--"))).map(e => e[0]).join(", ");
         if (invalid.length > 0) throw new Error("Invalid style properties: " + invalid);
         givenstyles.forEach(e => {
             let changed = e[0].match(/[A-Z]/);
@@ -83,7 +83,7 @@ export class jst_CSSRule {
             let result = [];
             currentValue.split(",").forEach(e => {
                 previousValue.split(",").forEach(f => {
-                    result.push(e.trim() + " " + f.trim());
+                    result.push((e.trim() + " " + f.trim()).trim());
                 });
             });
             return result.join(join).trim();
