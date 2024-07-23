@@ -56,5 +56,6 @@ export const validStyles = constant([
     "viewTimelineInset", "viewTimelineName", "viewTransitionClass", "viewTransitionName", "visibility", "WebkitBorderHorizontalSpacing", "WebkitBorderImage", "WebkitBorderVerticalSpacing", "WebkitBoxAlign", "WebkitBoxDecorationBreak", "WebkitBoxDirection", "WebkitBoxFlex", "WebkitBoxOrdinalGroup",
     "WebkitBoxOrient", "WebkitBoxPack", "WebkitBoxReflect", "WebkitFontSmoothing", "WebkitLineBreak", "WebkitLineClamp", "WebkitLocale", "WebkitMaskBoxImage", "WebkitMaskBoxImageOutset", "WebkitMaskBoxImageRepeat", "WebkitMaskBoxImageSlice", "WebkitMaskBoxImageSource", "WebkitMaskBoxImageWidth",
     "WebkitPrintColorAdjust", "WebkitRtlOrdering", "WebkitTapHighlightColor", "WebkitTextCombine", "WebkitTextDecorationsInEffect", "WebkitTextFillColor", "WebkitTextOrientation", "WebkitTextSecurity", "WebkitTextStrokeColor", "WebkitTextStrokeWidth", "WebkitUserDrag", "WebkitUserModify",
-    "WebkitWritingMode", "white-space-collapse", "whiteSpaceCollapse", "widows", "width", "will-change", "willChange", "word-break", "word-spacing", "wordBreak", "wordSpacing", "writing-mode", "writingMode", "x", "y", "z-index", "zIndex", "zoom"
+    "WebkitWritingMode", "white-space-collapse", "whiteSpaceCollapse", "widows", "width", "will-change", "willChange", "word-break", "word-spacing", "wordBreak", "wordSpacing", "writing-mode", "writingMode", "x", "y", "z-index", "zIndex", "zoom",
+    "gridTemplate", "grid-template",
 ]);
