@@ -274,3 +274,21 @@ export const CUSTOM_ELEMENTS = (function () {
     }
     return { all, slider };
 })();
+
+/**
+ * stringifies the node tree of the given element
+ * @param {HTMLElement} element element to stringify
+ * @returns {string} string representation of the node tree
+ */
+export function stringifyNodeTree(element) {
+    function traverse(el, indent, arr) {
+        arr.push(`${indent}<${el.tagName}>`);
+        el.childNodes.forEach(e => ((e.nodeType === Node.ELEMENT_NODE) ? traverse(e, indent + "    ", arr) : 0))
+        arr.push(`${indent}</${el.tagName}>`);
+        return arr;
+    }
+    return traverse(element, "", []).join('\n').replaceAll(/<([A-Z0-9\-]+)>([\n\r ]+)<\/\1>/g, function (match) {
+        let tagName = match.match(/<([A-Z0-9\-]+)>/)[1];
+        return `<${tagName}></${tagName}>`;
+    }).toLowerCase();
+}
