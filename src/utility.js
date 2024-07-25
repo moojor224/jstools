@@ -632,3 +632,19 @@ export function wrapInQuotes(str) {
     if (!str.includes("`")) return `\`${str}\``;
     return `"${str.replaceAll('"', '\\"')}"`;
 }
+
+export function objectToJSONML(obj) {
+    function parse(obj) {
+        if (["string", "boolean", "number"].includes(typeof obj)) {
+            return ["span", obj];
+        }
+        if (Array.isArray(obj)) {
+            return obj.map(parse);
+        }
+        let children = Object.entries(obj).map(([key, value]) => {
+            return ["div", ["span", { style: "font-weight:bold" }, key + ": "], parse(value)];
+        });
+        return ["div", ...children];
+    }
+    return ["div", parse(obj)];
+}
