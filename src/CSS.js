@@ -1,8 +1,7 @@
 import override from "./_node_overrides.js";
 import { createElement } from "./createElement.js";
-import { consoleButton } from "./devtoolsFormatters.js";
 import { Prism } from "./prism.js";
-import { extend, makeTemplate, prismToJSONML, wrapInQuotes } from "./utility.js";
+import { extend, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 override();
 
@@ -425,10 +424,18 @@ window.devtoolsFormatters.push({
     },
     body: function (obj) {
         if (obj instanceof jst_CSSRule) {
+            let dat = objectToJSONML(obj.stack);
             return ["div", { style: "font-weight:normal" },
                 ["div", {}, ["span", { style: "color:#75bfff" }, "Selector: "], ["span", { style: "color:#ff7de9" }, wrapInQuotes(obj.selector)]],
                 ["div", {}, ["span", { style: "color:#75bfff" }, "Computed Selector: "], ["span", { style: "color:#ff7de9" }, wrapInQuotes(obj.computedSelector())]],
-                ["div", {}, ["span", { style: "color:#75bfff" }, "Initialized at: "], ["span", { style: "color:#a8c7fa" }, obj.stack]],
+                ["div", {}, ["span", { style: "color:#75bfff" }, "Initialized at: "], ["span", { /* style: "color:#a8c7fa" */ }, ["object", {
+                    object: {
+                        __collapsed: true,
+                        __label: "stack",
+                        __data: dat,
+                        __raw: true,
+                    }
+                }]]],
                 ["div", {}, ["span", { style: "color:#75bfff" }, "compiled:"],
                     ["object", {
                         object: {
