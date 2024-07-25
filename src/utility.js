@@ -633,6 +633,19 @@ export function wrapInQuotes(str) {
     return `"${str.replaceAll('"', '\\"')}"`;
 }
 
+/**
+ * @returns {"Edge" | "Firefox" | "Chrome" | "Safari" | "Opera" | "Unknown"}
+ */
+export function getBrowserType() {
+    let ua = navigator.userAgent;
+    if (ua.includes("Edg")) return "Edge";
+    if (ua.includes("Firefox")) return "Firefox";
+    if (ua.includes("Chrome")) return "Chrome";
+    if (ua.includes("Safari")) return "Safari";
+    if (ua.includes("Opera")) return "Opera";
+    return "Unknown";
+}
+
 export function objectToJSONML(obj) {
     function parse(obj) {
         if (["string", "boolean", "number"].includes(typeof obj)) {
