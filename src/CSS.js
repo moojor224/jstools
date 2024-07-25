@@ -259,6 +259,8 @@ export class jst_CSSStyleSheet {
     styleElement = null;
     /** whether the stylesheet has been injected */
     injected = false;
+    /** whether to inject the stylesheet as a link or a style element */
+    link = false;
     /** 
      * injects the stylesheet into the document
      * @param {Boolean} update whether to update the stylesheet if a rule is changed
@@ -268,7 +270,12 @@ export class jst_CSSStyleSheet {
         if (this.injected) return;
         this.injected = true;
         let compiled = this.compile(true);
-        let style = createElement("style", { innerHTML: compiled });
+        let style = (function () {
+            if (this.link) {
+                return createElement("link", { rel: "stylesheet", href: "data:text/css;base64," + btoa(compiled) });
+            }
+            return createElement("style", { innerHTML: compiled });
+        })();
         this.styleElement = style;
         document.head.append(style);
         return compiled;
