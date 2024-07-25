@@ -22,6 +22,16 @@ const checkValidSelector = function (selector) {
     }
 }
 
+function getStack() {
+    let err = new Error().stack.replace(/^Error/g, "").trim().split("\n");
+    let originalLine = err[2].trim().replace(/^@|^at /g, "");
+    let file = originalLine.replace(/:\d+:\d+$/g, "");
+    let lindex = originalLine.match(/:(\d+):\d+$/g)[0];
+    let line = lindex.match(/(?<=^:)\d+(?=:)/g)[0];
+    let char = lindex.match(/\d+(?=$)/g)[0];
+    return { file, lineno: line, charno: char };
+}
+
 export class jst_CSSRule {
     /** @type {jst_CSSStyleSheet} */
     stylesheet = null;
@@ -65,7 +75,7 @@ export class jst_CSSRule {
         });
         extend(this._style, styles);
         this.selector = selector;
-        this.stack = new Error().stack.trim().split("\n").pop().trim().replace(/^@|^at /g, "");//.replace(/:\d+:\d+$/g, "");
+        this.stack = getStack();
     }
 
     /**
@@ -211,7 +221,7 @@ export class jst_CSSStyleSheet {
      */
     constructor(...rules) {
         this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
-        this.init_stack = new Error().stack.trim().split("\n").pop().trim().replace(/^@|^at /g, "").replace(/:\d+:\d+$/g, "");
+        this.init_stack = getStack();
     }
 
     /**
