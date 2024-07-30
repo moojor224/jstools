@@ -279,8 +279,9 @@ export class jst_CSSStyleSheet {
         if (this.injected) return;
         this.injected = true;
         let compiled = this.compile(true);
+        let sheet = this;
         let style = (function () {
-            if (this.link) {
+            if (sheet.link) {
                 return createElement("link", { rel: "stylesheet", href: "data:text/css;base64," + btoa(compiled) });
             }
             return createElement("style", { innerHTML: compiled });
