@@ -1,6 +1,7 @@
 import { createElement } from "./createElement.js";
 import { Prism } from "./prism.js";
 import { js_beautify } from "./beautify.js";
+import { flattenChildNodes } from "./arrays.js";
 
 /**
  * @param {any | undefined} val 
