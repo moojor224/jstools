@@ -43,6 +43,7 @@ export function captureConsole() {
             console.clear();
             // let max = Math.max(...console.everything.map(e => e.trace.length));
             console.everything.forEach(function (log) {
+                let original;
                 if (original = console["original" + log.type]) {
                     original.apply(console, [...log.args/* , log.trace.padStart(max + 10, " ") + ", ", log.timeStamp */]);
                 } else {
