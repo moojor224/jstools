@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jstools</title>
+</head>
+
+<body>
+    <script type="module">
+        import * as jstools from "./index.js";
+        let { stringify, logFormatted, logAndReturn } = jstools;
+        function makeReadme(src) {
+            // `### ${key}\n\n\`\`\`js\n${stringify(src)}\n\`\`\``;
+            document.body.innerHTML += logAndReturn(logFormatted(src, { raw: true })).html;
+        }
+        Object.keys(jstools).forEach(key => {
+            makeReadme(jstools[key]);
+        });
+    </script>
+</body>
+
+</html>
