@@ -98,5 +98,8 @@ export { Overload } from "./src/overloaded_functions.js";
 export { Option, Section, Settings } from "./src/settings.js";
 export { advancedDynamicSort, dynamicSort } from "./src/sorting.js";
 export { tabColor } from "./src/tabColor.js";
-export { BULK_OPERATIONS, constant, copyObject, createEnum, extend, getBrowserType, getValueOrDefault, isAsync, lockValue, logAndReturn, logFormatted, makeTemplate, objectToJSONML, prismToJSONML, stringify, timeConversions, toHTMLEntities, wrapInQuotes } from "./src/utility.js";
+export { BULK_OPERATIONS, constant, copyObject, createEnum, extend,
+    getBrowserType, getValueOrDefault, isAsync, lockValue, logAndReturn,
+    logFormatted, makeTemplate, objectToJSONML, prismToJSONML, stringify,
+    timeConversions, toHTMLEntities, wrapInQuotes } from "./src/utility.js";
 export { waitForKeyElements } from "./src/waitForKeyElements.js";
