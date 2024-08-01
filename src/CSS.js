@@ -442,7 +442,7 @@ window.devtoolsFormatters.push({
                         object: {
                             __collapsed: true,
                             __label: "normal",
-                            __data: ["div", { style: "border:1px solid red;padding:5px" }, prismToJSONML(Prism.highlight(obj.compile(false), Prism.languages.css, "css"))],
+                            __data: ["div", { style: "border:1px solid red;padding:5px" }, obj.compile(false)],
                             __raw: true,
                         }
                     }],
@@ -450,7 +450,7 @@ window.devtoolsFormatters.push({
                         object: {
                             __collapsed: true,
                             __label: "minified",
-                            __data: ["div", { style: "border:1px solid red;padding:5px" }, prismToJSONML(Prism.highlight(obj.compile(true), Prism.languages.css, "css"))],
+                            __data: ["div", { style: "border:1px solid red;padding:5px" }, obj.compile(true)],
                             __raw: true,
                         }
                     }],
