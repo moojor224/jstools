@@ -184,7 +184,8 @@ export function logFormatted(object, options = {}) {
                 objects.push(obj); // add to list of objects
                 let beautified = js_beautify(obj.toString().replaceAll("\r", "")); // beautify function to make tabs equal
                 let splitFunc = beautified.split("\n"); // split formatted function by lines
-                while (splitFunc[1].length == 0) {
+                console.log(splitFunc);
+                while (splitFunc.length > 1 && splitFunc[1].length == 0) {
                     splitFunc.splice(1, 1);// remove first line of function body if it's blank (optional)
                 }
                 let padded = splitFunc.map((e, n) => (n > 0 ? pad.substring(4) + e : e + " ")); // indent all lines after first to match current indent amount and add space to end of first line
