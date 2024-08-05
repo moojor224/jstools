@@ -1,5 +1,8 @@
 /** @type {import("./types.d.ts")} */
 export default function () { // overrides for nodejs
+    if (typeof window != "undefined") {
+        return; // running in browser, or overrides have already been applied
+    }
     /**
      * @type {() => ProxyConstructor}
      */
@@ -22,27 +25,10 @@ export default function () { // overrides for nodejs
             }
         });
     }
-    if (typeof window === "undefined") {
-        globalThis.window = proxy();
-    }
-    if (typeof HTMLElement === "undefined") {
-        globalThis.HTMLElement = proxy();
-    }
-    if (typeof Element === "undefined") {
-        globalThis.Element = proxy();
-    }
-    if (typeof getComputedStyle === "undefined") {
-        globalThis.getComputedStyle = () => ({});
-    }
-    if (typeof document === "undefined") {
-        globalThis.document = {
-            body: { append: () => 0 },
-            createElement: function () {
-                return { remove: () => 0 }
-            }
-        };
-    }
-    if (typeof CSSStyleSheet === "undefined") {
-        globalThis.CSSStyleSheet = proxy();
-    }
+    globalThis.window = proxy();
+    globalThis.HTMLElement = proxy();
+    globalThis.Element = proxy();
+    globalThis.getComputedStyle = proxy();
+    globalThis.document = proxy();
+    globalThis.CSSStyleSheet = proxy();
 };
