@@ -15,8 +15,8 @@ export function getValueOrDefault(val, def) {
 
 /**
  * puts the properties from source onto target
- * @param {Object} target 
- * @param {Object} source 
+ * @type {<T, K>(target: T, source: K) => T & K}
+ * @returns {T | K}
  */
 export function extend(target, source) {
     Object.keys(source).forEach(key => {
