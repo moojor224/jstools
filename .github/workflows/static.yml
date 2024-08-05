@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build index.html
-        run: npm i && node ./.github/scripts/update-index.js
+        run: npm i && node ./.github/scripts/update-index.mjs
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
