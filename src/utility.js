@@ -184,7 +184,6 @@ export function logFormatted(object, options = {}) {
                 objects.push(obj); // add to list of objects
                 let beautified = js_beautify(obj.toString().replaceAll("\r", "")); // beautify function to make tabs equal
                 let splitFunc = beautified.split("\n"); // split formatted function by lines
-                console.log(splitFunc);
                 while (splitFunc.length > 1 && splitFunc[1].length == 0) {
                     splitFunc.splice(1, 1);// remove first line of function body if it's blank (optional)
                 }
@@ -298,7 +297,7 @@ export function logFormatted(object, options = {}) {
         let styles = [];
         const flattened = flattenChildNodes(element); // get list of all nodes in element
         flattened.forEach(calcStyle); // manually set style.color for each element based off of its classes
-        if (embedObjects) { // objects will be embedd into the console.log statement for better inspection
+        if (embedObjects) { // objects will be embedded into the console.log statement for better inspection
             let index = 0; // current character index
             let lastPercent = false; // whether the last character was a % (functions as an escape character)
             function count(node) { // count through each character of the node's textContent and inject a %o
@@ -351,12 +350,18 @@ export function logFormatted(object, options = {}) {
         }
 
         let { matches, split } = regexSplit(logs), final = [], finalStyles = [];
+        function calcObject(obj) {
+            if (typeof obj == "function" && obj.toString().startsWith("class")) {
+                return "";
+            }
+            return obj;
+        }
         while (matches.length > 0) {
             let type = matches.shift(); // get %[oc] from list
             final.push(split.shift() || ""); // add first split string to list
             final.push(type); // push %[oc] to list
-            if (type == "%o") finalStyles.push(objects.shift() || ""); // if %[oc] is %o, push object
-            else finalStyles.push(styles.shift() || ""); // else, push style
+            if (type == "%o") finalStyles.push(calcObject(objects.shift())); // if %[oc] is %o, push object
+            else finalStyles.push(styles.shift() || ""); // else type is %c, so push style
         }
         while (split.length > 0) final.push(split.shift()); // push all remaining strings
         while (embedObjects && objects.length > 0) finalStyles.push(objects.shift()); // push all remaining objects
@@ -367,6 +372,7 @@ export function logFormatted(object, options = {}) {
             }
         }
         final = final.join(""); // join array into one message
+        if (typeof object == "object") final = `let ${label} = ${final}`; // add variable name to the beginning of the message
         if (raw) return { logs: final, styles: finalStyles, html: element.outerHTML } // return raw results without logging to console
         else {
             if (collapsed) { // if console log should be inside collapsed console group
