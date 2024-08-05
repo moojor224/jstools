@@ -1,3 +1,5 @@
+import override from "./_node_overrides.js";
+override();
 //     Underscore.js 1.3.3
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore is freely distributable under the MIT license.
@@ -14419,7 +14421,7 @@ emmet.define('textarea', function (require, _) {
 	//Attach the function with the event
 	if (doc.addEventListener) doc.addEventListener(keyEvent, runAction, false);
 	else if (doc.attachEvent) ele.attachEvent('on' + keyEvent, runAction);
-	else doc['on' + keyEvent] = func;
+	else doc['on' + keyEvent] = runAction;
 
 	options = copyOptions();
 	if (typeof emmetKeymap != 'undefined') {
