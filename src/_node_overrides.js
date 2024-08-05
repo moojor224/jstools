@@ -10,7 +10,7 @@ export default function () { // overrides for nodejs
         let t = () => { };
         return new Proxy(t, {
             get: function (target, prop) {
-                if (typeof target[prop] == "undefined") return proxy();
+                if (!(prop in target)) return proxy();
                 return target[prop];
             },
             set: function (target, prop, value) {
@@ -32,4 +32,5 @@ export default function () { // overrides for nodejs
     globalThis.document = proxy();
     globalThis.CSSStyleSheet = proxy();
     globalThis.navigator = proxy();
+    navigator.userAgent = "Node.js";
 };
