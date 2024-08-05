@@ -280,6 +280,7 @@ export function logFormatted(object, options = {}) {
         }
 
         let element = createElement("div", { innerHTML: Prism.highlight(stringify(object), Prism.languages.javascript).replaceAll("%", "%%") }); // syntax-highlight stringified code and put the result into a div
+        if (typeof object == "object") element.innerHTML = `let ${label} = ${element.innerHTML}`; // add variable name to the beginning of the message
 
         const regex = /(?<!%)(%%)*%[co]/g; // regex for matching [co] with odd number of 5 before it
 
@@ -372,7 +373,6 @@ export function logFormatted(object, options = {}) {
             }
         }
         final = final.join(""); // join array into one message
-        if (typeof object == "object") final = `let ${label} = ${final}`; // add variable name to the beginning of the message
         if (raw) return { logs: final, styles: finalStyles, html: element.outerHTML } // return raw results without logging to console
         else {
             if (collapsed) { // if console log should be inside collapsed console group
