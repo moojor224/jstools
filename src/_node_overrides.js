@@ -31,4 +31,5 @@ export default function () { // overrides for nodejs
     globalThis.getComputedStyle = proxy();
     globalThis.document = proxy();
     globalThis.CSSStyleSheet = proxy();
+    globalThis.navigator = proxy();
 };
