@@ -31,6 +31,8 @@ export default function () { // overrides for nodejs
     globalThis.getComputedStyle = proxy();
     globalThis.document = proxy();
     globalThis.CSSStyleSheet = proxy();
-    globalThis.navigator = proxy();
-    navigator.userAgent = "Node.js";
+    if (typeof navigator == "undefined") {
+        globalThis.navigator = proxy();
+        navigator.userAgent = "Node.js";
+    }
 };
