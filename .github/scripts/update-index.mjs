@@ -5,21 +5,122 @@ import * as path from "path";
 import * as jstools from "../../index.js"
 import { Parser } from "acorn";
 import { parse } from "comment-parser";
+import { generate } from "astring";
+import Prism from "prismjs";
+const ast = (await import("abstract-syntax-tree")).default;
+
+let { dynamicSort, logFormatted, stringify } = jstools;
 
 let indexPath = path.resolve("./index.html");
+let indexHTML = "";
+
+let prism_css = "";
+logFormatted.PRISM_CLASSES.forEach(([classes, color]) => {
+    const classList = classes.map(e => "." + e).join(",");
+    prism_css += `${classList}{color:${color}}\n`;
+});
+
+indexHTML += /*html*/`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>jstools</title>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+        font-family: monospace;
+    }
+
+    main {
+        white-space: pre;
+    }
+
+    header,
+    footer {
+        padding: 1em;
+        text-align: center;
+    }
+
+    pre {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        display: inline-block;
+        margin: 10px 0;
+    }
+
+    h2 {
+        display: inline-block;
+    }
+
+    table, tr, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        padding: 5px;
+    }
+
+    ${prism_css}
+</style>
+</head>
+<body>
+    <header>
+        <h1>jstools</h1>
+    </header>
+    <main>
+`;
 
 let srcFiles = fs.readdirSync(path.resolve("./src")).map(e => path.parse(path.resolve("./src/", e)));
-let fileBlacklist = ["_node_overrides.js", "emmet.js", "prism.js", "types.d.ts"];
+let fileBlacklist = ["_node_overrides.js", "beautify.js", "emmet.js", "prism.js", "types.d.ts", "validStyles.js"];
 fileBlacklist.forEach(bl => {
     srcFiles = srcFiles.filter(e => e.base != bl);
 });
 srcFiles = srcFiles.map(e => path.resolve(e.dir, e.base));
-// console.log(srcFiles);
+
+/**
+ * @param {string} source
+ */
+function generateDoc(source, comments, name) {
+    indexHTML += "<div>";
+    console.log(comments);
+    comments.forEach(com => {
+        let parsed = com.parsed;
+        if (!parsed) return;
+        let { description, tags } = parsed;
+        let params = tags.filter(e => e.tag == "param");
+        let type = tags.filter(e => e.tag == "type");
+        let returns = tags.filter(e => e.tag == "returns");
+        returns = returns.map(e => ({
+            description: [e.name, e.description].filter(e => e).join(" "),
+            type: e.type + (e.optional ? " | undefined" : ""),
+            tag: e.tag,
+        }));
+        // make table of tags
+        let table = "<table><tr><th>Tag</th><th>Name</th><th>Type</th><th>Description</th></tr>";
+        let rows = [...params, ...type, ...returns];
+        rows.forEach(row => {
+            table += `<tr><td>${row.tag}</td><td>${row.name||""}</td><td>${row.type}</td><td>${row.description}</td></tr>`;
+        });
+        table += "</table>";
+        indexHTML += `<h3>${name}</h3>`;
+        indexHTML += `<p>${description}</p>`;
+        indexHTML += table;
+    });
+    // debugger
+    // indexHTML += `<pre>${JSON.stringify(comments.map(e => e.parsed), null, "  ")}</pre><br>`;
+    indexHTML += `<pre>${source}</pre><br>`;
+    indexHTML += "</div>";
+}
+
+
 try {
-    let { dynamicSort } = jstools;
     let sorter = dynamicSort("start");
+    // let s = srcFiles[0]
     srcFiles.forEach(s => {
-        console.log(s);
+        // console.log(s);
         let src = fs.readFileSync(s, "utf8");
         let comments = [];
         let opts = {
@@ -27,19 +128,95 @@ try {
             sourceType: "module",
             ecmaVersion: "latest",
             onComment: function (block, text, start, end) {
-                if (!block) return;
+                // if (!block) return;
                 comments.push({ block, text: block ? `/*${text}*/` : "//" + text, start, end });
             },
+
         };
-        let parsed = Parser.parse(src, opts);
+        let parsed = Parser.parse(src, opts).body.filter(e => e.type.startsWith("Export"));
+        let otherComments = [];
         comments = comments.map(e => ({
             parsed: parse(e.text)[0],
             ...e,
-        }));
-        let elements =  [...parsed.body, ...comments].sort(sorter);
-        console.log(elements);
-        debugger
+        })).filter(comment => {
+            for (let p of parsed) {
+                if (comment.start >= p.start && comment.end <= p.end) {
+                    otherComments.push(comment);
+                    return false;
+                }
+            }
+            return true;
+        });
+        let elements = [...parsed, ...comments].sort(sorter);
+        let exports = [];
+        let curClass = [];
+        for (let e of elements) {
+            if (e.type?.startsWith("Export")) {
+                // otherComments.forEach(c => {
+                //     let lastNode = null;
+                //     // console.log("\n\n", c);
+                //     walk(e, node => {
+                //         if (c.start >= node.start && c.end <= node.end) {
+                //             // console.log(node);
+                //             lastNode = node;
+                //         }
+                //     });
+                //     if (lastNode) {
+                //         // console.log("appending comment to", lastNode);
+                //         let com = {
+                //             type: "ExpressionStatement",
+                //             start: c.start - 1,
+                //             end: c.end,
+                //             directive: c.text,
+                //             expression: {
+                //                 type: "Literal",
+                //                 value: c.text,
+                //                 raw: "THISISACOMMENT" + c.text,
+                //             }
+                //         };
+                //         append(lastNode, com);
+                //         lastNode.body.sort(sorter);
+                //         console.log("previous node", lastNode.body[lastNode.body.indexOf(com) - 1]);
+                //     }
+                // });
+                let name = "";
+                try {
+                    name = ((e.declaration.id || e.declaration.declarations[0].id).name);
+                } catch (error) {
+                    console.log(e);
+                }
+                // let raw = generate(e, {
+                //     comments: true,
+                //     indent: "    ",
+                // });
+                let raw = stringify(jstools[name]);
+                curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript"));
+                curClass.push(name);
+                exports.push(curClass);
+                curClass = [];
+            } else {
+                curClass.push(e);
+            }
+        }
+        // console.log(otherComments);
+        indexHTML += `<details><summary><h2>${path.parse(s).base}</h2></summary>`;
+        exports.forEach(ex => {
+            let name = ex.pop();
+            generateDoc(ex.pop(), ex, name);
+        });
+        indexHTML += `</details>`;
     });
 } catch (error) {
     console.error(error);
 }
+
+indexHTML += /*html*/`
+    </main>
+    <footer>
+
+    </footer>
+</body></html>
+`;
+fs.writeFileSync(indexPath, indexHTML, "utf8");
+console.log("done");
+debugger;
