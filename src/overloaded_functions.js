@@ -1,8 +1,7 @@
 
-/*
-this library is kinda janky, so it may not work in all cases
-I'm adding more and more conditionals to adjust for edge cases
-*/
+// this library is kinda janky, so it may not work in all cases
+// I'm adding more and more conditionals to adjust for edge cases
+
 function getPath(o) { // make array of object's prototypes all the way up to Object.prototype
     const path = [];
     while (o) {
