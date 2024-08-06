@@ -384,6 +384,7 @@ export function logFormatted(object, options = {}) {
         }
     }
 }
+logFormatted.PRISM_CLASSES = PRISM_CLASSES; // add prism.js classes to logFormatted function
 
 /**
  * stringifies an object
