@@ -5,9 +5,7 @@ import _node_overrides from "./_node_overrides.js";
 import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS.js";
 _node_overrides();
 
-/**
- * Adds polyfills for missing browser features.
- */
+// Adds polyfills for missing browser features.
 if (!Element.prototype.computedStyleMap && globalThis.getComputedStyle != undefined) {
     Element.prototype.computedStyleMap = function () {
         return window.getComputedStyle(this);
