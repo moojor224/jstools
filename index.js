@@ -87,6 +87,7 @@ if (!Array.isArray(window.devtoolsFormatters)) {
 }
 
 export { flattenChildNodes, flattenChildren, interleaveArrays, rectangle, reshape } from "./src/arrays.js";
+export { bulkElements } from "./src/bulkElements.js";
 export { captureConsole } from "./src/captureConsole.js";
 export { CSSColors, Color, getColor, getContrastColor, gradient, listAllColorsOnPage, rgbMix } from "./src/colors.js";
 export { createElement } from "./src/createElement.js";
@@ -98,8 +99,10 @@ export { Overload } from "./src/overloaded_functions.js";
 export { Option, Section, Settings } from "./src/settings.js";
 export { advancedDynamicSort, dynamicSort } from "./src/sorting.js";
 export { tabColor } from "./src/tabColor.js";
-export { BULK_OPERATIONS, constant, copyObject, createEnum, extend,
+export {
+    BULK_OPERATIONS, constant, copyObject, createEnum, extend,
     getBrowserType, getValueOrDefault, isAsync, lockValue, logAndReturn,
     logFormatted, makeTemplate, objectToJSONML, prismToJSONML, stringify,
-    timeConversions, toHTMLEntities, wrapInQuotes } from "./src/utility.js";
+    timeConversions, toHTMLEntities, wrapInQuotes
+} from "./src/utility.js";
 export { waitForKeyElements } from "./src/waitForKeyElements.js";

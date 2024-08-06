@@ -71,7 +71,7 @@ export function getColor(varname, ...append) {
 /**
  * return white or black depending on the contrast of the given color
  * @param {string} rgb rgb(R, G, B) formatted color
- * @returns 
+ * @returns {"#000000" | "#FFFFFF"} black or white
  */
 export function getContrastColor(rgb) {
     let [r, g, b] = rgb.replaceAll(/[^0-9 ]/g, "").split(" ");

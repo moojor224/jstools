@@ -101,13 +101,17 @@ function generateDoc(source, comments, name) {
         // make table of tags
         let table = "<table><tr><th>Tag</th><th>Name</th><th>Type</th><th>Description</th></tr>";
         let rows = [...params, ...type, ...returns];
+        let tableHasContents = false;
         rows.forEach(row => {
-            table += `<tr><td>${row.tag}</td><td>${row.name||""}</td><td>${row.type}</td><td>${row.description}</td></tr>`;
+            table += `<tr><td>${row.tag}</td><td>${row.name || ""}</td><td>${row.type}</td><td>${row.description}</td></tr>`;
+            tableHasContents = true;
         });
         table += "</table>";
         indexHTML += `<h3>${name}</h3>`;
         indexHTML += `<p>${description}</p>`;
-        indexHTML += table;
+        if (tableHasContents) {
+            indexHTML += table;
+        }
     });
     // debugger
     // indexHTML += `<pre>${JSON.stringify(comments.map(e => e.parsed), null, "  ")}</pre><br>`;
@@ -152,33 +156,6 @@ try {
         let curClass = [];
         for (let e of elements) {
             if (e.type?.startsWith("Export")) {
-                // otherComments.forEach(c => {
-                //     let lastNode = null;
-                //     // console.log("\n\n", c);
-                //     walk(e, node => {
-                //         if (c.start >= node.start && c.end <= node.end) {
-                //             // console.log(node);
-                //             lastNode = node;
-                //         }
-                //     });
-                //     if (lastNode) {
-                //         // console.log("appending comment to", lastNode);
-                //         let com = {
-                //             type: "ExpressionStatement",
-                //             start: c.start - 1,
-                //             end: c.end,
-                //             directive: c.text,
-                //             expression: {
-                //                 type: "Literal",
-                //                 value: c.text,
-                //                 raw: "THISISACOMMENT" + c.text,
-                //             }
-                //         };
-                //         append(lastNode, com);
-                //         lastNode.body.sort(sorter);
-                //         console.log("previous node", lastNode.body[lastNode.body.indexOf(com) - 1]);
-                //     }
-                // });
                 let name = "";
                 try {
                     name = ((e.declaration.id || e.declaration.declarations[0].id).name);
@@ -190,6 +167,7 @@ try {
                 //     indent: "    ",
                 // });
                 let raw = stringify(jstools[name]);
+                if (typeof jstools[name] == "object") raw = `let ${name} = ${raw}`;
                 curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript"));
                 curClass.push(name);
                 exports.push(curClass);
@@ -219,4 +197,3 @@ indexHTML += /*html*/`
 `;
 fs.writeFileSync(indexPath, indexHTML, "utf8");
 console.log("done");
-debugger;
