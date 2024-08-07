@@ -105,4 +105,3 @@ export {
     logFormatted, makeTemplate, objectToJSONML, prismToJSONML, stringify,
     timeConversions, toHTMLEntities, wrapInQuotes
 } from "./src/utility.js";
-export { waitForKeyElements } from "./src/waitForKeyElements.js";
