@@ -20,51 +20,8 @@ logFormatted.PRISM_CLASSES.forEach(([classes, color]) => {
     prism_css += `${classList}{color:${color}}\n`;
 });
 
-indexHTML += /*html*/`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>jstools</title>
-<style>
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        overflow-x: hidden;
-        font-family: monospace;
-    }
-
-    main {
-        white-space: pre;
-    }
-
-    header,
-    footer {
-        padding: 1em;
-        text-align: center;
-    }
-
-    pre {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        display: inline-block;
-        margin: 10px 0;
-    }
-
-    h2 {
-        display: inline-block;
-    }
-
-    table, tr, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-
-    td, th {
-        padding: 5px;
-    }
-
-    ${prism_css}
-</style>
+indexHTML += /*html*/`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>jstools</title><link rel="stylesheet" href="./style.css">
+<style>${prism_css}</style>
 </head>
 <body>
     <header>
