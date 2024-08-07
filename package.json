@@ -15,7 +15,6 @@
     "type": "module",
     "devDependencies": {
         "acorn": "^8.12.1",
-        "comment-parser": "^1.4.1",
-        "escodegen": "^2.1.0"
+        "comment-parser": "^1.4.1"
     }
 }
