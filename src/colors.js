@@ -36,7 +36,7 @@ export function rgbMix(
  * generates a gradient of colors from the specified array
  * @param {Number} count number of colors to generate
  * @param {Object[]} colors array of colors in gradient
- * @returns {String[]} array of colors generated
+ * @returns {string[]} array of colors generated
  */
 export function gradient(count, colors = [
     { r: 0xff, g: 0, b: 0 }, // 0% red

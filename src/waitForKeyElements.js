@@ -1,9 +1,8 @@
 /**
- * accepts a css selector and a callback function\
  * waits for an element that matches the css selector to load, then calls the callback
- * @param {String} query css selector to wait for
+ * @param {string} query css selector to wait for
  * @param {Function} callback callback function to run when the element is found
- * @param {Boolean} stopAfterFound whether to stop looking after the element is found
+ * @param {boolean} stopAfterFound whether to stop looking after the element is found
  * @param {Element} [element = document] parent element to look within -  defaults to document
  */
 export function waitForKeyElements(query, callback, stopAfterFound, element) {

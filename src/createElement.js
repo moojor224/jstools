@@ -23,8 +23,8 @@ import { emmet } from "./emmet.js";
 /**
  * creates a new element with the specified tag name and properties
  * @type {<Tag extends keyof HTMLElementTagNameMap>(tagName: Tag, options?: ElementProps<HTMLElementTagNameMap[Tag]>) => HTMLElementTagNameMap[Tag]}
- * @param tagName tag name of the element to create
- * @param options properties to set on the element
+ * @param {string} tagName tag name of the element to create
+ * @param {ElementProps<HTMLElementTagNameMap[Tag]>} options properties to set on the element
  */
 export function createElement(tag, data = {}) {
     // {

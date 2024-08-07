@@ -55,7 +55,7 @@ export class jst_CSSRule {
     selector = "";
     stack = "";
     /**
-     * @param {String} selector
+     * @param {string} selector
      * @param {typeof this._style} styles
      */
     constructor(selector, styles = {}) {
@@ -79,7 +79,7 @@ export class jst_CSSRule {
 
     /**
      * returns the final selector of this style rule by combining all parent selectors
-     * @returns {String}
+     * @returns {string}
      */
     computedSelector(join = ",\n") {
         let selectorChain = [this.selector];
@@ -250,7 +250,7 @@ export class jst_CSSStyleSheet {
     /**
      * compiles the stylesheet into css text
      * @param {Boolean} minify whether to minify the result or not
-     * @returns {String}
+     * @returns {string}
      */
     compile(minify = false) {
         let join = "\n";
@@ -273,7 +273,7 @@ export class jst_CSSStyleSheet {
     /** 
      * injects the stylesheet into the document
      * @param {Boolean} update whether to update the stylesheet if a rule is changed
-     * @returns {String} the compiled stylesheet
+     * @returns {string} the compiled stylesheet
      */
     inject(update = false) {
         if (this.injected) return;

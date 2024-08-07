@@ -76,7 +76,7 @@ export class Settings extends EventTarget {
 
     /**
      * returns the section object with the given id
-     * @param {String} id
+     * @param {string} id
      * @returns {Section}
      */
     getSection(id) {
@@ -85,7 +85,7 @@ export class Settings extends EventTarget {
 
     /**
      * converts the settings object to a stringified JSON object cabable of being imported through the Settings.fromJson() method
-     * @returns {String}
+     * @returns {string}
      */
     export() {
         return JSON.stringify(Object.fromEntries(this.sections.map(e => ([e.config.id, Object.fromEntries(e.options.map(e => [e.config.id, e.config.value]))]))));
@@ -93,7 +93,7 @@ export class Settings extends EventTarget {
 
     /**
      * imports saved settings
-     * @param {String} data stringified json data
+     * @param {string} data stringified json data
      */
     import(data) {
         let json = JSON.parse(data);
@@ -120,7 +120,7 @@ export class Settings extends EventTarget {
     /**
      * listens for an event\
      * wrapper function for addEventListener
-     * @param {String} type type of event
+     * @param {string} type type of event
      * @param {Function} callback callback function
      */
     on(type, callback) {
@@ -132,7 +132,7 @@ export class Settings extends EventTarget {
     /**
      * stops the specified callback from listening for the specified event\
      * wrapper function for removeEventListener
-     * @param {String} type type of event
+     * @param {string} type type of event
      * @param {Function} callback callback function
      */
     off(type, callback) {
@@ -145,7 +145,7 @@ export class Settings extends EventTarget {
      * converts stringified json data into a settings object\
      * json data can be generated from the export method
      * @static
-     * @param {String} jsontext stringified json data
+     * @param {string} jsontext stringified json data
      * @returns {Settings}
      */
     static fromJson(jsontext) {
@@ -272,8 +272,8 @@ export class Section extends EventTarget {
     settings_obj = null;
     /**
      * @type {{
-     *   name: String,
-     *   id: String
+     *   name: string,
+     *   id: string
      * }}
      */
     config = {
@@ -303,7 +303,7 @@ export class Section extends EventTarget {
 
     /**
      * returns the option object with the given id
-     * @param {String} name
+     * @param {string} name
      * @returns {Option}
      */
     getOption(name) { // returns the section object with the given id
@@ -325,7 +325,7 @@ export class Section extends EventTarget {
 
     /**
      * dispatches an event on the Section object
-     * @param {String} type event type
+     * @param {string} type event type
      * @param {Object} config event options/data
      */
     dispatchEvent(event) {
@@ -340,7 +340,7 @@ export class Section extends EventTarget {
     /**
      * listens for an event\
      * wrapper for addEventListener
-     * @param {String} type type of event
+     * @param {string} type type of event
      * @param {Function} callback callback function
      */
     on(type, callback) {
@@ -352,7 +352,7 @@ export class Section extends EventTarget {
     /**
      * stops the specified callback from listening for the specified event\
      * wrapper for removeEventListener
-     * @param {String} type type of event
+     * @param {string} type type of event
      * @param {Function} callback callback function
      */
     off(type, callback) {
@@ -370,10 +370,10 @@ export class Option extends EventTarget {
     section_obj = null;
     /**
      * @type {{
-     *  name: String,
-     *  value?: String,
-     *  values?: String[],
-     *  id: String,
+     *  name: string,
+     *  value?: string,
+     *  values?: string[],
+     *  id: string,
      *  type: "dropdown" | "slider"
      * }}
      */
@@ -395,12 +395,12 @@ export class Option extends EventTarget {
         }
     }
 
-    /** @returns {String} */
+    /** @returns {string} */
     get value() {
         return this.config.value;
     }
 
-    /** @param {String} val */
+    /** @param {string} val */
     set value(val) {
         // console.log("set value to", val, "cur:", this.config.value);
         this.config.value = val;
@@ -499,7 +499,7 @@ export class Option extends EventTarget {
     /**
      * listens for an event\
      * wrapper function for addEventListener
-     * @param {String} type type of event
+     * @param {string} type type of event
      * @param {Function} callback callback function
      */
     on(type, callback) {
@@ -511,7 +511,7 @@ export class Option extends EventTarget {
     /**
      * stops the specified callback from listening for the specified event\
      * wrapper function for removeEventListener
-     * @param {String} type type of event
+     * @param {string} type type of event
      * @param {Function} callback callback function
      */
     off(type, callback) {

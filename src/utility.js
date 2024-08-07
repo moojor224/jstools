@@ -50,8 +50,8 @@ export function lockValue(callback, ...args) {
 
 /**
  * generates a string template function or smth idk
- * @param {String[]} strings plain-text strings
- * @param  {...String} keys keys to interpolate
+ * @param {string[]} strings plain-text strings
+ * @param  {...string} keys keys to interpolate
  * @returns {Function}
  * 
  * @example
@@ -109,8 +109,8 @@ export function copyObject(obj) {
 
 /**
  * converts an entire string to html entities
- * @param {String} str string to convert
- * @returns {String} converted string
+ * @param {string} str string to convert
+ * @returns {string} converted string
  */
 export function toHTMLEntities(str) {
     return str.split("").map(e => `&#${e.charCodeAt(0)};`).join("");
@@ -135,7 +135,7 @@ const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colo
 
 /**
  * stringifies and syntax highlights almost any javascript object and logs it to the console
- * @param {HTMLElement|String} element element or HTML string to log
+ * @param {HTMLElement | string} element element or HTML string to log
  * @param {Boolean} raw whether to return the raw result or just console.log it
  * @returns {Object[]}
  */
@@ -166,7 +166,7 @@ export function logFormatted(object, options = {}) {
         /**
          * alternative to JSON.stringify that auto-formats the result and supports functions
          * @param {any} obj object to stringify
-         * @returns {String}
+         * @returns {string}
          */
         function stringify(obj) {
             if (depth > maxDepth) { // prevent stringifying objects deeper than the max depth
