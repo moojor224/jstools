@@ -42,8 +42,9 @@ srcFiles = srcFiles.map(e => path.resolve(e.dir, e.base));
  */
 function generateDoc(source, comments, name) {
     indexHTML += "<div>";
-    console.log(comments);
+    comments = [comments.pop()];
     comments.forEach(com => {
+        if (!com) return;
         let parsed = com.parsed;
         if (!parsed) return;
         let { description, tags } = parsed;
@@ -59,13 +60,14 @@ function generateDoc(source, comments, name) {
         let table = "<table><tr><th>Tag</th><th>Name</th><th>Type</th><th>Description</th></tr>";
         let rows = [...params, ...type, ...returns];
         let tableHasContents = false;
+        let ent = jstools.toHTMLEntities
         rows.forEach(row => {
-            table += `<tr><td>${row.tag}</td><td>${row.name || ""}</td><td>${row.type}</td><td>${row.description}</td></tr>`;
+            table += `<tr><td>${ent(row.tag)}</td><td>${ent(row.name || "")}</td><td>${ent(row.type)}</td><td>${ent(row.description)}</td></tr>`;
             tableHasContents = true;
         });
         table += "</table>";
-        indexHTML += `<h3>${name}</h3>`;
-        indexHTML += `<p>${description}</p>`;
+        indexHTML += `<h3>${ent(name)}</h3>`;
+        indexHTML += `<p>${ent(description)}</p>`;
         if (tableHasContents) {
             indexHTML += table;
         }
