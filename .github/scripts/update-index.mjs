@@ -5,7 +5,7 @@ import * as path from "path";
 import * as jstools from "../../index.js"
 import { Parser } from "acorn";
 import { parse } from "comment-parser";
-import Prism from "prismjs";
+import { Prism } from "../../src/prism.js";
 
 let { dynamicSort, logFormatted, stringify } = jstools;
 
