@@ -5,9 +5,7 @@ import * as path from "path";
 import * as jstools from "../../index.js"
 import { Parser } from "acorn";
 import { parse } from "comment-parser";
-import { generate } from "astring";
 import Prism from "prismjs";
-const ast = (await import("abstract-syntax-tree")).default;
 
 let { dynamicSort, logFormatted, stringify } = jstools;
 
@@ -121,10 +119,6 @@ try {
                 } catch (error) {
                     console.log(e);
                 }
-                // let raw = generate(e, {
-                //     comments: true,
-                //     indent: "    ",
-                // });
                 let raw = stringify(jstools[name]);
                 if (typeof jstools[name] == "object") raw = `let ${name} = ${raw}`;
                 curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript"));
