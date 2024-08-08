@@ -126,9 +126,10 @@ const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colo
     [["important", "regex"], "#ee9900"],
     [["deleted"], "#ff0000"],
     [["function"], "#dcdcaa"],
-    [["parameter", "property"], "#9cdcfe"],
+    [["parameter", "property", "function-variable"], "#9cdcfe"],
     [["template-punctuation"], "#ce9178"],
     [["interpolation-punctuation"], "#ffff00"],// "#ff8800"],
+    [["punctuation", "operator"], "#ffffff"],
     [["class-name"], "#4ec9b0"],
     [["selector"], "#d7ba7d"],
 ];
