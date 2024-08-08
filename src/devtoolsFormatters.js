@@ -5,8 +5,20 @@ if (!Array.isArray(window.devtoolsFormatters)) {
     window.devtoolsFormatters = [];
 }
 
-export function consoleButton(obj, func, args = [], label = "button", width = 50, height = width) {
-    return { __button: true, obj, func, args, label, width, height };
+/**
+ * 
+ * @param {Object} param0 the button options
+ * @param {Function} [param0.func=()=>null] the button's callback function
+ * @param {any[]} [param0.args=[]]  arguments to pass to the button's callback function
+ * @param {string} [param0.label="button"] the buttons inner text
+ * @param {number} [param0.width=50] the width of the button
+ * @param {*} [param0.height=width] the height of the button
+ * @returns {typeof param0}
+ */
+export function consoleButton({ func = (...args) => {
+    console.log("button clicked", args);
+}, args = [], label = "button", width = 50, height = width }) {
+    return { __button: true, func, args, label, width, height };
 }
 
 let buttonFormatter = { // button formatter
