@@ -24,6 +24,9 @@ indexHTML += /*html*/`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"
 <body>
     <header>
         <h1>jstools</h1>
+        <ul>
+            <li><a href="https://github.com/moojor224/jstools/" target="_blank">Source Code</a></li>
+        </ul>
     </header>
     <main>
 `;
