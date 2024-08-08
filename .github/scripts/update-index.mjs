@@ -29,6 +29,7 @@ indexHTML += /*html*/`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"
         </ul>
     </header>
     <main>
+        <!-- <input type="checkbox" name="wrap" id="wrap"><label for="wrap">Wrap lines</label> -->
 `;
 
 let srcFiles = fs.readdirSync(path.resolve("./src")).map(e => path.parse(path.resolve("./src/", e)));
@@ -124,7 +125,9 @@ try {
                 }
                 let raw = stringify(jstools[name]);
                 if (typeof jstools[name] == "object") raw = `let ${name} = ${raw}`;
-                curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript"));
+                curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript").split('\n')
+                .map((line, num) => `${(num + 1).toString().padStart(4, ' ')} | ${line}`)
+                .join('\n'));
                 curClass.push(name);
                 exports.push(curClass);
                 curClass.push(src.substring(0, e.start).split("\n").length);

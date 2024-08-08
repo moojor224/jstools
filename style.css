@@ -15,14 +15,10 @@ main {
     max-width: 800px;
 }
 
-#wrap:checked~* pre {
+/* #wrap:checked~* pre {
     word-wrap: break-word;
     text-wrap: wrap;
-}
-
-#wrap:not(:checked)~* pre {
-    overflow-x: auto;
-}
+} */
 
 header,
 footer {
@@ -41,6 +37,7 @@ pre {
     box-sizing: border-box;
     -ms-overflow-style: -ms-autohiding-scrollbar;
     scrollbar-width: thin;
+    overflow-x: auto;
 }
 
 pre.lined {
