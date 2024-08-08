@@ -9,6 +9,19 @@ body {
 
 main {
     white-space: pre;
+    margin: auto;
+    word-wrap: break-word;
+    text-wrap: wrap;
+    max-width: 800px;
+}
+
+#wrap:checked~* pre {
+    word-wrap: break-word;
+    text-wrap: wrap;
+}
+
+#wrap:not(:checked)~* pre {
+    overflow-x: auto;
 }
 
 header,
@@ -70,4 +83,9 @@ td {
 td,
 th {
     padding: 5px;
+}
+
+main>details>div {
+    border: 1px solid black;
+    padding: 20px;
 }
