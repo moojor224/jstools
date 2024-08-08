@@ -72,7 +72,7 @@ function generateDoc(source, comments, name) {
     });
     // debugger
     // indexHTML += `<pre>${JSON.stringify(comments.map(e => e.parsed), null, "  ")}</pre><br>`;
-    indexHTML += `<pre>${source}</pre><br>`;
+    indexHTML += `<pre class='lined'><div class='line'>${source.split("\n").join("</div><div class='line'>")}</div></pre><br>`;
     indexHTML += "</div>";
 }
 

@@ -24,6 +24,34 @@ pre {
     border-radius: 5px;
     display: inline-block;
     margin: 10px 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    scrollbar-width: thin;
+}
+
+pre.lined {
+    counter-reset: line;
+}
+
+div.line {
+    --gutter: 3px;
+    counter-increment: line;
+    margin-left: 20px;
+    padding-left: var(--gutter);
+    position: relative;
+}
+
+div.line::before {
+    content: counter(line);
+    display: block;
+    color: #999;
+    position: absolute;
+    left: 0;
+    transform: translateX(-100%);
+    border-right: 1px solid gray;
+    padding-right: var(--gutter);
+    height: 100%;
 }
 
 h2 {
