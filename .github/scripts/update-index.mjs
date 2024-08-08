@@ -41,7 +41,7 @@ srcFiles = srcFiles.map(e => path.resolve(e.dir, e.base));
 /**
  * @param {string} source
  */
-function generateDoc(source, comments, name) {
+function generateDoc(source, comments, name, lineno, filename) {
     indexHTML += "<div>";
     comments = [comments.pop()];
     comments.forEach(com => {
@@ -67,7 +67,7 @@ function generateDoc(source, comments, name) {
             tableHasContents = true;
         });
         table += "</table>";
-        indexHTML += `<h3>${ent(name)}</h3>`;
+        indexHTML += `<h3>${ent(name)}</h3> <h4><a href="https://github.com/moojor224/jstools/blob/main/src/${filename}#L${lineno}" target="_blank">[Source]</a></h4>`;
         indexHTML += `<p>${ent(description)}</p>`;
         if (tableHasContents) {
             indexHTML += table;
@@ -127,16 +127,19 @@ try {
                 curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript"));
                 curClass.push(name);
                 exports.push(curClass);
+                curClass.push(src.substring(0, e.start).split("\n").length);
                 curClass = [];
             } else {
                 curClass.push(e);
             }
         }
         // console.log(otherComments);
-        indexHTML += `<details><summary><h2>${path.parse(s).base}</h2></summary>`;
+        let filename = path.parse(s).base;
+        indexHTML += `<details><summary><h2>${filename}</h2> <h4><a href="https://github.com/moojor224/jstools/tree/main/src/${filename}" target="_blank">[Source]</a></h4></summary>`;
         exports.forEach(ex => {
+            let lineno = ex.pop();
             let name = ex.pop();
-            generateDoc(ex.pop(), ex, name);
+            generateDoc(ex.pop(), ex, name, lineno, filename);
         });
         indexHTML += `</details>`;
     });
