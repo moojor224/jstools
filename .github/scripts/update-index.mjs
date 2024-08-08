@@ -1,5 +1,5 @@
 // console.log("\x1b[31mTHIS IS A TEST MESSAGE TO MAKE SURE THIS FILE RUNS");
-console.clear();
+// console.clear();
 import * as fs from "fs";
 import * as path from "path";
 import * as jstools from "../../index.js"
@@ -76,7 +76,7 @@ function generateDoc(source, comments, name, lineno, filename) {
     });
     // debugger
     // indexHTML += `<pre>${JSON.stringify(comments.map(e => e.parsed), null, "  ")}</pre><br>`;
-    indexHTML += `<pre class='lined'><div class='line'>${source.split("\n").join("</div><div class='line'>")}</div></pre><br>`;
+    indexHTML += `<pre class="line-numbers"><code>${source}</code></pre><br>`;
     indexHTML += "</div>";
 }
 
@@ -125,9 +125,9 @@ try {
                 }
                 let raw = stringify(jstools[name]);
                 if (typeof jstools[name] == "object") raw = `let ${name} = ${raw}`;
-                curClass.push(Prism.highlight(raw/* .replaceAll(/\r?\n\s*THISISACOMMENT(?=\/\/)/g, " ") */, Prism.languages.javascript, "javascript").split('\n')
-                .map((line, num) => `${(num + 1).toString().padStart(4, ' ')} | ${line}`)
-                .join('\n'));
+                curClass.push(Prism.highlight(raw, Prism.languages.javascript, "javascript")
+                    + globalThis.lineNumbersWrapper);
+                // .split('\n').map((line, num) => `${(num + 1).toString().padStart(4, ' ')} | ${line}`).join('\n'));
                 curClass.push(name);
                 exports.push(curClass);
                 curClass.push(src.substring(0, e.start).split("\n").length);
