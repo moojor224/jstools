@@ -153,7 +153,12 @@ try {
 indexHTML += /*html*/`
     </main>
     <footer>
-
+        this page  was generated using the following tools<br><br>
+        <ul>
+            <li><a href="https://npmjs.com/package/acorn" target="_blank">acorn</a></li>
+            <li><a href="https://npmjs.com/package/comment-parser" target="_blank">comment-parser</a></li>
+            <li><a href="https://npmjs.com/package/prismjs" target="_blank">prismjs</a></li>
+        </ul>
     </footer>
 </body></html>
 `;

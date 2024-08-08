@@ -89,7 +89,8 @@ main>details>div {
     padding: 20px;
 }
 
-header ul {
+header ul,
+footer ul {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -98,12 +99,14 @@ header ul {
     justify-content: center;
 }
 
-header li {
+header li,
+footer li {
     margin: 0;
     padding: 0;
 }
 
-header li:not(:last-of-type) {
+header li:not(:last-of-type),
+footer li:not(:last-of-type) {
     margin-right: 10px;
     padding-right: 10px;
     border-right: 1px solid black;
