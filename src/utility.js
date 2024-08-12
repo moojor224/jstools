@@ -671,3 +671,33 @@ export function objectToJSONML(obj) {
     }
     return ["div", parse(obj)];
 }
+
+/**
+ * gets the sha256 hash of a script
+ * @param {string} source the raw source of the script
+ * @returns {string} the sha256 hash of the script
+ * @example
+ * let hash = await hashScript("console.log('hello world')");
+ */
+export async function hashScript(source) {
+    async function hashText(buffer) {
+        return await crypto.subtle.digest("SHA-256", buffer);
+    }
+
+    async function integrityMetadata(buffer) {
+        const hashBuffer = await hashText(buffer);
+        const base64string = btoa(
+            String.fromCharCode(...new Uint8Array(hashBuffer))
+        );
+
+        return `sha256-${base64string}`;
+    }
+
+    async function hash(source) {
+        const response = await fetch(source);
+        const buffer = await response.arrayBuffer();
+        const integrity = await integrityMetadata(buffer);
+        return integrity;
+    }
+    return await hash(source);
+}
