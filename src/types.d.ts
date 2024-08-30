@@ -1,3 +1,5 @@
+// this file only exists because vscode doesn't like the Proxy global object being used without being defined in javascript
+// type definitions taken from https://github.com/microsoft/TypeScript/blob/8e5e2e0/src/lib/es2015.proxy.d.ts
 
 interface ProxyHandler<T extends object> {
     /**
@@ -110,5 +112,3 @@ interface ProxyConstructor {
 }
 declare var Proxy: ProxyConstructor;
 declare type Proxy = ProxyConstructor;
-// this only exists because vscode doesn't like the Proxy global object being used without being defined in javascript
-// type definitions taken from lib.es2015.proxy.d.ts in the typescript source code
