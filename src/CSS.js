@@ -1,7 +1,7 @@
 import override from "./_node_overrides.js";
 import { createElement } from "./createElement.js";
 import { Prism } from "./prism.js";
-import { extend, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility.js";
+import { extend, getStack, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 override();
 
@@ -19,16 +19,6 @@ const checkValidSelector = function (selector) {
     } catch (e) {
         return false;
     }
-}
-
-function getStack() {
-    let err = new Error().stack.replace(/^Error/g, "").trim().split("\n");
-    let originalLine = err[2].trim().replace(/^@|^at /g, "");
-    let file = originalLine.replace(/:\d+:\d+$/g, "");
-    let lindex = originalLine.match(/:(\d+):\d+\)?$/g)[0];
-    let line = lindex.match(/(?<=^:)\d+(?=:)/g)[0];
-    let char = lindex.match(/\d+(?=\)?$)/g)[0];
-    return { file, lineno: line, charno: char };
 }
 
 export class jst_CSSRule {

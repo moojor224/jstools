@@ -701,3 +701,22 @@ export async function hashScript(source) {
     }
     return await hash(source);
 }
+
+/**
+ * gets the file and line number of where the getStack function is called
+ * @returns {{
+ *     file: string,
+ *     lineno: string,
+ *     charno: string,
+ *     trace: string[]
+ * }}
+ */
+export function getStack() {
+    let err = new Error().stack.replace(/^Error/g, "").trim().split("\n");
+    let originalLine = err[2].trim().replace(/^@|^at /g, "");
+    let file = originalLine.replace(/:\d+:\d+$/g, "");
+    let lindex = originalLine.match(/:(\d+):\d+\)?$/g)[0];
+    let line = lindex.match(/(?<=^:)\d+(?=:)/g)[0];
+    let char = lindex.match(/\d+(?=\)?$)/g)[0];
+    return { file, lineno: line, charno: char, trace: err };
+}
