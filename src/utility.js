@@ -599,6 +599,14 @@ export function createEnum(values) {
 export const createTypedEnum = createEnum;
 
 /**
+ * simple wrapper function for a type declaration
+ * @type {<E extends Record<string, T>, T>(values: Narrow<E>) => E}
+ */
+export function createDummyEnum(values) {
+    return values;
+}
+
+/**
  * creates a readonly constant from the provided values\
  * type declarations make it so that your IDE will show the original values on hover
  * @template E
