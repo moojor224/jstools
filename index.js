@@ -105,4 +105,3 @@ export {
     logAndReturn, logFormatted, makeTemplate, objectToJSONML, prismToJSONML,
     stringify, timeConversions, toHTMLEntities, wrapInQuotes
 } from "./src/utility.js";
-
