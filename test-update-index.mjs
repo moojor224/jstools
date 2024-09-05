@@ -41,11 +41,25 @@ const registry = new vsctm.Registry({
         return null;
     }
 });
-
+class a {
+    #b = null;
+    constructor() {
+        this.a = 1;
+        this.#b = 2;
+    }
+    r() {
+        console.log(this.#b);
+    }
+}
 // Load the JavaScript grammar and any other grammars included by it async.
 registry.loadGrammar('source.js').then(grammar => {
     let html = "";
-    const text = [`const regex = ${/s/g};`];
+    const text = [
+        `const regex = ${/s[range]{1}/g};`,
+        `let string = "contents";`,
+        "var template = `template string`;",
+        ...a.toString().replaceAll("\r", "").split("\n"),
+    ];
     let ruleStack = vsctm.INITIAL;
     for (let i = 0; i < text.length; i++) {
         const line = text[i];
@@ -55,9 +69,10 @@ registry.loadGrammar('source.js').then(grammar => {
             const token = lineTokens.tokens[j];
             html += `<span class="${token.scopes.join(' ')}">${line.substring(token.startIndex, token.endIndex)}</span>`;
         }
+        html += "\n";
         ruleStack = lineTokens.ruleStack;
     }
-    html = `<html><head></head><body style="font-family:monospace;">${html}</body></html>`;
+    html = `<html><head><link rel="stylesheet" href="./style.css"></head><body style="color:red;white-space:pre;font-family:Consolas,'Courier New',monospace;font-weight:normal;font-size:14px;font-feature-settings:'liga' 0,'calt' 0;font-variation-settings:normal;line-height:19px;letter-spacing:0;background-color:#1f1f1f">${html}</body></html>`;
     fs.writeFileSync("./syntax-highlight.html", html);
 }).catch(error => {
     console.error(error);

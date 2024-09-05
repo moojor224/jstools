@@ -153,3 +153,44 @@ footer li:not(:last-of-type) {
     padding-right: 0.8em;
     text-align: right;
 }
+
+
+.string\.regexp\.ts {
+    color: #e06c75;
+
+    &.punctuation\.definition\.character-class\.regexp {
+        color: #ce9178;
+    }
+
+    &.keyword\.operator\.quantifier\.regexp {
+        color: #d7ba7d;
+    }
+}
+
+.string\.quoted\.double\.ts,
+.string\.template\.ts {
+    color: #ce9178;
+}
+
+.storage\.type\.ts,
+.storage\.type\.class\.ts {
+    color: #569cd6;
+}
+
+.variable\.other\.constant\.ts {
+    color: #4fc1ff;
+}
+
+.variable\.other\.readwrite\.ts {
+    color: #9cdcfe;
+}
+
+.punctuation\.definition\.block\.ts,
+.keyword\.operator\.assignment\.ts,
+.punctuation\.terminator\.statement\.ts {
+    color: #d4d4d4;
+}
+
+.entity\.name\.type\.class\.ts {
+    color: #4ec9b0;
+}
