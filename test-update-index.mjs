@@ -46,33 +46,64 @@ class a {
     constructor() {
         this.a = 1;
         this.#b = 2;
+        `multiline
+        test`;
     }
-    r() {
-        console.log(this.#b);
+    r(a = 1, b) {
+        console.log(this.#b, a, b, {
+            a: 2,
+            b: {
+                c: 3
+            }
+        });
+    }
+    a() {
+        this.r("", 1, true);
+        if (true) {
+            console.log("true");
+        }
     }
 }
 // Load the JavaScript grammar and any other grammars included by it async.
 registry.loadGrammar('source.js').then(grammar => {
-    let html = "";
+    let html = [];
     const text = [
-        `const regex = ${/s[range]{1}/g};`,
+        `const regex = ${/s[range]{1}(?=:)\d+/g};`,
         `let string = "contents";`,
         "var template = `template string`;",
         ...a.toString().replaceAll("\r", "").split("\n"),
     ];
     let ruleStack = vsctm.INITIAL;
     for (let i = 0; i < text.length; i++) {
+        let linehtml = ""
         const line = text[i];
         const lineTokens = grammar.tokenizeLine(line, ruleStack);
         console.log(`\nTokenizing line: ${line}`);
         for (let j = 0; j < lineTokens.tokens.length; j++) {
             const token = lineTokens.tokens[j];
-            html += `<span class="${token.scopes.join(' ')}">${line.substring(token.startIndex, token.endIndex)}</span>`;
+            linehtml += `<span class="${token.scopes.join(' ')}">${line.substring(token.startIndex, token.endIndex)}</span>`;
         }
-        html += "\n";
+        // linehtml += "\n";
+        html.push(linehtml);
         ruleStack = lineTokens.ruleStack;
     }
-    html = `<html><head><link rel="stylesheet" href="./style.css"></head><body style="color:red;white-space:pre;font-family:Consolas,'Courier New',monospace;font-weight:normal;font-size:14px;font-feature-settings:'liga' 0,'calt' 0;font-variation-settings:normal;line-height:19px;letter-spacing:0;background-color:#1f1f1f">${html}</body></html>`;
+    const otag = '<div class="line">';
+    const ctag = '</div>';
+    html = `${otag}${html.join(`${ctag}${otag}`)}${ctag}`;
+    html = `<html><head><link rel="stylesheet" href="./style.css"></head><body style="
+    animation: flash 1.5s ease-in-out;
+    animation-iteration-count: infinite;
+    color: red;
+    white-space: pre;
+    font-family: Consolas, 'Courier New', monospace;
+    font-weight: normal;
+    font-size: 14px;
+    font-feature-settings: 'liga' 0, 'calt' 0;
+    font-variation-settings: normal;
+    line-height: 19px;
+    letter-spacing: 0;
+    background-color: #1f1f1f;
+    ">${html}</body></html>`;
     fs.writeFileSync("./syntax-highlight.html", html);
 }).catch(error => {
     console.error(error);

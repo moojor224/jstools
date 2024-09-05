@@ -1,3 +1,17 @@
+@keyframes flash {
+    0% {
+        color: red;
+    }
+
+    50% {
+        color: white;
+    }
+
+    100% {
+        color: red;
+    }
+}
+
 html,
 body {
     margin: 0;
@@ -50,6 +64,11 @@ div.line {
     margin-left: 20px;
     padding-left: var(--gutter);
     position: relative;
+}
+
+body.word-wrap div.line {
+    overflow-wrap: anywhere;
+    white-space: break-spaces;
 }
 
 div.line::before {
@@ -158,7 +177,9 @@ footer li:not(:last-of-type) {
 .string\.regexp\.ts {
     color: #e06c75;
 
-    &.punctuation\.definition\.character-class\.regexp {
+    &.punctuation\.definition\.character-class\.regexp,
+    &.punctuation\.definition\.group\.assertion\.regexp,
+    &.punctuation\.definition\.group\.regexp {
         color: #ce9178;
     }
 
@@ -173,7 +194,12 @@ footer li:not(:last-of-type) {
 }
 
 .storage\.type\.ts,
-.storage\.type\.class\.ts {
+.constant\.language\.null\.ts,
+.storage\.type\.class\.ts,
+.constant\.language\.boolean\.true\.ts,
+.constant\.language\.boolean\.false\.ts,
+.variable\.language\.this\.ts,
+.keyword\.other\.ts {
     color: #569cd6;
 }
 
@@ -181,16 +207,41 @@ footer li:not(:last-of-type) {
     color: #4fc1ff;
 }
 
-.variable\.other\.readwrite\.ts {
+.variable\.other\.readwrite\.ts,
+.variable\.other\.property\.ts,
+.variable\.object\.property\.ts,
+.support\.class\.console\.ts,
+.punctuation\.separator\.key-value\.ts,
+.meta\.object-literal\.key\.ts,
+.variable\.parameter\.ts {
     color: #9cdcfe;
 }
 
 .punctuation\.definition\.block\.ts,
 .keyword\.operator\.assignment\.ts,
-.punctuation\.terminator\.statement\.ts {
+.punctuation\.terminator\.statement\.ts,
+.punctuation\.definition\.parameters\.begin\.ts,
+.punctuation\.accessor\.ts,
+.punctuation\.separator\.parameter\.ts,
+.punctuation\.separator\.comma\.ts,
+.meta\.brace\.round\.ts,
+.punctuation\.definition\.parameters\.end\.ts {
     color: #d4d4d4;
 }
 
 .entity\.name\.type\.class\.ts {
     color: #4ec9b0;
+}
+
+.constant\.numeric\.decimal\.ts {
+    color: #b5cea8;
+}
+
+.support\.function\.console\.ts,
+.entity\.name\.function\.ts {
+    color: #dcdcaa;
+}
+
+.keyword\.control\.conditional\.ts {
+    color: #c586c0;
 }
