@@ -100,7 +100,7 @@ export { Option, Section, Settings } from "./src/settings.js";
 export { advancedDynamicSort, dynamicSort } from "./src/sorting.js";
 export { tabColor } from "./src/tabColor.js";
 export {
-    BULK_OPERATIONS, constant, copyObject, createEnum, extend,
+    BULK_OPERATIONS, constant, copyObject, createEnum, createTypedEnum, extend,
     getBrowserType, getStack, getValueOrDefault, hashScript, isAsync, lockValue,
     logAndReturn, logFormatted, makeTemplate, objectToJSONML, prismToJSONML,
     stringify, timeConversions, toHTMLEntities, wrapInQuotes

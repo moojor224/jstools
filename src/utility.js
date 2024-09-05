@@ -16,7 +16,7 @@ export function getValueOrDefault(val, def) {
 /**
  * puts the properties from source onto target
  * @type {<T, K>(target: T, source: K) => T & K}
- * @returns {T | K}
+ * @returns {T & K}
  */
 export function extend(target, source) {
     Object.keys(source).forEach(key => {
@@ -591,6 +591,12 @@ export const BULK_OPERATIONS = (function () {
 export function createEnum(values) {
     return Object.freeze(Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Symbol(value)])));
 }
+
+/**
+ * this type definition actually somehow works better than createEnum, but it might be a bug so I'm leaving createEnum in
+ * @type {<E extends Record<string, T>, T>(values: Narrow<E>) => E}
+ */
+export const createTypedEnum = createEnum;
 
 /**
  * creates a readonly constant from the provided values\
