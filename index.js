@@ -97,7 +97,7 @@ export { CUSTOM_ELEMENTS, clear, clearError, clearWarn, disable, enable, error, 
 export { clamp, map, rand, roundf } from "./src/math.js";
 export { Overload } from "./src/overloaded_functions.js";
 export { Option, Section, Settings } from "./src/settings.js";
-export { advancedDynamicSort, dynamicSort } from "./src/sorting.js";
+export { advancedDynamicSort, dynamicSort, makeTableSortable } from "./src/sorting.js";
 export { tabColor } from "./src/tabColor.js";
 export {
     BULK_OPERATIONS, constant, copyObject, createDummyEnum, createEnum, createTypedEnum,
@@ -105,3 +105,4 @@ export {
     logAndReturn, logFormatted, makeTemplate, objectToJSONML, prismToJSONML,
     stringify, timeConversions, toHTMLEntities, wrapInQuotes
 } from "./src/utility.js";
+

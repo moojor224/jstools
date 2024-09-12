@@ -1,3 +1,6 @@
+import { extend } from "./utility.js";
+import { validStyles } from "./validStyles.js";
+
 /**
  * generates a array sort function that sorts an array of objects by a specified property name
  * @param {string} key name of the property to sort by
@@ -51,6 +54,7 @@ export function advancedDynamicSort(...properties) {
     function dSort(property) {
         property = property.split(".");
         function compare(a, b, chain) {
+            // console.log("comparing", a, b, chain);
             let p = chain[0].trim(), // remove whitespace from property name
                 sortOrder = 1; // ascending sort order
             if (p[0] == "-") { // reverse the sort order
@@ -76,4 +80,39 @@ export function advancedDynamicSort(...properties) {
         while (result == 0 && funcs.length > 0);
         return result;
     };
+}
+
+/**
+ * makes an html table sortable by clicking on the headers
+ * @param {HTMLTableElement} table the table to make sortable
+ * @param {{
+ * footers: number,
+ * func: (val: string) => any,
+ * }} options the options for the sorting
+ */
+export function makeTableSortable(table, options = {}) {
+    options = extend({
+        footers: 0,
+        func: val => val,
+    }, options);
+    let { footers, func } = options;
+    let headers = Array.from(table.tHead.rows[0].cells);
+    headers.forEach((header, i) => {
+        console.log("attaching to", header);
+        header.addEventListener("click", () => {
+            console.log("sorting by", i);
+            let rows = Array.from(table.tBodies[0].rows);
+            if (typeof footers == "number") {
+                for (let i = 0; i < footers; i++) {
+                    rows.pop();
+                }
+            }
+            console.log(rows);
+            console.log(rows.map(e => e.cells[i].textContent));
+            let sortFunc = advancedDynamicSort("cells." + i + ".-textContent");
+            rows.sort(sortFunc);
+            console.log(rows.map(e => e.cells[i].textContent));
+            rows.forEach(row => table.tBodies[0].insertAdjacentElement("afterbegin", row));
+        });
+    });
 }
