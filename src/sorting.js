@@ -91,6 +91,7 @@ export function advancedDynamicSort(...properties) {
  * }} options the options for the sorting
  */
 export function makeTableSortable(table, options = {}) {
+    let lastColumn = null;
     options = extend({
         footers: 0,
         func: val => val,
@@ -98,8 +99,26 @@ export function makeTableSortable(table, options = {}) {
     let { footers, func } = options;
     let headers = Array.from(table.tHead.rows[0].cells);
     headers.forEach((header, i) => {
-        console.log("attaching to", header);
+        header.classList.add("sortable");
+        header.classList.remove("sort-asc");
+        header.classList.remove("sort-desc");
         header.addEventListener("click", () => {
+            if (lastColumn !== header) {
+                lastColumn?.classList.remove("sort-asc");
+                lastColumn?.classList.remove("sort-desc");
+                lastColumn = header;
+            }
+            let sortDir = "-";
+            if (header.classList.contains("sort-asc")) {
+                header.classList.remove("sort-asc");
+                header.classList.add("sort-desc");
+                sortDir = "";
+            } else if (header.classList.contains("sort-desc")) {
+                header.classList.remove("sort-desc");
+                header.classList.add("sort-asc");
+            } else {
+                header.classList.add("sort-asc");
+            }
             console.log("sorting by", i);
             let rows = Array.from(table.tBodies[0].rows);
             if (typeof footers == "number") {
@@ -107,9 +126,7 @@ export function makeTableSortable(table, options = {}) {
                     rows.pop();
                 }
             }
-            console.log(rows);
-            console.log(rows.map(e => e.cells[i].textContent));
-            let sortFunc = advancedDynamicSort("cells." + i + ".-textContent");
+            let sortFunc = advancedDynamicSort(`cells.${i}.${sortDir}textContent`);
             rows.sort(sortFunc);
             console.log(rows.map(e => e.cells[i].textContent));
             rows.forEach(row => table.tBodies[0].insertAdjacentElement("afterbegin", row));
