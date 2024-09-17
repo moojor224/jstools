@@ -3,6 +3,7 @@ import { bulkElements } from "./bulkElements.js";
 import { createElement } from "./createElement.js";
 import _node_overrides from "./_node_overrides.js";
 import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS.js";
+import { React } from "./lib/react_reactdom.js";
 _node_overrides();
 
 /**
@@ -71,6 +72,64 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
             }).bind(this)();
     }
 });
+
+(function () {
+    function getStyles(el) {
+        let styles = {};
+
+        if (!el || !el.style || !el.style.cssText) {
+            return styles;
+        }
+
+        /** @param {string} str */
+        function camelCase(str) {
+            return str.replace(/(?:^|[-])(\w)/g, function (a, c) {
+                if (a[0] === '-') {
+                    c = c.toUpperCase();
+                }
+                return c ? c : '';
+            });
+        }
+
+        let style = el.style.cssText.split(';').map(e => e.trim());
+
+        for (let i = 0; i < style.length; ++i) {
+            let rule = style[i].trim();
+
+            if (rule) {
+                let keyVal = rule.split(':');
+                let key = camelCase(keyVal.shift().trim());
+                styles[key] = keyVal.join(':').trim();
+            }
+        }
+
+        return styles;
+    }
+    const BLACKLIST_TAGS = ["style", "script", "meta"];
+    Object.defineProperty(HTMLElement.prototype, "toReact", {
+        value: function () {
+            /** @type {HTMLElement} */
+            let el = this;
+            if (BLACKLIST_TAGS.includes(el.tagName.toLowerCase())) return null;
+            let props = {};
+            for (let attr of el.attributes) {
+                props[attr.name] = attr.value;
+            }
+            if ("style" in props) {
+                delete props.style;
+                props.style = getStyles(el);
+            }
+            let children = Array.from(el.childNodes).map(e => {
+                if (e instanceof HTMLElement) {
+                    return e.toReact(React);
+                } else {
+                    return e.textContent;
+                }
+            }).filter(e => e !== null);
+            return React.createElement(el.tagName.toLowerCase(), props, children);
+        }
+    });
+})();
 
 // Adds polyfills for missing browser features.
 if (!Element.prototype.computedStyleMap && globalThis.getComputedStyle != undefined) {
