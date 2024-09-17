@@ -300,7 +300,7 @@ export class Option {
      *  value?: string,
      *  values?: string[],
      *  id: string,
-     *  type: "dropdown" | "slider"
+     *  type: "dropdown" | "toggle"
      * }}
      */
     config = {
