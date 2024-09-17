@@ -88,6 +88,7 @@ export function advancedDynamicSort(...properties) {
  * @param {{
  * footers: number,
  * func: (val: string) => any,
+ * injectDefaultStyles: boolean
  * }} options the options for the sorting
  */
 export function makeTableSortable(table, options = {}) {
@@ -95,8 +96,9 @@ export function makeTableSortable(table, options = {}) {
     options = extend({
         footers: 0,
         func: val => val,
+        injectDefaultStyles: true
     }, options);
-    let { footers, func } = options;
+    let { footers, func, injectDefaultStyles } = options;
     let headers = Array.from(table.tHead.rows[0].cells);
     headers.forEach((header, i) => {
         header.classList.add("sortable");
@@ -119,7 +121,6 @@ export function makeTableSortable(table, options = {}) {
             } else {
                 header.classList.add("sort-asc");
             }
-            console.log("sorting by", i);
             let rows = Array.from(table.tBodies[0].rows);
             if (typeof footers == "number") {
                 for (let i = 0; i < footers; i++) {
@@ -128,7 +129,6 @@ export function makeTableSortable(table, options = {}) {
             }
             let sortFunc = advancedDynamicSort(`cells.${i}.${sortDir}textContent`);
             rows.sort(sortFunc);
-            console.log(rows.map(e => e.cells[i].textContent));
             rows.forEach(row => table.tBodies[0].insertAdjacentElement("afterbegin", row));
         });
     });
