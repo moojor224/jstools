@@ -1,4 +1,4 @@
-import override from "./_node_overrides.js";
+import override from "../_node_overrides.js";
 override();
 //     Underscore.js 1.3.3
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.

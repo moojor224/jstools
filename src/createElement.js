@@ -18,7 +18,7 @@
  * @typedef {Pick<T, keyof Omit<T, FunctionPropertyNames<T>>> & Pick<T, FilterStartingWith<keyof T, "on">>} ElementProps
  */
 
-import { emmet } from "./emmet.js";
+import { emmet } from "./lib/emmet.js";
 
 /**
  * creates a new element with the specified tag name and properties

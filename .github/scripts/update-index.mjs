@@ -5,7 +5,7 @@ import * as path from "path";
 import * as jstools from "../../index.js"
 import { Parser } from "acorn";
 import { parse } from "comment-parser";
-import { Prism } from "../../src/prism.js";
+import { Prism } from "../../src/lib/prism.js";
 
 let { dynamicSort, logFormatted, stringify } = jstools;
 
@@ -33,7 +33,7 @@ indexHTML += /*html*/`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"
 `;
 
 let srcFiles = fs.readdirSync(path.resolve("./src")).map(e => path.parse(path.resolve("./src/", e)));
-let fileBlacklist = ["_node_overrides.js", "beautify.js", "emmet.js", "prism.js", "types.d.ts", "validStyles.js"];
+let fileBlacklist = ["_node_overrides.js", "beautify.js", "emmet.js", "prism.js", "types.d.ts", "validStyles.js", "lib"];
 fileBlacklist.forEach(bl => {
     srcFiles = srcFiles.filter(e => e.base != bl);
 });

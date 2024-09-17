@@ -1,6 +1,6 @@
 import override from "./_node_overrides.js";
 import { createElement } from "./createElement.js";
-import { Prism } from "./prism.js";
+import { Prism } from "./lib/prism.js";
 import { extend, getStack, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 override();
