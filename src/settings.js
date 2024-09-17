@@ -34,7 +34,7 @@ if (!window.devtoolsFormatters.includes(settingsFormatter)) { // only add one in
     window.devtoolsFormatters.push(settingsFormatter);
 }
 
-export class Settings extends EventTarget {
+export class Settings {
     config = {
         name: "settings"
     };
@@ -46,7 +46,6 @@ export class Settings extends EventTarget {
      * @param {Section[]} sections array of sections to add to the settings
      */
     constructor(config = {}, sections) {
-        super(); // initialize EventTarget object
         extend(this.config, config); // apply config to this
         if (!Array.isArray(sections)) { // turn sections into array if it isn't already
             sections = [sections];
@@ -84,7 +83,7 @@ export class Settings extends EventTarget {
     }
 
     /**
-     * converts the settings object to a stringified JSON object cabable of being imported through the Settings.fromJson() method
+     * converts the settings object to a stringified JSON object
      * @returns {string}
      */
     export() {
@@ -104,116 +103,43 @@ export class Settings extends EventTarget {
         });
     }
 
+    #eventListeners = {};
     /**
      * dispatches an event on the Settings object
      * @param {Event} event the event to dispatch
      * @returns {Boolean}
      */
     dispatchEvent(event) {
-        // console.log("dispatching settings event:", event.type, event);
-        let originalDispatch = EventTarget.prototype.dispatchEvent.bind(this); // get copy of original dispatchEvent function
-        let cont = originalDispatch.apply(this, [event]); // call original dispatchEvent function
-        // console.log("settings event default prevented:", event.defaultPrevented, event.cancelable, cont);
+        let cont = true;
+        if (this.#eventListeners[event.type]) {
+            for (let i = 0; i < this.#eventListeners[event.type].length; i++) {
+                let c = this.#eventListeners[event.type][i](event);
+                if (event.defaultPrevented || (!c && c != undefined)) {
+                    cont = false;
+                    break;
+                }
+            }
+        }
         return !event.defaultPrevented && cont;
     }
 
     /**
-     * listens for an event\
-     * wrapper function for addEventListener
+     * listens for an event
      * @param {string} type type of event
      * @param {Function} callback callback function
      */
     on(type, callback) {
-        // console.log("binding settings listener", type, callback);
-        let originalAddEventListener = EventTarget.prototype.addEventListener.bind(this); // get copy of original addEventListener function
-        originalAddEventListener.apply(this, [type, callback]); // call original addEventListener function
+        if (!this.#eventListeners[type]) this.#eventListeners[type] = [];
+        this.#eventListeners[type].push(callback);
     }
 
     /**
-     * stops the specified callback from listening for the specified event\
-     * wrapper function for removeEventListener
+     * stops the specified callback from listening for the specified event
      * @param {string} type type of event
      * @param {Function} callback callback function
      */
     off(type, callback) {
-        // this.removeEventListener(type, callback);
-        let originalRemoveEventListener = EventTarget.prototype.removeEventListener.bind(this); // get copy of original removeEventListener function
-        originalRemoveEventListener.apply(this, [type, callback]); // call original removeEventListener function
-    }
-
-    /**
-     * converts stringified json data into a settings object\
-     * json data can be generated from the export method
-     * @static
-     * @param {string} jsontext stringified json data
-     * @returns {Settings}
-     */
-    static fromJson(jsontext) {
-        if (jsontext.length == 0) {
-            return null;
-        }
-        try {
-            let json = JSON.parse(jsontext);
-            try {
-                json.sections.forEach(s => s.options.forEach(o => delete o.config.input))
-            } catch (err) { }
-            let validate = Joi.object({ // validate object to make sure it's in the correct format
-                config: Joi.object({
-                    name: Joi.string().required()
-                }).required(),
-                sections: Joi.array().items(Joi.object({
-                    config: Joi.object({
-                        name: Joi.string().required(),
-                        id: Joi.string().required()
-                    }),
-                    options: Joi.array().items(Joi.object({
-                        config: Joi.object({
-                            name: Joi.string().required(),
-                            id: Joi.string().required(),
-                            type: Joi.string().required(),
-                            value: Joi.any(),
-                            values: Joi.array()
-                        }).required()
-                    })).required()
-                })).required()
-            }).validate(json);
-            if (validate.error) { // object isn't in the correct format
-                console.error("invalid json data");
-                throw new Error(validate.error);
-            }
-            return new Settings(json.config, json.sections.map(sec => { // parse object into settings, sections, and options
-                return new Section(sec.config, sec.options.map(opt => {
-                    return new Option(opt.config);
-                }));
-            }));
-        } catch (err) {
-            console.error(err);
-            return err;
-        }
-    }
-
-    /**
-     * replaces this settings object with another one by overriding sections array and config\
-     * meant to be used with the Settings.fromJson() method
-     * @param {Settings} settings settings object to replace this one with
-     */
-    replaceWith(settings) {
-        console.log("replacing", Object.assign({}, this), "with", Object.assign({}, settings));
-        // replaces this settings object with another one by overriding sections array and config.
-        // because this object was exported, it can't be assigned in other modules,
-        // so a custom function had to be made
-        if (!(settings instanceof Settings)) { // only override if provided object is a Setting object
-            console.log("settings object is not an instance of the Settings class", settings);
-            return;
-        }
-        this.config = settings.config; // override config
-        this.sections = settings.sections; // override sections
-        this.sections.forEach(section => {
-            section.settings_obj = this; // set parent object for each section
-            section.options.forEach(option => {
-                option.section_obj = section; // set parent object for each option
-            });
-        });
+        if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
 }
 
@@ -267,7 +193,7 @@ if (!window.devtoolsFormatters.includes(sectionFormatter)) { // only add one ins
     window.devtoolsFormatters.push(sectionFormatter);
 }
 
-export class Section extends EventTarget {
+export class Section {
     /** @type {Settings} */
     settings_obj = null;
     /**
@@ -288,7 +214,6 @@ export class Section extends EventTarget {
      * @param {Option[]} options array of Options to add to the section
      */
     constructor(config, options) {
-        super(); // initialize EventTarget
         extend(this.config, config); // apply config to this
         if (!Array.isArray(options)) { // turn options into array if it isn't one already
             options = [options];
@@ -323,46 +248,47 @@ export class Section extends EventTarget {
         return section;
     }
 
+    #eventListeners = {};
     /**
      * dispatches an event on the Section object
-     * @param {string} type event type
-     * @param {Object} config event options/data
+     * @param {Event} event the event to dispatch
+     * @returns {Boolean}
      */
     dispatchEvent(event) {
-        // console.log("dispatching section event", event);
-        let originalDispatch = EventTarget.prototype.dispatchEvent.bind(this); // get copy of original dispatchEvent function
-        let cont = originalDispatch.apply(this, [event]); // call original dispatchEvent function
-        if (cont) this.settings_obj.dispatchEvent(event); // bubble event to parent element
-        // console.log("section event default prevented:", event.defaultPrevented, event.cancelable, cont);
-        return !event.defaultPrevented && cont;
+        let cont = true;
+        if (this.#eventListeners[event.type]) {
+            for (let i = 0; i < this.#eventListeners[event.type].length; i++) {
+                let c = this.#eventListeners[event.type][i](event);
+                if (event.defaultPrevented || (!c && c != undefined)) {
+                    cont = false;
+                    break;
+                }
+            }
+        }
+        return (!event.defaultPrevented && cont) ? this.settings_obj.dispatchEvent(event) : false;
     }
 
     /**
-     * listens for an event\
-     * wrapper for addEventListener
+     * listens for an event
      * @param {string} type type of event
      * @param {Function} callback callback function
      */
     on(type, callback) {
-        // console.log("on", this.#listeners);
-        let originalAddEventListener = EventTarget.prototype.addEventListener.bind(this); // get copy of original addEventListener function
-        originalAddEventListener.apply(this, [type, callback]); // call original addEventListener function
+        if (!this.#eventListeners[type]) this.#eventListeners[type] = [];
+        this.#eventListeners[type].push(callback);
     }
 
     /**
-     * stops the specified callback from listening for the specified event\
-     * wrapper for removeEventListener
+     * stops the specified callback from listening for the specified event
      * @param {string} type type of event
      * @param {Function} callback callback function
      */
     off(type, callback) {
-        // console.log("off", this.#listeners);
-        let originalRemoveEventListener = EventTarget.prototype.removeEventListener.bind(this); // get copy of original removeEventListener function
-        originalRemoveEventListener.apply(this, [type, callback]); // call original removeEventListener function
+        if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
 }
 
-export class Option extends EventTarget {
+export class Option {
     /** @type {HTMLElement} */
     input = null;
 
@@ -388,7 +314,6 @@ export class Option extends EventTarget {
      * @param {typeof this.config} config Option options
      */
     constructor(config) {
-        super(); // initialize EventTarget object
         extend(this.config, config); // apply config to this
         if (config.value == undefined && config.values) { // if value is not specified, set value to first value in values
             this.config.value = config.values[0];
@@ -483,40 +408,42 @@ export class Option extends EventTarget {
         return input;
     }
 
+    #eventListeners = {};
     /**
      * dispatches an event on the Option object
-     * @param {Event} event event
+     * @param {Event} event the event to dispatch
      * @returns {Boolean}
      */
     dispatchEvent(event) {
-        // console.log("dispatching option event", event.val);
-        let originalDispatch = EventTarget.prototype.dispatchEvent.bind(this); // save copy of original dispatchEvent function
-        let cont = originalDispatch.apply(this, [event]); // call original dispatchEvent function
-        if (cont) this.section_obj.dispatchEvent(event); // bubble event to parent section
-        return !event.defaultPrevented && cont;
+        let cont = true;
+        if (this.#eventListeners[event.type]) {
+            for (let i = 0; i < this.#eventListeners[event.type].length; i++) {
+                let c = this.#eventListeners[event.type][i](event);
+                if (event.defaultPrevented || (!c && c != undefined)) {
+                    cont = false;
+                    break;
+                }
+            }
+        }
+        return (!event.defaultPrevented && cont) ? this.section_obj.dispatchEvent(event) : false;
     }
 
     /**
-     * listens for an event\
-     * wrapper function for addEventListener
+     * listens for an event
      * @param {string} type type of event
      * @param {Function} callback callback function
      */
     on(type, callback) {
-        // console.log("option on", this.#listeners);
-        let originalAddEventListener = EventTarget.prototype.addEventListener.bind(this); // get copy of original addEventListener function
-        originalAddEventListener.apply(this, [type, callback]); // call original addEventListener function
+        if (!this.#eventListeners[type]) this.#eventListeners[type] = [];
+        this.#eventListeners[type].push(callback);
     }
 
     /**
-     * stops the specified callback from listening for the specified event\
-     * wrapper function for removeEventListener
+     * stops the specified callback from listening for the specified event
      * @param {string} type type of event
      * @param {Function} callback callback function
      */
     off(type, callback) {
-        // console.log("option off", this.#listeners);
-        let originalRemoveEventListener = EventTarget.prototype.removeEventListener.bind(this); // get copy of original removeEventListener function
-        originalRemoveEventListener.apply(this, [type, callback]); // call original removeEventListener function
+        if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
 }
