@@ -8,8 +8,8 @@ table.querySelectorAll("td").forEach(td => td.addEventListener("click", function
 makeTableSortable(table, {
     func: function (val) {
         let filtered = val.replaceAll(/[$,]/g, "");
-        if (filtered.length == 0 || isNaN(filtered)) return val;
-        return parseFloat(filtered);
+        if (filtered.length == 0 || isNaN(Number(filtered))) return val;
+        return Number(filtered);
     }
 });
 let div = document.createElement("div");
