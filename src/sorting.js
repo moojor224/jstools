@@ -1,3 +1,4 @@
+import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS.js";
 import { extend } from "./utility.js";
 import { validStyles } from "./validStyles.js";
 
@@ -82,6 +83,19 @@ export function advancedDynamicSort(...properties) {
     };
 }
 
+const defaultSortStyles = new CSSStyleSheet([
+    new CSSRule(".sortable", {
+        cursor: "pointer",
+        userSelect: "none"
+    }),
+    new CSSRule(".sortable.sort-asc::after", {
+        content: "▲"
+    }),
+    new CSSRule(".sortable.sort-desc::after", {
+        content: "▼"
+    })
+]);
+
 /**
  * makes an html table sortable by clicking on the headers
  * @param {HTMLTableElement} table the table to make sortable
@@ -99,6 +113,7 @@ export function makeTableSortable(table, options = {}) {
         injectDefaultStyles: true
     }, options);
     let { footers, func, injectDefaultStyles } = options;
+    if (injectDefaultStyles && !defaultSortStyles.injected) defaultSortStyles.inject();
     let headers = Array.from(table.tHead.rows[0].cells);
     headers.forEach((header, i) => {
         header.classList.add("sortable");
