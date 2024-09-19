@@ -107,7 +107,9 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
     }
     const BLACKLIST_TAGS = ["style", "script", "meta"];
     Object.defineProperty(HTMLElement.prototype, "toReact", {
-        value: function () {
+        value: function (l = []) {
+            /** @type {import("./types").EventListener[]} */
+            let listeners = l;
             /** @type {HTMLElement} */
             let el = this;
             if (BLACKLIST_TAGS.includes(el.tagName.toLowerCase())) return null;
@@ -115,13 +117,19 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
             for (let attr of el.attributes) {
                 props[attr.name] = attr.value;
             }
+            if (Array.isArray(listeners)) {
+                listeners.filter(e => e[0] == el).forEach(e => {
+                    let [type, callback] = e[1];
+                    props["on" + type[0].toUpperCase() + type.slice(1)] = callback;
+                });
+            }
             if ("style" in props) {
                 delete props.style;
                 props.style = getStyles(el);
             }
             let children = Array.from(el.childNodes).map(e => {
                 if (e instanceof HTMLElement) {
-                    return e.toReact(React);
+                    return e.toReact(listeners);
                 } else {
                     return e.textContent;
                 }

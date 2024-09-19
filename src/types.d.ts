@@ -112,3 +112,13 @@ interface ProxyConstructor {
 }
 declare var Proxy: ProxyConstructor;
 declare type Proxy = ProxyConstructor;
+
+export type EventListener<T extends keyof HTMLElementEventMap> = [HTMLElement, [T, HTMLElementEventMap[T]]][]
+
+declare interface HTMLElement {
+    /**
+     * converts an HTMLElement to a React component
+     * @param listeners list of event listeners to add to the element
+     */
+    toReact(listeners: [HTMLElement, EventListener[]][]): React.Component;
+}
