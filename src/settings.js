@@ -439,7 +439,7 @@ export class Option {
             }
             let reactNode = createElement("span").add(callback.apply(option, [option].concat(args)));
             HTMLElement.prototype.addEventListener = old;
-            return reactNode.toReactComponent(listeners);
+            return reactNode.toReactElement(listeners);
         }
         return Component;
     }
@@ -469,7 +469,7 @@ export class Option {
             }
             let reactNode = createElement("span").add(callback.apply(options, [options].concat(args)));
             HTMLElement.prototype.addEventListener = old;
-            return reactNode.toReactComponent(listeners);
+            return reactNode.toReactElement(listeners);
         }
         return Component;
     }
