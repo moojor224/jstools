@@ -444,6 +444,36 @@ export class Option {
         return Component;
     }
 
+    /**
+     * watches multiple Option objects and updates a react element when any of them change
+     * @param {Option[]} options options to watch
+     * @param {(options: Option[], ...args: any[]) => HTMLElement} callback 
+     * @param {*} args 
+     * @returns 
+     */
+    static bindOptionsToReactElement(options, callback = () => { }, args = []) {
+        function Component() {
+            const [value, setValue] = useState(0);
+            useEffect(() => { // listen for changes to option's value
+                function changeListener() {
+                    setValue(value + 1); // ensure value is different to enforce re-render
+                }
+                options.forEach(option => option.on("change", changeListener)); // listen for changes
+                return () => options.forEach(option => option.off("change", changeListener)); // stop listening when component reloads
+            });
+            let listeners = [];
+            let old = HTMLElement.prototype.addEventListener;
+            HTMLElement.prototype.addEventListener = function (...args) {
+                listeners.push([this, args]);
+                old.apply(this, args);
+            }
+            let reactNode = createElement("span").add(callback.apply(options, [options].concat(args))).toReactComponent(listeners);
+            HTMLElement.prototype.addEventListener = old;
+            return reactNode;
+        }
+        return Component;
+    }
+
     #eventListeners = {};
     /**
      * dispatches an event on the Option object
