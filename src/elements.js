@@ -127,6 +127,9 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
                 delete props.style;
                 props.style = getStyles(el);
             }
+            if ("ref" in el) {
+                props.ref = el.ref;
+            }
             let children = Array.from(el.childNodes).map(e => {
                 if (e instanceof HTMLElement) {
                     return e.toReactElement(listeners);
