@@ -418,7 +418,7 @@ export class Option {
      * @param {Option} option
      * @param {(option: this, ...args: any[]) => HTMLElement} callback
      * @param {any[]} args
-     * @returns {React.Component}
+     * @returns {React.default.ReactElement}
      */
     bindToReactElement(callback = () => { }, args = []) {
         let option = this;
@@ -441,15 +441,15 @@ export class Option {
             HTMLElement.prototype.addEventListener = old;
             return reactNode.toReactElement(listeners);
         }
-        return Component;
+        return React.createElement(Component);
     }
 
     /**
      * watches multiple Option objects and updates a react element when any of them change
      * @param {Option[]} options options to watch
-     * @param {(options: Option[], ...args: any[]) => HTMLElement} callback 
-     * @param {*} args 
-     * @returns 
+     * @param {(options: Option[], ...args: any[]) => HTMLElement} callback
+     * @param {any[]} args
+     * @returns {React.default.ReactElement}
      */
     static bindOptionsToReactElement(options, callback = () => { }, args = []) {
         function Component() {
@@ -471,7 +471,7 @@ export class Option {
             HTMLElement.prototype.addEventListener = old;
             return reactNode.toReactElement(listeners);
         }
-        return Component;
+        return React.createElement(Component);
     }
 
     #eventListeners = {};
