@@ -134,6 +134,7 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
                     return e.textContent;
                 }
             }).filter(e => e !== null);
+            if (children.length == 0) children = undefined;
             return React.createElement(el.tagName.toLowerCase(), props, children);
         }
     });
