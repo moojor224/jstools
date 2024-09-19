@@ -5,7 +5,13 @@ let table = document.getElementById("sort");
 table.querySelectorAll("td").forEach(td => td.addEventListener("click", function () {
     console.log("clicked", this.innerHTML);
 }));
-makeTableSortable(table);
+makeTableSortable(table, {
+    func: function (val) {
+        let filtered = val.replaceAll(/[$,]/g, "");
+        if (filtered.length == 0 || isNaN(filtered)) return val;
+        return parseFloat(filtered);
+    }
+});
 let div = document.createElement("div");
 let reactRoot = ReactDOM.createRoot(div);
 
@@ -22,7 +28,7 @@ function Component(props) {
         style: {
             color: "red"
         }
-    }).toReactComponent(React);
+    }).toReactElement(React);
     // return React.createElement("div", null, str);
 }
 
