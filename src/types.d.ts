@@ -121,4 +121,11 @@ declare interface HTMLElement {
      * @param listeners list of event listeners to add to the element
      */
     toReact(listeners: [HTMLElement, EventListener[]][]): React.Component;
+    
+    /**
+     * wrapper for {@link HTMLElement.append}\
+     * returns the element itself to chain methods
+     * @param elements Elements to append
+     */
+    add(...elements: HTMLElement[]): this;
 }
