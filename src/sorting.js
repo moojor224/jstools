@@ -142,9 +142,10 @@ export function makeTableSortable(table, options = {}) {
                     rows.pop();
                 }
             }
-            let sortFunc = advancedDynamicSort(`cells.${i}.${sortDir}textContent`);
-            rows.sort(sortFunc);
-            rows.forEach(row => table.tBodies[0].insertAdjacentElement("afterbegin", row));
+            let sortFunc = advancedDynamicSort(`${sortDir}1`);
+            let newRows = rows.map(e => [e, func(e.cells[i].textContent)]);
+            newRows.sort(sortFunc);
+            newRows.forEach(row => table.tBodies[0].insertAdjacentElement("afterbegin", row[0]));
         });
     });
 }
