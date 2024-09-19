@@ -4,7 +4,7 @@
 
 // See https://github.com/facebook/react/blob/main/packages/react-dom/client.js to see how the exports are declared,
 
-import React = require("react");
+import type React from "./react.d.ts";
 export interface HydrationOptions {
     /**
      * Prefix for `useId`.

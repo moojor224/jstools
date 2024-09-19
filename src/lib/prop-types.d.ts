@@ -1,5 +1,5 @@
 // eslint-disable-next-line @definitelytyped/export-just-namespace
-export = PropTypes;
+export default PropTypes;
 
 declare namespace PropTypes {
     type ReactComponentLike =
@@ -13,7 +13,7 @@ declare namespace PropTypes {
         key: string | null;
     }
 
-    interface ReactNodeArray extends Iterable<ReactNodeLike> {}
+    interface ReactNodeArray extends Array<ReactNodeLike> {}
 
     type ReactNodeLike =
         | ReactElementLike

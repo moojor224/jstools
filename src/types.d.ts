@@ -1,6 +1,8 @@
 // this file only exists because vscode doesn't like the Proxy global object being used without being defined in javascript
 // type definitions taken from https://github.com/microsoft/TypeScript/blob/8e5e2e0/src/lib/es2015.proxy.d.ts
 
+import type React from "./lib/react.d.ts";
+
 interface ProxyHandler<T extends object> {
     /**
      * A trap method for a function call.
@@ -120,7 +122,7 @@ declare interface HTMLElement {
      * converts an HTMLElement to a React component
      * @param listeners list of event listeners to add to the element
      */
-    toReact(listeners: [HTMLElement, EventListener[]][]): React.Component;
+    toReact(listeners: [HTMLElement, EventListener<keyof HTMLElementEventMap>[]][]): React.Component;
     
     /**
      * wrapper for {@link HTMLElement.append}\
