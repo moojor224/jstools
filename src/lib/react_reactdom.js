@@ -1,4 +1,4 @@
-/** @type {import("./react-dom-client.d.ts").default} */
+/** @type {import("./react-dom-client.d.ts")} */
 export let ReactDOM = null;
 /** @type {import("./react.d.ts").default} */
 export let React = null;
