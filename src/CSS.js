@@ -466,3 +466,16 @@ if (!("cssText" in CSSStyleSheet.prototype)) {
         }
     });
 }
+
+function camelCaseToHyphen(str) {
+    return str.replace(/[A-Z]/g, e => `-${e.toLowerCase()}`);
+}
+
+/**
+ * converts a css object to a string
+ * @param {CSSStyleDeclaration} object css object to convert to string
+ * @returns {string}
+ */
+export function cssObjToString(object) {
+    return Object.entries(object).map(e => `${camelCaseToHyphen(e[0])}: ${e[1]};`).join("\n");
+}

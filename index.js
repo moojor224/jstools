@@ -24,7 +24,7 @@ export { bulkElements } from "./src/bulkElements.js";
 export { captureConsole } from "./src/captureConsole.js";
 export { CSSColors, Color, getColor, getContrastColor, gradient, listAllColorsOnPage, rgbMix } from "./src/colors.js";
 export { createElement } from "./src/createElement.js";
-export { jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
+export { cssObjToString, jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
 export { consoleButton } from "./src/devtoolsFormatters.js";
 export { CUSTOM_ELEMENTS, clear, clearError, clearWarn, disable, enable, error, hide, show, stringifyNodeTree, warn } from "./src/elements.js";
 export { React, ReactDOM } from "./src/lib/react_reactdom.js";
