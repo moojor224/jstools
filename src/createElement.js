@@ -47,7 +47,7 @@ export function createElement(tag, data = {}) {
     }
     tag = typeof tag === "string" ? document.createElement(tag) : tag; // convert string to HTMLElement
     Object.keys(data).forEach((e) => { // loop through object properties
-        if (typeof data[e] === "object") { // if value is object, recurse
+        if (typeof data[e] === "object" && !(e == "ref" && "current" in data[e] && tag instanceof HTMLElement)) { // if value is object, recurse
             createElement(tag[e] || (tag[e] = {}), data[e]);
         } else {
             if (tag instanceof window.Element) { // if tag is an html element
