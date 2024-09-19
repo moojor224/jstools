@@ -423,10 +423,10 @@ export class Option {
     bindToReactElement(callback = () => { }, args = []) {
         let option = this;
         function Component() {
-            const [value, setValue] = useState(option.value);
+            const [value, setValue] = useState(0);
             useEffect(() => { // listen for changes to option's value
-                function changeListener(event) {
-                    setValue(event.val); // change value in component
+                function changeListener() {
+                    setValue(value + 1); // ensure value is different to enforce re-render
                 }
                 option.on("change", changeListener); // listen for changes
                 return () => option.off("change", changeListener); // stop listening when component reloads
