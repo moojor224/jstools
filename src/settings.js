@@ -437,9 +437,9 @@ export class Option {
                 listeners.push([this, args]);
                 old.apply(this, args);
             }
-            let reactNode = createElement("span").add(callback.apply(option, [option].concat(args))).toReactComponent(listeners);
+            let reactNode = createElement("span").add(callback.apply(option, [option].concat(args)));
             HTMLElement.prototype.addEventListener = old;
-            return reactNode;
+            return reactNode.toReactComponent(listeners);
         }
         return Component;
     }
@@ -467,9 +467,9 @@ export class Option {
                 listeners.push([this, args]);
                 old.apply(this, args);
             }
-            let reactNode = createElement("span").add(callback.apply(options, [options].concat(args))).toReactComponent(listeners);
+            let reactNode = createElement("span").add(callback.apply(options, [options].concat(args)));
             HTMLElement.prototype.addEventListener = old;
-            return reactNode;
+            return reactNode.toReactComponent(listeners);
         }
         return Component;
     }
