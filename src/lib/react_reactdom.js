@@ -1,6 +1,6 @@
-/** @type {import("./react-dom-client.d.ts")} */
+/** @type {import("./react-dom-client.d.ts").default} */
 export let ReactDOM = null;
-/** @type {import("./react.d.ts")} */
+/** @type {import("./react.d.ts").default} */
 export let React = null;
 /*! For license information please see node_modules.js.LICENSE.txt */
 // @ts-format-ignore-line
