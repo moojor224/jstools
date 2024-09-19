@@ -123,7 +123,7 @@ declare global {
          * converts an HTMLElement to a React component
          * @param listeners list of event listeners to add to the element
          */
-        toReact(listeners: [HTMLElement, EventListener<keyof HTMLElementEventMap>[]][]): React.Component;
+        toReactComponent(listeners: [HTMLElement, EventListener<keyof HTMLElementEventMap>[]][]): React.Component;
 
         /**
          * wrapper for {@link HTMLElement.append}\

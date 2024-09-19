@@ -106,7 +106,7 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
         return styles;
     }
     const BLACKLIST_TAGS = ["style", "script", "meta"];
-    Object.defineProperty(HTMLElement.prototype, "toReact", {
+    Object.defineProperty(HTMLElement.prototype, "toReactComponent", {
         value: function (l = []) {
             /** @type {import("./types").EventListener[]} */
             let listeners = l;
@@ -129,7 +129,7 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
             }
             let children = Array.from(el.childNodes).map(e => {
                 if (e instanceof HTMLElement) {
-                    return e.toReact(listeners);
+                    return e.toReactComponent(listeners);
                 } else {
                     return e.textContent;
                 }

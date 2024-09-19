@@ -437,7 +437,7 @@ export class Option {
                 listeners.push([this, args]);
                 old.apply(this, args);
             }
-            let reactNode = createElement("span").add(callback.apply(option, [option].concat(args))).toReact(listeners);
+            let reactNode = createElement("span").add(callback.apply(option, [option].concat(args))).toReactComponent(listeners);
             HTMLElement.prototype.addEventListener = old;
             return reactNode;
         }

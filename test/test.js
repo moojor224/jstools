@@ -22,7 +22,7 @@ function Component(props) {
         style: {
             color: "red"
         }
-    }).toReact(React);
+    }).toReactComponent(React);
     // return React.createElement("div", null, str);
 }
 
