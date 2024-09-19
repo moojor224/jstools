@@ -1,5 +1,7 @@
 import { createElement } from "./createElement.js";
+import { React } from "./lib/react_reactdom.js";
 import { extend } from "./utility.js";
+const { useState, useEffect } = React;
 
 if (!Array.isArray(window.devtoolsFormatters)) {
     window.devtoolsFormatters = [];
@@ -406,6 +408,40 @@ export class Option {
         });
         option.config.input = input; // save input element to config object
         return input;
+    }
+
+    /**
+     * binds the option object to a React element
+     * 
+     * accepts a callback function that is called with the option's value, the
+     * option object, and any additional arguments when the option's value changes
+     * @param {Option} option
+     * @param {(option: this, ...args: any[]) => React.Component} callback
+     * @param {any[]} args
+     * @returns {React.Component}
+     */
+    bindToReactElement(callback = () => { }, args = []) {
+        let option = this;
+        function Component() {
+            const [value, setValue] = useState(option.value);
+            useEffect(() => { // listen for changes to option's value
+                function changeListener(event) {
+                    setValue(event.val); // change value in component
+                }
+                option.on("change", changeListener); // listen for changes
+                return () => option.off("change", changeListener); // stop listening when component reloads
+            });
+            let listeners = [];
+            let old = HTMLElement.prototype.addEventListener;
+            HTMLElement.prototype.addEventListener = function (...args) {
+                listeners.push([this, args]);
+                old.apply(this, args);
+            }
+            let reactNode = createElement("span").add(callback.apply(option, [option].concat(args))).toReact(listeners);
+            HTMLElement.prototype.addEventListener = old;
+            return reactNode;
+        }
+        return Component;
     }
 
     #eventListeners = {};

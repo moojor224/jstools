@@ -39,7 +39,7 @@ let settings = new Settings({
         id: "general"
     }, [
         opt = new Option({
-            name: "color",
+            name: "money",
             id: "on_off",
             type: "toggle",
             value: false
@@ -49,41 +49,31 @@ let settings = new Settings({
 document.body.appendChild(settings.render());
 window.opt = opt;
 
-/**
- * 
- * @param {Option} option
- * @param {Function} callback
- * @param {any[]} args
- * @returns 
- */
-function bindOptionToReactElement(option, callback = () => { }, args = []) {
-    function Component() {
-        const [value, setValue] = useState(option.value);
-        useEffect(() => {
-            function changeListener(event) {
-                setValue(event.val);
-            }
-            option.on("change", changeListener);
-            return () => option.off("change", changeListener);
-        });
-        return createElement("span").add(callback.apply(option, [option.value, option, ...args])).toReact(React);
-    }
-    return Component;
-}
-reactRoot.render(React.createElement(bindOptionToReactElement(opt, function (value, option) {
-    if (value) {
+
+
+reactRoot.render(React.createElement(opt.bindToReactElement(function (option, num) {
+    if (option.value) {
         return createElement("span", {
-            innerHTML: "on",
+            innerHTML: new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD"
+            }).format(num / 100),
             style: {
                 color: "green"
-            }
+            },
+            onclick: () => {
+                console.log("green");
+            },
         });
     } else {
         return createElement("span", {
-            innerHTML: "off",
+            innerHTML: num,
             style: {
                 color: "red"
-            }
+            },
+            onclick: () => {
+                console.log("red");
+            },
         });
     }
-})));
+}, [319999])));
