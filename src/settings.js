@@ -100,7 +100,11 @@ export class Settings {
         let json = JSON.parse(data);
         this.sections.forEach(section => {
             section.options.forEach(option => {
-                option.config.value = json[section.config.id][option.config.id];
+                if (section.config.id in json) {
+                    if (option.config.id in json[section.config.id]) {
+                        option.value = json[section.config.id][option.config.id];
+                    }
+                }
             });
         });
     }
@@ -331,6 +335,13 @@ export class Option {
     set value(val) {
         // console.log("set value to", val, "cur:", this.config.value);
         this.config.value = val;
+        if (this.config.input) {
+            if (this.config.type == "toggle") {
+                this.config.input.querySelector("input[type='checkbox']").checked = val;
+            } else if (this.config.type == "dropdown") {
+                this.config.input.querySelector("select").value = val;
+            }
+        }
     }
 
     /**
@@ -388,21 +399,21 @@ export class Option {
         }
         input.addEventListener("change", function (event) { // when setting is changed, dispatch change event on the options object
             let evt = new Event("change", { cancelable: true });
-            let prop;
-            if (input.checked != undefined) {
-                prop = "checked";
-            } else {
-                prop = "value";
+            let val, reset;
+            if (option.config.type == "toggle") {
+                val = input.checked;
+                reset = () => input.checked = option.config.value;
+            } else if (option.config.type == "dropdown") {
+                val = input.value;
+                reset = () => input.value = option.config.value;
             }
-            evt.val = input[prop];
+            evt.val = val;
             evt.opt = option;
-            evt.prop = prop;
             let cont = option.dispatchEvent(evt);
             if (cont) {
                 option.value = evt.val;
             } else {
-                // console.log("input canceled");
-                input[prop] = option.value;
+                reset();
                 event.preventDefault();
             }
         });
