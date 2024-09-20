@@ -57,7 +57,7 @@ window.opt = opt;
 
 
 
-reactRoot.render(React.createElement(opt.bindToReactElement(function (option, num) {
+reactRoot.render(opt.bindToReactElement(function (option, num) {
     if (option.value) {
         return createElement("span", {
             innerHTML: new Intl.NumberFormat("en-US", {
@@ -82,4 +82,4 @@ reactRoot.render(React.createElement(opt.bindToReactElement(function (option, nu
             },
         });
     }
-}, [319999])));
+}, [319999]));
