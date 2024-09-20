@@ -306,7 +306,7 @@ export class Option {
      *  value?: string,
      *  values?: string[],
      *  id: string,
-     *  type: "dropdown" | "toggle"
+     *  type: "dropdown" | "toggle" | "list"
      * }}
      */
     config = {
@@ -340,6 +340,14 @@ export class Option {
                 this.config.input.querySelector("input[type='checkbox']").checked = val;
             } else if (this.config.type == "dropdown") {
                 this.config.input.querySelector("select").value = val;
+            } else if (this.config.type == "list") {
+                let options = Object.keys(val);
+                options.forEach(e => {
+                    let i = this.config.input.querySelector(`input[name="${e}"]`);
+                    if (i) {
+                        i.checked = val[e];
+                    }
+                });
             }
         }
     }
@@ -349,7 +357,6 @@ export class Option {
      * @returns {HTMLLabelElement}
      */
     render() {
-        // devlog("render option");
         let label = createElement("label"); // clicking a label will activate the first <input> inside it, so the 'for' attribute isn't required
         let span = createElement("span", {
             innerHTML: this.config.name
@@ -396,7 +403,28 @@ export class Option {
                 }));
             }
             input.value = this.config.value || this.config.values[0];
+        } else if (this.config.type == "list") {
+            input = createElement("div", {
+                style: {
+                    display: "inline-flex",
+                    flexDirection: "column",
+                }
+            });
+            let options = Object.keys(option.config.value);
+            options.forEach(e => {
+                let label = createElement("label", {
+                    innerHTML: e
+                });
+                let cb = createElement("input", {
+                    type: "checkbox",
+                    checked: option.config.value[e],
+                    name: e
+                });
+                label.add(cb);
+                input.add(label);
+            });
         }
+        input.classList.add("option-" + this.config.type); // add class to input element
         input.addEventListener("change", function (event) { // when setting is changed, dispatch change event on the options object
             let evt = new Event("change", { cancelable: true });
             let val, reset;
@@ -406,6 +434,23 @@ export class Option {
             } else if (option.config.type == "dropdown") {
                 val = input.value;
                 reset = () => input.value = option.config.value;
+            } else if (option.config.type == "list") {
+                let options = Object.keys(option.config.value);
+                options.forEach(e => {
+                    let i = input.querySelector(`input[name="${e}"]`);
+                    if (i) {
+                        option.config.value[e] = i.checked;
+                    }
+                });
+                val = option.config.value;
+                reset = () => {
+                    options.forEach(e => {
+                        let i = input.querySelector(`input[name="${e}"]`);
+                        if (i) {
+                            i.checked = option.config.value[e];
+                        }
+                    });
+                }
             }
             evt.val = val;
             evt.opt = option;
