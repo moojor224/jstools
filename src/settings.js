@@ -337,9 +337,9 @@ export class Option {
         this.config.value = val;
         if (this.config.input) {
             if (this.config.type == "toggle") {
-                this.config.input.querySelector("input[type='checkbox']").checked = val;
+                this.config.input.checked = val;
             } else if (this.config.type == "dropdown") {
-                this.config.input.querySelector("select").value = val;
+                this.config.input.value = val;
             } else if (this.config.type == "list") {
                 let options = Object.keys(val);
                 options.forEach(e => {
