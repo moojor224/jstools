@@ -413,7 +413,7 @@ export class Option {
     /**
      * binds the option object to a React element
      * 
-     * accepts a callback function that is called with the option's value, the
+     * accepts a callback function that is called with the
      * option object, and any additional arguments when the option's value changes
      * @param {Option} option
      * @param {(option: this, ...args: any[]) => HTMLElement} callback
