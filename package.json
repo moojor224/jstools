@@ -1,6 +1,6 @@
 {
     "name": "@moojor224/jstools",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "a bunch of utility functions for use in browser contexts",
     "main": "src/index.js",
     "scripts": {
