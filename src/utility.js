@@ -134,20 +134,29 @@ const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colo
     [["selector"], "#d7ba7d"],
 ];
 
+
 /**
- * stringifies and syntax highlights almost any javascript object and logs it to the console
- * @param {HTMLElement | string} element element or HTML string to log
- * @param {Boolean} raw whether to return the raw result or just console.log it
- * @returns {Object[]}
+ * @typedef LogFormattedConfig
+ * @property {boolean} embedObjects embed the objects within the console message
+ * @property {boolean} raw return the raw result without logging it to the console
+ * @property {boolean} collapsed log the message inside a collapsed console group (slightly increases performance before initially logging the object). Will still lag when collapsed group is initially opened
+ * @property {number} maxDepth maximum depth to stringify
+ * @property {string} label label for collapsed console group
+ */
+/**
+ * logs a syntax-highlighted, formatted version of an object to the console
+ * @param {any} object the object to parse
+ * @param {LogFormattedConfig} options
+ * @returns {{} | undefined}
  */
 export function logFormatted(object, options = {}) {
     let { embedObjects, raw, collapsed, maxDepth, label, extra_logs, enableCustomFormatters } = (function () {
         let defaults = {
-            embedObjects: false, // embed the objects within the console message
-            raw: false, // return the raw result without logging it to the console
-            collapsed: false, // log the message inside a collapsed console group (slightly increases performance before initially logging the object). Will still lag when collapsed group is initially opened
-            maxDepth: Infinity, // maximum depth to stringify
-            label: "formatted log", // label for collapsed console group,
+            embedObjects: false,
+            raw: false,
+            collapsed: false,
+            maxDepth: Infinity,
+            label: "formatted log",
             extra_logs: [],
             enableCustomFormatters: false,
         }
