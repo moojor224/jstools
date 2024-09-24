@@ -5,17 +5,17 @@ import { validStyles } from "./validStyles.js";
 /**
  * generates a array sort function that sorts an array of objects by a specified property name
  * @param {string} key name of the property to sort by
- * @returns {function} the sort function
+ * @returns {(a: any, b: any): boolean} the sort function
  * @example
-* let People = [
-*     {Name: "Name", Surname: "Surname"},
-*     {Name:"AAA", Surname:"ZZZ"},
-*     {Name: "Name", Surname: "AAA"}
-* ];
-* People.sort(dynamicSort("Name"));
-* People.sort(dynamicSort("Surname"));
-* People.sort(dynamicSort("-Surname"));
-*/
+ * let People = [
+ *     {Name: "Name", Surname: "Surname"},
+ *     {Name:"AAA", Surname:"ZZZ"},
+ *     {Name: "Name", Surname: "AAA"}
+ * ];
+ * People.sort(dynamicSort("Name"));
+ * People.sort(dynamicSort("Surname"));
+ * People.sort(dynamicSort("-Surname"));
+ */
 export function dynamicSort(key) {
     let sortOrder = 1; // normal sort order
     if (typeof key === "string" && key.startsWith("-")) { // if key starts with a -
@@ -29,26 +29,26 @@ export function dynamicSort(key) {
 }
 
 /**
-* generates an array sort function that can sort by object properties with optional fallback properties if two values have the same property value\
-* each given property can also have period-separated nested property names for advanced sorting\
-* adding a minus before any property name will reverse the sort order for that property
-* @param  {...string} properties list of properties to sort by
-* @returns {function} sort function that can sort an array by the specified properties
-* @example
-* let func = advancedDynamicSort("a", "b");
-* [
-*     {a: 1, b: 2},
-*     {a: 0, b: 3},
-*     {a: 1, b: 1},
-*     {a: 0, b: 1},
-* ].sort(func);
-* result = [
-*     {a: 0, b: 1},
-*     {a: 0, b: 3},
-*     {a: 1, b: 1},
-*     {a: 1, b: 2},
-* ];
-*/
+ * generates an array sort function that can sort by object properties with optional fallback properties if two values have the same property value\
+ * each given property can also have period-separated nested property names for advanced sorting\
+ * adding a minus before any property name will reverse the sort order for that property
+ * @param  {...string} properties list of properties to sort by
+ * @returns {(a: any, b: any): boolean} sort function that can sort an array by the specified properties
+ * @example
+ * let func = advancedDynamicSort("a", "b");
+ * [
+ *     {a: 1, b: 2},
+ *     {a: 0, b: 3},
+ *     {a: 1, b: 1},
+ *     {a: 0, b: 1},
+ * ].sort(func);
+ * result = [
+ *     {a: 0, b: 1},
+ *     {a: 0, b: 3},
+ *     {a: 1, b: 1},
+ *     {a: 1, b: 2},
+ * ];
+ */
 export function advancedDynamicSort(...properties) {
     if (properties.length < 1) return;
     // let w = (d, b) => d() ? (b(), w(d, b)) : 0;

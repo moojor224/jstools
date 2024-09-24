@@ -55,13 +55,13 @@ export function lockValue(callback, ...args) {
  * @returns {Function}
  * 
  * @example
-* const template = makeTemplate`I'm ${"name"}. I'm almost ${"age"} years old.`;
-* template({ name: "MDN", age: 30 }); // "I'm MDN. I'm almost 30 years old."
-* 
-* @example
-* const template = makeTemplate`I'm ${0}. I'm almost ${1} years old.`;
-* template("MDN", 30); // "I'm MDN. I'm almost 30 years old."
-*/
+ * const template = makeTemplate`I'm ${"name"}. I'm almost ${"age"} years old.`;
+ * template({ name: "MDN", age: 30 }); // "I'm MDN. I'm almost 30 years old."
+ * 
+ * @example
+ * const template = makeTemplate`I'm ${0}. I'm almost ${1} years old.`;
+ * template("MDN", 30); // "I'm MDN. I'm almost 30 years old."
+ */
 export function makeTemplate(strings, ...keys) {
     return function (...values) {
         const dict = values[values.length - 1] || {};

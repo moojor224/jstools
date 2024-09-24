@@ -2,8 +2,8 @@
 import override from "./src/_node_overrides.js";
 override();
 /**
-* one-time definition methods
-*/
+ * one-time definition methods
+ */
 (function () {
     // loop through all HTML...Element prototypes and add the add function
     // Object.getOwnPropertyNames(window).filter(e => e.startsWith("HTML") && e.endsWith("Element")).forEach(e => {
