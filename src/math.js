@@ -22,6 +22,7 @@ Math.roundf = roundf;
 export function map(x, inmin, inmax, outmin, outmax, cmp = false) {
     return ((cmp ? clamp(x, inmin, inmax) : x) - inmin) * (outmax - outmin) / (inmax - inmin) + outmin;
 }
+Math.map = map;
 
 /**
  * clamps a number to a range\
@@ -34,8 +35,10 @@ export function map(x, inmin, inmax, outmin, outmax, cmp = false) {
  * @returns {Number} number clamped to range
  */
 export function clamp(val, min, max) {
+    // note:                      v------this------v   v----and this----v   are used to get the min/max values, even if min > max
     return Math.max(Math.min(val, Math.max(min, max)), Math.min(min, max));
 }
+Math.clamp = clamp;
 
 /**
  * generate a random number within a range
@@ -46,3 +49,4 @@ export function clamp(val, min, max) {
 export function rand(min, max){
     return Math.random() * (max - min) + min;
 }
+Math.rand = rand;
