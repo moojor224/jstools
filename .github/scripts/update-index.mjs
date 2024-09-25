@@ -53,8 +53,9 @@ function generateDoc(source, comments, name, lineno, filename) {
         let params = tags.filter(e => e.tag == "param");
         let type = tags.filter(e => e.tag == "type");
         let returns = tags.filter(e => e.tag == "returns");
+        let example = tags.filter(e => e.tag == "example");
         returns = returns.map(e => ({
-            description: [e.name, e.description].filter(e => e).join(" "),
+            description: [e.name, e.description].filter(e => e).join(" ").replaceAll("\\ ", "\n"),
             type: e.type + (e.optional ? " | undefined" : ""),
             tag: e.tag,
         }));
@@ -69,14 +70,16 @@ function generateDoc(source, comments, name, lineno, filename) {
         });
         table += "</table>";
         indexHTML += `<h3>${ent(name)}</h3> <h4><a href="https://github.com/moojor224/jstools/blob/main/src/${filename}#L${lineno}" target="_blank">[Source]</a></h4>`;
-        indexHTML += `<p>${ent(description)}</p>`;
+        indexHTML += `<p>${ent(description.replaceAll("\\ ", "\n"))}</p>`;
+        if (example.length > 0) {
+            indexHTML += `<h3>Example</h3><p><pre class="line-numbers"><code>${Prism.highlight(example[0].source.map(e => e.source.trim().replace(/^\*\/? ?/, "")).join("\n").replace(/^@example\n/, ""), Prism.languages.javascript, "javascript") + globalThis.lineNumbersWrapper}</code></pre></p><br>`;
+        }
         if (tableHasContents) {
-            indexHTML += table;
+            indexHTML += "<h3>Source</h3>" + table;
         }
     });
-    // debugger
     // indexHTML += `<pre>${JSON.stringify(comments.map(e => e.parsed), null, "  ")}</pre><br>`;
-    indexHTML += `<pre class="line-numbers"><code>${source}</code></pre><br>`;
+    indexHTML += `<p><pre class="line-numbers"><code>${source}</code></pre></p><br>`;
     indexHTML += "</div>";
 }
 
