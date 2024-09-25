@@ -7,28 +7,28 @@ import { React } from "./lib/react_reactdom.js";
 _node_overrides();
 
 /**
-     * appends any number of objects to an HTMLElement
-     * @param  {...Element} args an array of objects to be added to the parent element
-     * @returns {typeof this}
-     * @memberof HTMLElement
-     * @function external:HTMLElement#add
-     * @example
-* createElement("table").add(
-*      createElement("tr").add(
-*          createElement("td", {innerHTML: "col 1"}),
-*          createElement("td", {innerHTML: "col 2"}),
-*          createElement("td", {innerHTML: "col 3"})
-*      )
-* );
-* // results in:
-* <table>
-*     <tr>
-*         <td>col 1</td>
-*         <td>col 2</td>
-*         <td>col 3</td>
-*     </tr>
-* </table>
-*/
+ * appends any number of objects to an HTMLElement
+ * @param  {...Element} args an array of objects to be added to the parent element
+ * @returns {typeof this}
+ * @memberof HTMLElement
+ * @function external:HTMLElement#add
+ * @example
+ * createElement("table").add(
+ *      createElement("tr").add(
+ *          createElement("td", {innerHTML: "col 1"}),
+ *          createElement("td", {innerHTML: "col 2"}),
+ *          createElement("td", {innerHTML: "col 3"})
+ *      )
+ * );
+ * // results in:
+ * <table>
+ *     <tr>
+ *         <td>col 1</td>
+ *         <td>col 2</td>
+ *         <td>col 3</td>
+ *     </tr>
+ * </table>
+ */
 Object.defineProperty(HTMLElement.prototype, "add", {
     value: function (...args) {
         args.forEach(elem => {

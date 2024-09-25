@@ -132,4 +132,46 @@ declare global {
          */
         add(...elements: HTMLElement[]): this;
     }
+
+    interface Math {
+        /**
+         * Rounds a number to a specified number of decimals
+         * @param num number to round
+         * @param decimals number of decimals to round to
+         * @returns rounded number
+         */
+        roundf(num: number, decimals: number): number;
+
+        /**
+         * proportionately maps a number from an input range to an output range
+         * @param x value
+         * @param inmin input range lower bound
+         * @param inmax input range upper bound
+         * @param outmin output range lower bound
+         * @param outmax output range upper bound
+         * @param cmp whether to clamp the input value to the input range
+         * @returns mapped value
+         */
+        map(x: number, inmin: number, inmax: number, outmin: number, outmax: number, cmp: boolean = false): number;
+
+        /**
+         * clamps a number to a range\
+         * \
+         * if the number is outside the range, move it to the\
+         * closest position inside the range, else do nothing
+         * @param x value
+         * @param min minimum of range
+         * @param max maximum of range
+         * @returns number clamped to range
+         */
+        clamp(x: number, min: number, max: number): number;
+
+        /**
+         * generate a random number within a range
+         * @param min min value of range
+         * @param max max value of range
+         * @returns random number
+         */
+        rand(min: number, max: number): number;
+    }
 }
