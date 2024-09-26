@@ -174,4 +174,11 @@ declare global {
          */
         rand(min: number, max: number): number;
     }
+
+    interface Array<T> {
+        /**
+         * returns a copy of the array with all duplicate values removed
+         */
+        unique(): T[];
+    }
 }

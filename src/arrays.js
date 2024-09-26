@@ -75,3 +75,7 @@ export function interleaveArrays(fill, ...arrays) {
     }
     return result;
 }
+
+Array.prototype.unique = function () {
+    return Array.from(new Set(this));
+}
