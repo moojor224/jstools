@@ -1,4 +1,4 @@
-import { makeTableSortable, Settings, Section, Option, createElement } from "../index.js";
+import { makeTableSortable, Settings, Section, Option, createElement, logFormatted } from "../index.js";
 import { React, ReactDOM } from "../src/lib/react_reactdom.js";
 const { useState, useEffect } = React;
 let table = document.getElementById("sort");
@@ -83,3 +83,14 @@ reactRoot.render(opt.bindToReactElement(function (option, num) {
         });
     }
 }, [319999]));
+
+console.log(logFormatted({
+    a: function () {
+        console.log("hello world");
+    },
+    b: "test"
+}, {
+    collapsed: true,
+    embedObjects: false,
+    raw: true,
+}));

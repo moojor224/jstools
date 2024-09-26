@@ -138,7 +138,7 @@ const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colo
 /**
  * @typedef LogFormattedConfig
  * @property {boolean} embedObjects embed the objects within the console message
- * @property {boolean} raw return the raw result without logging it to the console
+ * property {T} raw return the raw result without logging it to the console
  * @property {boolean} collapsed log the message inside a collapsed console group (slightly increases performance before initially logging the object). Will still lag when collapsed group is initially opened
  * @property {number} maxDepth maximum depth to stringify
  * @property {string} label label for collapsed console group
@@ -146,23 +146,21 @@ const PRISM_CLASSES = [ // list of prism.js classes and their corresponding colo
 /**
  * logs a syntax-highlighted, formatted version of an object to the console
  * @param {any} object the object to parse
- * @param {LogFormattedConfig} options
- * @returns {{} | undefined}
+ * @type {{
+ * (object: any, options?: LogFormattedConfig | {raw: true}) => {html:string,logs:string,styles:string[]},;
+ * (object: any, options?: LogFormattedConfig | {raw: false|undefined}) => void;
+ * }}
  */
-export function logFormatted(object, options = {}) {
-    let { embedObjects, raw, collapsed, maxDepth, label, extra_logs, enableCustomFormatters } = (function () {
-        let defaults = {
-            embedObjects: false,
-            raw: false,
-            collapsed: false,
-            maxDepth: Infinity,
-            label: "formatted log",
-            extra_logs: [],
-            enableCustomFormatters: false,
-        }
-        let opt = extend(defaults, options); // replace the default values with user-specified options
-        return opt;
-    })();
+export let logFormatted = function (object, options = {}) {
+    let { embedObjects, raw, collapsed, maxDepth, label, extra_logs, enableCustomFormatters } = extend({
+        embedObjects: false,
+        raw: false,
+        collapsed: false,
+        maxDepth: Infinity,
+        label: "formatted log",
+        extra_logs: [],
+        enableCustomFormatters: false,
+    }, options);
     if (enableCustomFormatters) {
         // use custom formatters to make the object interactive
         console.error("custom formatters not implemented yet");
