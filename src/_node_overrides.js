@@ -10,6 +10,7 @@ export default function () { // overrides for nodejs
         let t = () => { };
         return new Proxy(t, {
             get: function (target, prop) {
+                if (prop == "valueOf") return () => 0;
                 if (!(prop in target)) return proxy();
                 return target[prop];
             },
@@ -35,4 +36,5 @@ export default function () { // overrides for nodejs
         globalThis.navigator = proxy();
         navigator.userAgent = "Node.js";
     }
+    globalThis.RUNNING_IN_NODE = true;
 };
