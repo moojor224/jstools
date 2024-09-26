@@ -173,6 +173,27 @@ declare global {
          * @returns random number
          */
         rand(min: number, max: number): number;
+
+        /**
+         * generate a range of numbers from 0 to the given number
+         * @param range number of elements in the array
+         */
+        range(range: number): number[];
+
+        /**
+         * generate a range of numbers between start and stop
+         * @param start range start
+         * @param stop range end
+         */
+        range(start: number, stop: number): number[];
+
+        /**
+         * generate a range of numbers between start and stop, stepping by the given amount
+         * @param start range start
+         * @param stop range end
+         * @param step step between numbers
+         */
+        range(start: number, stop: number, step: number): number[];
     }
 
     interface Array<T> {

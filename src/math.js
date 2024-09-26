@@ -46,7 +46,34 @@ Math.clamp = clamp;
  * @param {number} max max value of range
  * @returns {number}
  */
-export function rand(min, max){
+export function rand(min, max) {
     return Math.random() * (max - min) + min;
 }
 Math.rand = rand;
+
+/**
+ * generate a range of numbers. functionally the same as python's range function
+ * @param {number} start range start
+ * @param {number} stop range end
+ * @param {number} step step between numbers
+ */
+export function range(start, stop, step) {
+    let args = [start, stop, step].filter(e => typeof e != "undefined");
+    if (args.length == 1) return Math.range(0, args[0], 1);
+    if (args.length == 2) return Math.range(args[0], args[1], 1);
+    let arr = [];
+    for (let i = args[0]; i < args[1]; i += args[2]) arr.push(i);
+    return arr;
+    // let obj = Object.fromEntries(arr);
+    // obj[Symbol.iterator] = function* () {
+    //     for (let i = 0; i < arr.length; i++) yield arr[i][0];
+    // }
+    // return new Proxy(obj, {
+    //     ownKeys: () => arr.map(e => e[0] + ""),
+    //     get: (target, prop) => {
+    //         console.log("get", prop);
+    //         return target[prop];
+    //     },
+    // });
+}
+Math.range = range;

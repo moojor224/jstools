@@ -28,7 +28,7 @@ export { cssObjToString, jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
 export { consoleButton } from "./src/devtoolsFormatters.js";
 export { CUSTOM_ELEMENTS, clear, clearError, clearWarn, disable, enable, error, hide, show, stringifyNodeTree, warn } from "./src/elements.js";
 export { React, ReactDOM } from "./src/lib/react_reactdom.js";
-export { clamp, map, rand, roundf } from "./src/math.js";
+export { clamp, map, rand, range, roundf } from "./src/math.js";
 export { Overload } from "./src/overloaded_functions.js";
 export { Option, Section, Settings } from "./src/settings.js";
 export { advancedDynamicSort, dynamicSort, makeTableSortable } from "./src/sorting.js";
