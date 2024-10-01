@@ -745,6 +745,7 @@ export function getStack() {
 /**
  * converts an object to a table
  * @param {{[key: string]: {[key: string]: any}}} obj object to convert
+ * @param {(colname: string, rowName: string, val: any) => any} callback callback to call on every value before inserting it into the table
  * @returns {HTMLTableElement} the table element
  * @example
  * let obj = {
@@ -766,7 +767,7 @@ export function getStack() {
  * };
  * let table = objectToTable(obj);
  */
-export function objectToTable(obj) {
+export function objectToTable(obj, callback = (colName, rowName, val) => val) {
     let rowKeys = Object.keys(obj);
     let colKeys = Object.keys(obj[rowKeys[0]]);
     let table = createElement("table");
@@ -780,7 +781,7 @@ export function objectToTable(obj) {
     });
     rowKeys.forEach(e => {
         tbody.add(createElement("tr").add(...colKeys.map(k => createElement("td", {
-            innerHTML: obj[e][k]
+            innerHTML: callback(e, kk, obj[e][k])
         }))));
     });
     return table;

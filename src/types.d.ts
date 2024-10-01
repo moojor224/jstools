@@ -152,7 +152,7 @@ declare global {
          * @param cmp whether to clamp the input value to the input range
          * @returns mapped value
          */
-        map(x: number, inmin: number, inmax: number, outmin: number, outmax: number, cmp: boolean = false): number;
+        map(x: number, inmin: number, inmax: number, outmin: number, outmax: number, cmp?: boolean): number;
 
         /**
          * clamps a number to a range\
@@ -203,3 +203,46 @@ declare global {
         unique(): T[];
     }
 }
+
+type OptionTypes = {
+    "dropdown": string;
+    "toggle": boolean;
+    "list": { [key: string]: boolean };
+}
+
+type OptionInputTypes = {
+    "dropdown": HTMLSelectElement;
+    "toggle": HTMLInputElement;
+    "list": HTMLDivElement;
+}
+
+interface OptionConfig<T extends keyof OptionTypes> {
+    type: T;
+    value?: OptionTypes[T];
+    values?: OptionTypes[T][];
+    id: string;
+}
+
+export class Section {
+
+}
+
+type Narrow<T> = | (T extends infer U ? U : never) | Extract<T, number | string | boolean | bigint | symbol | null | undefined | []> | ([T] extends [[]] ? [] : { [K in keyof T]: Narrow<T[K]> })
+type BasicAny = string | number | boolean;
+type NestedBasicAnyArray = (BasicAny | NestedBasicAnyArray)[];
+
+
+export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
+    config: OptionConfig<T>;
+    constructor(config: typeof this.config);
+    get value(): OptionTypes[T];
+    set value(value: OptionTypes[T]);
+    section_obj: Section;
+    /** creates an HTML element containing the input method defined by config.type */
+    createInput(): OptionInputTypes[T];
+    /** creates an HTML label element containing the option's name and it's input element, generated from {@link createInput} */
+    render(): HTMLLabelElement;
+    bindToReactElement<T>(callback: (option: this, args: Narrow<T>) => HTMLElement, args: Narrow<T>): React.ReactElement;
+}
+
+export type OptionConstructor<T extends keyof OptionTypes> = (config: OptionConfig<T>) => Option<T>;
