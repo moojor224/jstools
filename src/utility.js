@@ -775,12 +775,15 @@ export function objectToTable(obj, callback = (colName, rowName, val) => val) {
     let tbody = createElement("tbody");
     table.add(thead, tbody);
     let tr = createElement("tr");
+    tr.add(createElement("th"));
     thead.add(tr);
     colKeys.forEach(e => {
         tr.appendChild(createElement("th", { innerHTML: e }));
     });
     rowKeys.forEach(e => {
-        tbody.add(createElement("tr").add(...colKeys.map(k => createElement("td", {
+        tbody.add(createElement("tr").add(createElement("tr", {
+            innerHTML: e
+        }), ...colKeys.map(k => createElement("td", {
             innerHTML: callback(e, k, obj[e][k])
         }))));
     });
