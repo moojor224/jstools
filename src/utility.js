@@ -767,7 +767,7 @@ export function getStack() {
  * };
  * let table = objectToTable(obj);
  */
-export function objectToTable(obj, callback = (colName, rowName, val) => val) {
+export function objectToTable(obj, header = "", callback = (colName, rowName, val) => val) {
     let rowKeys = Object.keys(obj);
     let colKeys = Object.keys(obj[rowKeys[0]]);
     let table = createElement("table");
@@ -775,13 +775,13 @@ export function objectToTable(obj, callback = (colName, rowName, val) => val) {
     let tbody = createElement("tbody");
     table.add(thead, tbody);
     let tr = createElement("tr");
-    tr.add(createElement("th"));
+    tr.add(createElement("th", { innerHTML: header }));
     thead.add(tr);
     colKeys.forEach(e => {
         tr.appendChild(createElement("th", { innerHTML: e }));
     });
     rowKeys.forEach(e => {
-        tbody.add(createElement("tr").add(createElement("tr", {
+        tbody.add(createElement("tr").add(createElement("td", {
             innerHTML: e
         }), ...colKeys.map(k => createElement("td", {
             innerHTML: callback(e, k, obj[e][k])
