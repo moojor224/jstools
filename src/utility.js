@@ -781,7 +781,7 @@ export function objectToTable(obj, callback = (colName, rowName, val) => val) {
     });
     rowKeys.forEach(e => {
         tbody.add(createElement("tr").add(...colKeys.map(k => createElement("td", {
-            innerHTML: callback(e, kk, obj[e][k])
+            innerHTML: callback(e, k, obj[e][k])
         }))));
     });
     return table;
