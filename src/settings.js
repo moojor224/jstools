@@ -1,3 +1,4 @@
+/** @typedef {import("./types.d.ts")} jstools */
 import { createElement } from "./createElement.js";
 import { React } from "./lib/react_reactdom.js";
 import { extend } from "./utility.js";
@@ -294,31 +295,16 @@ export class Section {
     }
 }
 
-export class Option {
-    /** @type {HTMLElement} */
+/** @type {typeof import("./types.d.ts").Option} */
+export let Option = class {
     input = null;
-
-    /** @type {Section} */
     section_obj = null;
-    /**
-     * @type {{
-     *  name: string,
-     *  value?: string,
-     *  values?: string[],
-     *  id: string,
-     *  type: "dropdown" | "toggle" | "list"
-     * }}
-     */
     config = {
         name: "option",
         type: "toggle",
         value: false
     }
 
-    /**
-     * creates a new Option object
-     * @param {typeof this.config} config Option options
-     */
     constructor(config) {
         extend(this.config, config); // apply config to this
         if (config.value == undefined && config.values) { // if value is not specified, set value to first value in values
@@ -326,12 +312,10 @@ export class Option {
         }
     }
 
-    /** @returns {string} */
     get value() {
         return this.config.value;
     }
 
-    /** @param {string} val */
     set value(val) {
         // console.log("set value to", val, "cur:", this.config.value);
         this.config.value = val;
@@ -352,10 +336,6 @@ export class Option {
         }
     }
 
-    /**
-     * renders the option object as HTML
-     * @returns {HTMLLabelElement}
-     */
     render() {
         let label = createElement("label"); // clicking a label will activate the first <input> inside it, so the 'for' attribute isn't required
         let span = createElement("span", {
@@ -366,10 +346,6 @@ export class Option {
         return label;
     }
 
-    /**
-     * creates the input method specified by the option config
-     * @returns {HTMLElement}
-     */
     createInput() {
         let input; // initialize variable
         let option = this; // save reference to this
@@ -569,3 +545,11 @@ export class Option {
         if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
 }
+
+let opt = new Option({ type: "list" });
+opt.value;
+opt.render();
+opt.createInput();
+opt.bindToReactElement((option, num) => {
+    var a = num[2][2].b;
+}, [1, "", [1, 2, { a: 1, b: console.log }]]);
