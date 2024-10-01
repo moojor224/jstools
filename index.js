@@ -36,7 +36,7 @@ export { tabColor } from "./src/tabColor.js";
 export {
     BULK_OPERATIONS, constant, copyObject, createDummyEnum, createEnum, createTypedEnum,
     extend, getBrowserType, getStack, getValueOrDefault, hashScript, isAsync, lockValue,
-    logAndReturn, logFormatted, makeTemplate, objectToJSONML, prismToJSONML,
+    logAndReturn, logFormatted, makeTemplate, objectToJSONML, objectToTable, prismToJSONML,
     stringify, timeConversions, toHTMLEntities, wrapInQuotes
 } from "./src/utility.js";
 

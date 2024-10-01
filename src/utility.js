@@ -741,3 +741,47 @@ export function getStack() {
     let char = lindex.match(/\d+(?=\)?$)/g)[0];
     return { file, lineno: line, charno: char, trace: err };
 }
+
+/**
+ * converts an object to a table
+ * @param {{[key: string]: {[key: string]: any}}} obj object to convert
+ * @returns {HTMLTableElement} the table element
+ * @example
+ * let obj = {
+ *     row1: {
+ *         col1: "row1col1",
+ *         col2: "row1col2",
+ *         col3: "row1col3",
+ *     },
+ *     row2: {
+ *         col1: "row2col1",
+ *         col2: "row2col2",
+ *         col3: "row2col3",
+ *     },
+ *     row3: {
+ *         col1: "row3col1",
+ *         col2: "row3col2",
+ *         col3: "row3col3",
+ *     }
+ * };
+ * let table = objectToTable(obj);
+ */
+export function objectToTable(obj) {
+    let rowKeys = Object.keys(obj);
+    let colKeys = Object.keys(obj[rowKeys[0]]);
+    let table = createElement("table");
+    let thead = createElement("thead");
+    let tbody = createElement("tbody");
+    table.add(thead, tbody);
+    let tr = createElement("tr");
+    thead.add(tr);
+    colKeys.forEach(e => {
+        tr.appendChild(createElement("th", { innerHTML: e }));
+    });
+    rowKeys.forEach(e => {
+        tbody.add(createElement("tr").add(...colKeys.map(k => createElement("td", {
+            innerHTML: obj[e][k]
+        }))));
+    });
+    return table;
+}
