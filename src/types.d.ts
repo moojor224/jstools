@@ -204,6 +204,104 @@ declare global {
     }
 }
 
+type Narrow<T> = | (T extends infer U ? U : never) | Extract<T, any> | ([T] extends [[]] ? [] : { [K in keyof T]: Narrow<T[K]> })
+type BasicAny = string | number | boolean;
+type NestedBasicAnyArray = (BasicAny | NestedBasicAnyArray)[];
+
+interface SettingsConfig {
+    name: string;
+}
+
+export class Settings {
+    config: SettingsConfig;
+    sections: Section[];
+    /**
+     * creates a new Settings object
+     * @param config config options
+     * @param sections array of sections to add to the settings
+     */
+    constructor(config: typeof this.config, sections?: Section[]);
+    /**
+     * renders the settings object
+     */
+    render(): HTMLDivElement;
+    /**
+     * returns the section object with the given id
+     * @param id id of the section to get
+     */
+    getSection(id: string): Section | undefined;
+    /**
+     * converts the settings object to a stringified JSON object
+     */
+    export(): string;
+    /**
+     * imports saved settings
+     * @param data stringified json data
+     */
+    import(data: string): void;
+    /**
+     * dispatches an event on the Settings object
+     * @param event the event to dispatch
+     */
+    dispatchEvent(event: Event): boolean;
+    /**
+     * listens for an event
+     * @param event type of event
+     * @param listener callback function
+     */
+    on<K extends keyof OptionEventsMap>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
+    /**
+     * stops the specified callback from listening for the specified event
+     * @paramype of event
+     * @param listener callback function
+     */
+    off(event: string, listener: Function): void;
+}
+
+interface SectionConfig {
+    name: string;
+    id: string;
+}
+
+export class Section {
+    /** parent {@link Settings} object, if one exists */
+    settings_obj: Settings | null;
+    config: SectionConfig;
+    /** array of child {@link Option} objects */
+    options: Option<any>[];
+    /**
+     * @param config config options
+     * @param options array of {@link Option} objects to add to the section
+     */
+    constructor(config: SectionConfig, options?: Option<any>[]);
+    /**
+     * returns the option object with the given id
+     * @param id id of the option to get
+     */
+    getOption(id: string): Option<keyof OptionTypes> | undefined;
+    /**
+     * renders the section object as HTML
+     */
+    render(): HTMLElement;
+    /**
+     * dispatches an event on the Section object
+     * @param event the event to dispatch
+     */
+    dispatchEvent(event: Event): boolean;
+    /**
+     * listens for an event
+     * @param type type of event
+     * @param listener callback function
+     */
+    on<K extends keyof OptionEventsMap>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
+    /**
+     * stops the specified callback from listening for the specified event
+     * @param type type of event
+     * @param listener callback function
+     */
+    off(event: string, listener: Function): void;
+}
+
 type OptionTypes = {
     "dropdown": string;
     "toggle": boolean;
@@ -223,26 +321,60 @@ interface OptionConfig<T extends keyof OptionTypes> {
     id: string;
 }
 
-export class Section {
-
+interface OptionEventsMap<T extends keyof OptionTypes> {
+    "change": {
+        val: OptionTypes[T];
+        opt: Option<T>;
+        cont: boolean;
+    } & Event;
 }
-
-type Narrow<T> = | (T extends infer U ? U : never) | Extract<T, number | string | boolean | bigint | symbol | null | undefined | []> | ([T] extends [[]] ? [] : { [K in keyof T]: Narrow<T[K]> })
-type BasicAny = string | number | boolean;
-type NestedBasicAnyArray = (BasicAny | NestedBasicAnyArray)[];
-
 
 export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
     config: OptionConfig<T>;
     constructor(config: typeof this.config);
     get value(): OptionTypes[T];
     set value(value: OptionTypes[T]);
-    section_obj: Section;
+    /** the parent section object, if it exists */
+    section_obj: Section | null;
     /** creates an HTML element containing the input method defined by config.type */
     createInput(): OptionInputTypes[T];
     /** creates an HTML label element containing the option's name and it's input element, generated from {@link createInput} */
     render(): HTMLLabelElement;
-    bindToReactElement<T>(callback: (option: this, args: Narrow<T>) => HTMLElement, args: Narrow<T>): React.ReactElement;
+    /**
+     * binds the option object to a React element
+     * 
+     * accepts a callback function that is called with the option object, and any additional arguments when the option's value changes
+     * 
+     * the callback function should return an HTMLElement to render
+     * @param callback callback function to call when the option's value changes
+     * @param args arguments to pass to the callback function
+     */
+    bindToReactElement<T extends any[]>(callback: (option: this, ...args: T) => HTMLElement, args: Narrow<T>): React.ReactElement;
+    /** a simple wrapper function to cast an Option object to a specific type of Option */
+    as<T extends keyof OptionTypes>(type: T): Option<T>;
+    /**
+     * similar to {@link bindToReactElement}, but accepts an array of options
+     * @param options options to watch
+     * @param callback
+     * @param args
+     * @returns {React.default.ReactElement}
+     */
+    static bindOptionsToReactElement<T extends Option<any>[], A extends any[]>(options: Narrow<T>, callback: (options: T, ...args: A) => HTMLElement, args: Narrow<A>): React.ReactElement;
+    /**
+     * dispatches an event on the Option object
+     * @param event the event to dispatch
+     */
+    dispatchEvent(event: Event): boolean;
+    /**
+     * listens for an event
+     * @param type type of event
+     * @param listener callback function
+     */
+    on<K extends keyof OptionEventsMap>(type: K, listener: (event: OptionEventsMap<T>[K]) => any): void;
+    /**
+     * stops the specified callback from listening for the specified event
+     * @param event type of event
+     * @param listener callback function
+     */
+    off(event: string, listener: Function): void;
 }
-
-export type OptionConstructor<T extends keyof OptionTypes> = (config: OptionConfig<T>) => Option<T>;

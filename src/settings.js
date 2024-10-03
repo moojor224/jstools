@@ -37,17 +37,13 @@ if (!window.devtoolsFormatters.includes(settingsFormatter)) { // only add one in
     window.devtoolsFormatters.push(settingsFormatter);
 }
 
-export class Settings {
-    config = {
-        name: "settings"
-    };
-    /** @type {Section[]} */
+/** @type {typeof import("./types.d.ts").Settings} */
+export let Settings = class {
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['config']} */
+    config = {};
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['sections']} */
     sections = [];
-    /**
-     * creates a new Settings object
-     * @param {typeof this.config} config config options
-     * @param {Section[]} sections array of sections to add to the settings
-     */
+    /** @type {(...args: ConstructorParameters<typeof import("./types.d.ts").Settings>) => Settings} */
     constructor(config = {}, sections) {
         extend(this.config, config); // apply config to this
         if (!Array.isArray(sections)) { // turn sections into array if it isn't already
@@ -61,10 +57,7 @@ export class Settings {
         });
     }
 
-    /**
-     * renders the settings object
-     * @returns {HTMLDivElement} settings element
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['render']} */
     render() {
         // devlog("render settings");
         let div = createElement("div", { // main settings div
@@ -76,27 +69,17 @@ export class Settings {
         return div;
     }
 
-    /**
-     * returns the section object with the given id
-     * @param {string} id
-     * @returns {Section}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['getSection']} */
     getSection(id) {
         return this.sections.find(e => e.config.id == id);
     }
 
-    /**
-     * converts the settings object to a stringified JSON object
-     * @returns {string}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['export']} */
     export() {
         return JSON.stringify(Object.fromEntries(this.sections.map(e => ([e.config.id, Object.fromEntries(e.options.map(e => [e.config.id, e.config.value]))]))));
     }
 
-    /**
-     * imports saved settings
-     * @param {string} data stringified json data
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['import']} */
     import(data) {
         let json = JSON.parse(data);
         this.sections.forEach(section => {
@@ -111,11 +94,7 @@ export class Settings {
     }
 
     #eventListeners = {};
-    /**
-     * dispatches an event on the Settings object
-     * @param {Event} event the event to dispatch
-     * @returns {Boolean}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['dispatchEvent']} */
     dispatchEvent(event) {
         let cont = true;
         if (this.#eventListeners[event.type]) {
@@ -130,21 +109,13 @@ export class Settings {
         return !event.defaultPrevented && cont;
     }
 
-    /**
-     * listens for an event
-     * @param {string} type type of event
-     * @param {Function} callback callback function
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['on']} */
     on(type, callback) {
         if (!this.#eventListeners[type]) this.#eventListeners[type] = [];
         this.#eventListeners[type].push(callback);
     }
 
-    /**
-     * stops the specified callback from listening for the specified event
-     * @param {string} type type of event
-     * @param {Function} callback callback function
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['off']} */
     off(type, callback) {
         if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
@@ -200,28 +171,21 @@ if (!window.devtoolsFormatters.includes(sectionFormatter)) { // only add one ins
     window.devtoolsFormatters.push(sectionFormatter);
 }
 
-export class Section {
-    /** @type {Settings} */
+/** @type {typeof import("./types.d.ts").Section} */
+export let Section = class {
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['settings_obj']} */
     settings_obj = null;
-    /**
-     * @type {{
-     *   name: string,
-     *   id: string
-     * }}
-     */
-    config = {
-        name: "section"
-    }
-    /** @type {Option[]} */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['config']} */
+    config = {};
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['options']} */
     options = [];
 
-    /**
-     * makes a new Section object
-     * @param {typeof this.config} config config options
-     * @param {Option[]} options array of Options to add to the section
-     */
+    /** @type {(...args: ConstructorParameters<typeof import("./types.d.ts").Section>) => Section} */
     constructor(config, options) {
-        extend(this.config, config); // apply config to this
+        this.config = extend({
+            name: "section",
+            id: "section"
+        }, config); // apply config to this
         if (!Array.isArray(options)) { // turn options into array if it isn't one already
             options = [options];
         }
@@ -233,19 +197,12 @@ export class Section {
         });
     }
 
-    /**
-     * returns the option object with the given id
-     * @param {string} name
-     * @returns {Option}
-     */
-    getOption(name) { // returns the section object with the given id
-        return this.options.find(e => e.config.id == name);
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['getOption']} */
+    getOption(id) { // returns the section object with the given id
+        return this.options.find(e => e.config.id == id);
     }
 
-    /**
-     * renders the section object as HTML
-     * @returns {HTMLElement}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['render']} */
     render() {
         // devlog("render section");
         let section = createElement("section").add(
@@ -256,11 +213,7 @@ export class Section {
     }
 
     #eventListeners = {};
-    /**
-     * dispatches an event on the Section object
-     * @param {Event} event the event to dispatch
-     * @returns {Boolean}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['dispatchEvent']} */
     dispatchEvent(event) {
         let cont = true;
         if (this.#eventListeners[event.type]) {
@@ -275,21 +228,13 @@ export class Section {
         return (!event.defaultPrevented && cont) ? this.settings_obj.dispatchEvent(event) : false;
     }
 
-    /**
-     * listens for an event
-     * @param {string} type type of event
-     * @param {Function} callback callback function
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['on']} */
     on(type, callback) {
         if (!this.#eventListeners[type]) this.#eventListeners[type] = [];
         this.#eventListeners[type].push(callback);
     }
 
-    /**
-     * stops the specified callback from listening for the specified event
-     * @param {string} type type of event
-     * @param {Function} callback callback function
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Section>['off']} */
     off(type, callback) {
         if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
@@ -297,14 +242,16 @@ export class Section {
 
 /** @type {typeof import("./types.d.ts").Option} */
 export let Option = class {
-    input = null;
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['section_obj']} */
     section_obj = null;
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['config']} */
     config = {
         name: "option",
         type: "toggle",
         value: false
     }
 
+    /** @type {(...args: ConstructorParameters<typeof import("./types.d.ts").Option>) => Option} */
     constructor(config) {
         extend(this.config, config); // apply config to this
         if (config.value == undefined && config.values) { // if value is not specified, set value to first value in values
@@ -336,6 +283,12 @@ export let Option = class {
         }
     }
 
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['as']} */
+    as(type) {
+        return this;
+    }
+
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['render']} */
     render() {
         let label = createElement("label"); // clicking a label will activate the first <input> inside it, so the 'for' attribute isn't required
         let span = createElement("span", {
@@ -346,6 +299,7 @@ export let Option = class {
         return label;
     }
 
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['createInput']} */
     createInput() {
         let input; // initialize variable
         let option = this; // save reference to this
@@ -442,16 +396,7 @@ export let Option = class {
         return input;
     }
 
-    /**
-     * binds the option object to a React element
-     * 
-     * accepts a callback function that is called with the
-     * option object, and any additional arguments when the option's value changes
-     * @param {Option} option
-     * @param {(option: this, ...args: any[]) => HTMLElement} callback
-     * @param {any[]} args
-     * @returns {React.default.ReactElement}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['bindToReactElement']} */
     bindToReactElement(callback = () => { }, args = []) {
         let option = this;
         function Component() {
@@ -476,13 +421,7 @@ export let Option = class {
         return React.createElement(Component);
     }
 
-    /**
-     * watches multiple Option objects and updates a react element when any of them change
-     * @param {Option[]} options options to watch
-     * @param {(options: Option[], ...args: any[]) => HTMLElement} callback
-     * @param {any[]} args
-     * @returns {React.default.ReactElement}
-     */
+    /** @type {typeof import("./types.d.ts").Option["bindOptionsToReactElement"]} */
     static bindOptionsToReactElement(options, callback = () => { }, args = []) {
         function Component() {
             const [value, setValue] = useState(0);
@@ -507,11 +446,7 @@ export let Option = class {
     }
 
     #eventListeners = {};
-    /**
-     * dispatches an event on the Option object
-     * @param {Event} event the event to dispatch
-     * @returns {Boolean}
-     */
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['dispatchEvent(event)']} */
     dispatchEvent(event) {
         let cont = true;
         if (this.#eventListeners[event.type]) {
@@ -526,30 +461,26 @@ export let Option = class {
         return (!event.defaultPrevented && cont) ? this.section_obj.dispatchEvent(event) : false;
     }
 
-    /**
-     * listens for an event
-     * @param {string} type type of event
-     * @param {Function} callback callback function
-     */
-    on(type, callback) {
-        if (!this.#eventListeners[type]) this.#eventListeners[type] = [];
-        this.#eventListeners[type].push(callback);
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['on']} */
+    on(event, listener) {
+        if (!this.#eventListeners[event]) this.#eventListeners[event] = [];
+        this.#eventListeners[event].push(listener);
     }
 
-    /**
-     * stops the specified callback from listening for the specified event
-     * @param {string} type type of event
-     * @param {Function} callback callback function
-     */
-    off(type, callback) {
-        if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['off']} */
+    off(event, listener) {
+        if (this.#eventListeners[event]) this.#eventListeners[event].splice(this.#eventListeners[event].indexOf(listener), 1);
     }
 }
 
 let opt = new Option({ type: "list" });
+let opt2 = new Option({ type: "dropdown" });
 opt.value;
 opt.render();
 opt.createInput();
-opt.bindToReactElement((option, num) => {
-    var a = num[2][2].b;
+opt.bindToReactElement((option, num, str, arr) => {
+    var a = arr[2].b;
 }, [1, "", [1, 2, { a: 1, b: console.log }]]);
+
+Option.bindOptionsToReactElement([opt, opt2], function ([opt, opt2], a1, a2, a3) {
+}, [1, 2]);
