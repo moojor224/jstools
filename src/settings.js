@@ -472,15 +472,3 @@ export let Option = class {
         if (this.#eventListeners[event]) this.#eventListeners[event].splice(this.#eventListeners[event].indexOf(listener), 1);
     }
 }
-
-let opt = new Option({ type: "list" });
-let opt2 = new Option({ type: "dropdown" });
-opt.value;
-opt.render();
-opt.createInput();
-opt.bindToReactElement((option, num, str, arr) => {
-    var a = arr[2].b;
-}, [1, "", [1, 2, { a: 1, b: console.log }]]);
-
-Option.bindOptionsToReactElement([opt, opt2], function ([opt, opt2], a1, a2, a3) {
-}, [1, 2]);
