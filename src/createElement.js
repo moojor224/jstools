@@ -21,9 +21,9 @@
 
 /**
  * creates a new element with the specified tag name and properties
- * @type {<Tag extends keyof HTMLElementTagNameMap>(tagName: Tag, options?: ElementProps<HTMLElementTagNameMap[Tag]>) => HTMLElementTagNameMap[Tag]}
- * @param {string} tagName tag name of the element to create
- * @param {ElementProps<HTMLElementTagNameMap[Tag]>} options properties to set on the element
+ * @type {<Tag extends keyof HTMLElementTagNameMap>(tag: Tag, data?: ElementProps<HTMLElementTagNameMap[Tag]>) => HTMLElementTagNameMap[Tag]}
+ * @param {string} tag tag name of the element to create
+ * @param {ElementProps<HTMLElementTagNameMap[Tag]>} data properties to set on the element
  */
 export function createElement(tag, data = {}) {
     // {

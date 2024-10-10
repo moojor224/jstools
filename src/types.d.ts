@@ -249,7 +249,7 @@ export class Settings {
      * @param event type of event
      * @param listener callback function
      */
-    on<K extends keyof OptionEventsMap>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
+    on<K extends keyof OptionEventsMap<keyof OptionTypes>>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
     /**
      * stops the specified callback from listening for the specified event
      * @paramype of event
@@ -293,7 +293,7 @@ export class Section {
      * @param type type of event
      * @param listener callback function
      */
-    on<K extends keyof OptionEventsMap>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
+    on<K extends keyof OptionEventsMap<keyof OptionTypes>>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
     /**
      * stops the specified callback from listening for the specified event
      * @param type type of event
@@ -349,7 +349,7 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
      * @param callback callback function to call when the option's value changes
      * @param args arguments to pass to the callback function
      */
-    bindToReactElement<T extends any[]>(callback: (option: this, ...args: T) => HTMLElement, args: Narrow<T>): React.ReactElement;
+    bindToReactElement<T extends any[]>(callback: (option: this, ...args: T) => HTMLElement, args: Narrow<T>): React.ReactNode;
     /** a simple wrapper function to cast an Option object to a specific type of Option */
     as<T extends keyof OptionTypes>(type: T): Option<T>;
     /**
@@ -370,7 +370,7 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
      * @param type type of event
      * @param listener callback function
      */
-    on<K extends keyof OptionEventsMap>(type: K, listener: (event: OptionEventsMap<T>[K]) => any): void;
+    on<K extends keyof OptionEventsMap<keyof OptionTypes>>(type: K, listener: (event: OptionEventsMap<T>[K]) => any): void;
     /**
      * stops the specified callback from listening for the specified event
      * @param event type of event
