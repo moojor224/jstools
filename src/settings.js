@@ -119,6 +119,31 @@ export let Settings = class {
     off(type, callback) {
         if (this.#eventListeners[type]) this.#eventListeners[type].splice(this.#eventListeners[type].indexOf(callback), 1);
     }
+
+    /** @type {InstanceType<typeof import("./types.d.ts").Settings>['bindToReactElement']} */
+    bindToReactElement(callback = () => { }, args = []) {
+        let settings = this;
+        function Component() {
+            const [value, setValue] = useState(0);
+            useEffect(() => { // listen for changes to option's value
+                function changeListener() {
+                    setValue(value + 1); // ensure value is different to enforce re-render
+                }
+                settings.on("change", changeListener); // listen for changes
+                return () => settings.off("change", changeListener); // stop listening when component reloads
+            });
+            let listeners = [];
+            let old = HTMLElement.prototype.addEventListener;
+            HTMLElement.prototype.addEventListener = function (...args) {
+                listeners.push([this, args]);
+                old.apply(this, args);
+            }
+            let reactNode = createElement("span").add(callback.apply(settings, [settings].concat(args)));
+            HTMLElement.prototype.addEventListener = old;
+            return reactNode.toReactElement(listeners);
+        }
+        return React.createElement(Component);
+    }
 }
 
 let sectionFormatter = {

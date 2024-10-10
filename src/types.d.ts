@@ -256,6 +256,16 @@ export class Settings {
      * @param listener callback function
      */
     off(event: string, listener: Function): void;
+    /**
+     * binds the settings object to a React element
+     * 
+     * accepts a callback function that is called when any options in the settings changes
+     * 
+     * the callback function should return any HTMLElement to render
+     * @param callback callback function to call when any option's value changes
+     * @param args arguments to pass to the callback function
+     */
+    bindToReactElement<T extends any[]>(callback: (settings: this, ...args: T) => HTMLElement, args: Narrow<T>): React.ReactNode;
 }
 
 interface SectionConfig {

@@ -57,7 +57,8 @@ window.opt = opt;
 
 
 
-reactRoot.render(opt.bindToReactElement(function (option, num) {
+reactRoot.render(settings.bindToReactElement(function (set, num) {
+    let option = set.getSection("general").getOption("on_off").as("toggle");
     if (option.value) {
         return createElement("span", {
             innerHTML: new Intl.NumberFormat("en-US", {
