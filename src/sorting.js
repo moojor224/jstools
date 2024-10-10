@@ -83,18 +83,18 @@ export function advancedDynamicSort(...properties) {
     };
 }
 
-const defaultSortStyles = new CSSStyleSheet([
+const defaultSortStyles = new CSSStyleSheet(
     new CSSRule(".sortable", {
         cursor: "pointer",
         userSelect: "none"
     }),
-    new CSSRule(".sortable.sort-asc::after", {
-        content: "▲"
+    new CSSRule(".sortable.sort-asc:after", {
+        content: '" ▲"'
     }),
-    new CSSRule(".sortable.sort-desc::after", {
-        content: "▼"
+    new CSSRule(".sortable.sort-desc:after", {
+        content: '" ▼"'
     })
-]);
+);
 
 /**
  * makes an html table sortable by clicking on the headers
