@@ -74,6 +74,38 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
 });
 
 (function () {
+    /**
+     * @typedef {GlobalEventHandlersEventMap}
+     * this list is taken from the typescript type definition for the above type
+     */
+    const eventTypes = {
+        abort: "Abort", animationcancel: "AnimationCancel", animationend: "AnimationEnd", animationiteration: "AnimationIteration",
+        animationstart: "AnimationStart", auxclick: "AuxClick", beforeinput: "BeforeInput", beforetoggle: "BeforeToggle",
+        blur: "Blur", cancel: "Cancel", canplay: "CanPlay", canplaythrough: "CanPlayThrough", change: "Change", click: "Click",
+        close: "Close", compositionend: "CompositionEnd", compositionstart: "CompositionStart", compositionupdate: "CompositionUpdate",
+        contextlost: "ContextLost", contextmenu: "ContextMenu", contextrestored: "ContextRestored", copy: "Copy", cuechange: "CueChange",
+        cut: "Cut", dblclick: "DblClick", drag: "Drag", dragend: "DragEnd", dragenter: "DragEnter", dragleave: "DragLeave", dragover: "DragOver",
+        dragstart: "DragStart", drop: "Drop", durationchange: "DurationChange", emptied: "Emptied", ended: "Ended", error: "Error", focus: "Focus",
+        focusin: "FocusIn", focusout: "FocusOut", formdata: "FormData", gotpointercapture: "GotPointerCapture", input: "Input", invalid: "Invalid",
+        keydown: "KeyDown", keypress: "KeyPress", keyup: "KeyUp", load: "Load", loadeddata: "LoadedData", loadedmetadata: "LoadedMetadata",
+        loadstart: "LoadStart", lostpointercapture: "LostPointerCapture", mousedown: "MouseDown", mouseenter: "MouseEnter", mouseleave: "MouseLeave",
+        mousemove: "MouseMove", mouseout: "MouseOut", mouseover: "MouseOver", mouseup: "MouseUp", paste: "Paste", pause: "Pause", play: "Play",
+        playing: "Playing", pointercancel: "PointerCancel", pointerdown: "PointerDown", pointerenter: "PointerEnter", pointerleave: "PointerLeave",
+        pointermove: "PointerMove", pointerout: "PointerOut", pointerover: "PointerOver", pointerup: "PointerUp", progress: "Progress",
+        ratechange: "RateChange", reset: "Reset", resize: "Resize", scroll: "Scroll", scrollend: "ScrollEnd", securitypolicyviolation: "SecurityPolicyViolation",
+        seeked: "Seeked", seeking: "Seeking", select: "Select", selectionchange: "SelectionChange", selectstart: "SelectStart", slotchange: "SlotChange",
+        stalled: "Stalled", submit: "Submit", suspend: "Suspend", timeupdate: "TimeUpdate", toggle: "Toggle", touchcancel: "TouchCancel",
+        touchend: "TouchEnd", touchmove: "TouchMove", touchstart: "TouchStart", transitioncancel: "TransitionCancel", transitionend: "TransitionEnd",
+        transitionrun: "TransitionRun", transitionstart: "TransitionStart", volumechange: "VolumeChange", waiting: "Waiting", webkitanimationend: "WebkitAnimationEnd",
+        webkitanimationiteration: "WebkitAnimationIteration", webkitanimationstart: "WebkitAnimationStart", webkittransitionend: "WebkitTransitionEnd", wheel: "Wheel",
+    };
+    Object.entries(eventTypes).forEach(([key, value]) => {
+        let val = "on" + value;
+        eventTypes[key] = val;
+        eventTypes[value] = val;
+        eventTypes["on" + key] = val;
+        eventTypes[val] = val;
+    });
     function getStyles(el) {
         let styles = {};
 
@@ -120,7 +152,11 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
             if (Array.isArray(listeners)) {
                 listeners.filter(e => e[0] == el).forEach(e => {
                     let [type, callback] = e[1];
-                    props["on" + type[0].toUpperCase() + type.slice(1)] = callback;
+                    if (type in eventTypes) {
+                        props[eventTypes[type]] = callback;
+                    } else {
+                        props["on" + type[0].toUpperCase() + type.slice(1)] = callback;
+                    }
                 });
             }
             if ("style" in props) {
