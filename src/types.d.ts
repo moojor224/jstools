@@ -362,6 +362,8 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
     bindToReactElement<T extends any[]>(callback: (option: this, ...args: T) => HTMLElement, args: Narrow<T>): React.ReactNode;
     /** a simple wrapper function to cast an Option object to a specific type of Option */
     as<T extends keyof OptionTypes>(type: T): Option<T>;
+    /** simple wrapper function to expose possible values as a type */
+    values<T extends string>(...arr: T[]): this & { value: T, config: { value: T } };
     /**
      * similar to {@link bindToReactElement}, but accepts an array of options
      * @param options options to watch

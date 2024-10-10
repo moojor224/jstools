@@ -313,7 +313,12 @@ export let Option = class {
     }
 
     /** @type {InstanceType<typeof import("./types.d.ts").Option>['as']} */
-    as(type) {
+    as() {
+        return this;
+    }
+
+    /** @type {InstanceType<typeof import("./types.d.ts").Option>['values']} */
+    values() {
         return this;
     }
 
