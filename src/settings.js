@@ -138,7 +138,11 @@ export let Settings = class {
                 listeners.push([this, args]);
                 old.apply(this, args);
             }
-            let reactNode = createElement("span").add(callback.apply(settings, [settings].concat(args)));
+            let result = callback.apply(settings, [settings].concat(args));
+            if (!result instanceof HTMLElement) {
+                result = createElement("span").add(result);
+            }
+            let reactNode = result;
             HTMLElement.prototype.addEventListener = old;
             return reactNode.toReactElement(listeners);
         }
@@ -439,7 +443,11 @@ export let Option = class {
                 listeners.push([this, args]);
                 old.apply(this, args);
             }
-            let reactNode = createElement("span").add(callback.apply(option, [option].concat(args)));
+            let result = callback.apply(option, [option].concat(args));
+            if (!result instanceof HTMLElement) {
+                result = createElement("span").add(result);
+            }
+            let reactNode = result;
             HTMLElement.prototype.addEventListener = old;
             return reactNode.toReactElement(listeners);
         }
@@ -463,7 +471,11 @@ export let Option = class {
                 listeners.push([this, args]);
                 old.apply(this, args);
             }
-            let reactNode = createElement("span").add(callback.apply(options, [options].concat(args)));
+            let result = callback.apply(options, [options].concat(args));
+            if (!result instanceof HTMLElement) {
+                result = createElement("span").add(result);
+            }
+            let reactNode = result;
             HTMLElement.prototype.addEventListener = old;
             return reactNode.toReactElement(listeners);
         }
