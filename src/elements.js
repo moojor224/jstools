@@ -149,7 +149,6 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
             for (let attr of el.attributes) {
                 if (el.tagName.toLowerCase() == "details" && attr.name == "open") {
                     props.open = true;
-                    console.log("open", el, props);
                 } else {
                     props[attr.name] = attr.value;
                 }
