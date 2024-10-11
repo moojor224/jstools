@@ -147,7 +147,12 @@ Object.defineProperty(HTMLElement.prototype, "isVisible", {
             if (BLACKLIST_TAGS.includes(el.tagName.toLowerCase())) return null;
             let props = {};
             for (let attr of el.attributes) {
-                props[attr.name] = attr.value;
+                if (el.tagName.toLowerCase() == "details" && attr.name == "open") {
+                    props.open = true;
+                    console.log("open", el, props);
+                } else {
+                    props[attr.name] = attr.value;
+                }
             }
             if (Array.isArray(listeners)) {
                 listeners.filter(e => e[0] == el).forEach(e => {
