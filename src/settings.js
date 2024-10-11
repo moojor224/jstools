@@ -277,7 +277,8 @@ export let Option = class {
     config = {
         name: "option",
         type: "toggle",
-        value: false
+        value: false,
+        maxHeight: "calc(infinity + 1px)"
     }
 
     /** @type {(...args: ConstructorParameters<typeof import("./types.d.ts").Option>) => Option} */
@@ -368,17 +369,12 @@ export let Option = class {
             }
             input.value = this.config.value || this.config.values[0];
         } else if (this.config.type == "list") {
-            input = createElement("div", {
-                style: {
-                    display: "inline-flex",
-                    flexDirection: "column",
-                }
-            });
+            input = createElement("div");
             let options = Object.keys(option.config.value);
             options.forEach(e => {
-                let label = createElement("label", {
-                    innerHTML: e
-                });
+                let label = createElement("label").add(
+                    createElement("span", { innerHTML: e })
+                );
                 let cb = createElement("input", {
                     type: "checkbox",
                     checked: option.config.value[e],
@@ -387,7 +383,9 @@ export let Option = class {
                 label.add(cb);
                 input.add(label);
             });
+            input = createElement("div").add(input);
         }
+        input.style.maxHeight = this.config.maxHeight;
         input.classList.add("option-" + this.config.type); // add class to input element
         input.addEventListener("change", function (event) { // when setting is changed, dispatch change event on the options object
             let evt = new Event("change", { cancelable: true });
