@@ -106,6 +106,8 @@ const defaultSortStyles = new CSSStyleSheet(
  * }} options the options for the sorting
  */
 export function makeTableSortable(table, options = {}) {
+    if (table.classList.contains("sortable")) return;
+    table.classList.add("sortable");
     let lastColumn = null;
     options = extend({
         footers: 0,
