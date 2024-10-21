@@ -113,7 +113,6 @@ export class jst_CSSRule {
      * force-updates the style of any attached elements and any parent styles
      */
     update() {
-        console.log("updating CSSRule", this);
         this.attachedElements.forEach(([el]) => {
             extend(el.style, this._style);
         });
@@ -231,7 +230,6 @@ export class jst_CSSStyleSheet {
 
     /** force-updates the stylesheet if it has been injected */
     update() {
-        console.log("updating stylesheet", this);
         if (this.injected) {
             this.styleElement.innerHTML = this.compile(true);
         }
