@@ -316,12 +316,14 @@ type OptionTypes = {
     "dropdown": string;
     "toggle": boolean;
     "list": { [key: string]: boolean };
+    "text": string;
 }
 
 type OptionInputTypes = {
     "dropdown": HTMLSelectElement;
     "toggle": HTMLInputElement;
     "list": HTMLDivElement;
+    "text": HTMLInputElement;
 }
 
 interface OptionConfig<T extends keyof OptionTypes> {

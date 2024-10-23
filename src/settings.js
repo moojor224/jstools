@@ -299,7 +299,7 @@ export let Option = class {
         if (this.config.input) {
             if (this.config.type == "toggle") {
                 this.config.input.checked = val;
-            } else if (this.config.type == "dropdown") {
+            } else if (this.config.type == "dropdown" || this.config.type == "text") {
                 this.config.input.value = val;
             } else if (this.config.type == "list") {
                 let options = Object.keys(val);
@@ -384,6 +384,11 @@ export let Option = class {
                 input.add(label);
             });
             input = createElement("div").add(input);
+        } else if (this.config.type == "text") {
+            input = createElement("input", {
+                type: "text",
+                value: option.config.value || ""
+            });
         }
         input.style.maxHeight = this.config.maxHeight;
         input.classList.add("option-" + this.config.type); // add class to input element
@@ -393,7 +398,7 @@ export let Option = class {
             if (option.config.type == "toggle") {
                 val = input.checked;
                 reset = () => input.checked = option.config.value;
-            } else if (option.config.type == "dropdown") {
+            } else if (option.config.type == "dropdown" || option.config.type == "text") {
                 val = input.value;
                 reset = () => input.value = option.config.value;
             } else if (option.config.type == "list") {

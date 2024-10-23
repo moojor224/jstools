@@ -44,16 +44,25 @@ let settings = new Settings({
         name: "General",
         id: "general"
     }, [
-        opt = new Option({
+        new Option({
             name: "money",
             id: "on_off",
             type: "toggle",
             value: false
-        })
+        }),
+        opt = new Option({
+            name: "text test",
+            id: "text_test",
+            type: "text",
+            value: "Hello World",
+        }),
     ])
 ]);
 document.body.appendChild(settings.render());
 window.opt = opt;
+opt.on("change", function (event) {
+    console.log(event.val);
+});
 
 
 
