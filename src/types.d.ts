@@ -3,6 +3,8 @@
 
 import type React from "./lib/react.d.ts";
 
+declare module "@moojor224/jstools";
+
 interface ProxyHandler<T extends object> {
     /**
      * A trap method for a function call.
