@@ -1,5 +1,6 @@
 import { makeTableSortable, Settings, Section, Option, createElement, logFormatted } from "../index.js";
 import { React, ReactDOM } from "../src/lib/react_reactdom.js";
+
 const { useState, useEffect } = React;
 let table = document.getElementById("sort");
 table.querySelectorAll("td").forEach(td => td.addEventListener("click", function () {
