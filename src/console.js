@@ -1,3 +1,4 @@
+import { extend } from "./utility.js";
 
 /**
  * sets `console.everything` to an array of the console's history\
@@ -50,6 +51,45 @@ export function captureConsole() {
                     console.originalerror.apply(console, [...log.args]);
                 }
             });
+        }
+    }
+}
+
+/**
+ * @typedef ConsolePrefixOptions
+ * @property {string} str - string to prefix the console log with
+ * @property {string} [styles] - CSS styles to apply to the prefix
+ */
+
+const defaultOptions = {
+    str: "LOG",
+    styles: "background-color:#e6e6e6;color:white;border-radius:2px"
+};
+/**
+ * @param {ConsolePrefixOptions} options
+ */
+export function consolePrefix(options) {
+    let { str, styles } = extend(JSON.parse(JSON.stringify(defaultOptions)), options);
+    str = `%c${str.replaceAll("%", "%%")}%c`;
+    return function (...args) {
+        if (args.length === 0) {
+            console.log(str, styles);
+        } else if (args.length === 1) {
+            if (typeof args[0] === "string") {
+                args[0] = str + " " + args[0];
+            } else {
+                args.unshift(str);
+            }
+            args.splice(1, 0, styles, "");
+            console.log(...args);
+        } else {
+            if (typeof args[0] == "string") {
+                args[0] = str + " " + args[0];
+                args.splice(1, 0, styles, "");
+            } else {
+                args.unshift(str, styles, "");
+            }
+            console.log(...args);
         }
     }
 }
