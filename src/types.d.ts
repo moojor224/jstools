@@ -7,12 +7,15 @@ interface ProxyHandler<T extends object> {
     /**
      * A trap method for a function call.
      * @param target The original callable object which is being proxied.
+     * @param thisArg
+     * @param argArray
      */
     apply?(target: T, thisArg: any, argArray: any[]): any;
 
     /**
      * A trap for the `new` operator.
      * @param target The original object which is being proxied.
+     * @param argArray
      * @param newTarget The constructor that was originally called.
      */
     construct?(target: T, argArray: any[], newTarget: Function): object;
@@ -20,6 +23,8 @@ interface ProxyHandler<T extends object> {
     /**
      * A trap for `Object.defineProperty()`.
      * @param target The original object which is being proxied.
+     * @param property
+     * @param attributes
      * @returns A `Boolean` indicating whether or not the property has been defined.
      */
     defineProperty?(target: T, property: string | symbol, attributes: PropertyDescriptor): boolean;
@@ -82,6 +87,7 @@ interface ProxyHandler<T extends object> {
      * A trap for setting a property value.
      * @param target The original object which is being proxied.
      * @param p The name or `Symbol` of the property to set.
+     * @param newValue
      * @param receiver The object to which the assignment was originally directed.
      * @returns A `Boolean` indicating whether or not the property was set.
      */
@@ -92,7 +98,7 @@ interface ProxyHandler<T extends object> {
      * @param target The original object which is being proxied.
      * @param newPrototype The object's new prototype or `null`.
      */
-    setPrototypeOf?(target: T, v: object | null): boolean;
+    setPrototypeOf?(target: T, newPrototype: object | null): boolean;
 }
 
 interface ProxyConstructor {
@@ -249,10 +255,10 @@ export class Settings {
      * @param event type of event
      * @param listener callback function
      */
-    on<K extends keyof OptionEventsMap<keyof OptionTypes>>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
+    on<K extends keyof OptionEventsMap<keyof OptionTypes>>(event: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
     /**
      * stops the specified callback from listening for the specified event
-     * @paramype of event
+     * @param event type of event
      * @param listener callback function
      */
     off(event: string, listener: Function): void;
@@ -306,7 +312,7 @@ export class Section {
     on<K extends keyof OptionEventsMap<keyof OptionTypes>>(type: K, listener: (event: OptionEventsMap<keyof OptionTypes>[K]) => any): void;
     /**
      * stops the specified callback from listening for the specified event
-     * @param type type of event
+     * @param event type of event
      * @param listener callback function
      */
     off(event: string, listener: Function): void;
