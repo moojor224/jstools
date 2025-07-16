@@ -461,6 +461,22 @@ export let Option = class {
         }
         return React.createElement(Component);
     }
+    /**
+     * React hook to listen for changes to the option's value\
+     * returns the option's value, and triggers a state update when the value changes
+     */
+    useValue() {
+        const option = this;
+        const [value, setValue] = useState(0);
+        function changeListener() {
+            setValue(value + 1); // ensure value is different to enforce re-render
+        }
+        useEffect(() => { // listen for changes to option's value
+            option.on("change", changeListener); // listen for changes
+            return () => option.off("change", changeListener); // stop listening when component reloads
+        });
+        return this.value;
+    }
 
     /** @type {typeof import("./types.d.ts").Option["bindOptionsToReactElement"]} */
     static bindOptionsToReactElement(options, callback = () => { }, args = []) {
